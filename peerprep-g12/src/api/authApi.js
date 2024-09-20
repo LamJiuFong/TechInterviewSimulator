@@ -1,7 +1,7 @@
 // src/api/authApi.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5001'; // Replace with your backend API base URL
+const API_URL = 'http://localhost:3001/auth'; // Replace with your backend API base URL
 
 // Login API function
 export async function login(email, password) {
@@ -17,7 +17,7 @@ export async function login(email, password) {
 // Verify Token API function
 export async function verifyToken(token) {
   try {
-    const response = await axios.get(`${API_URL}/verifyToken`, {
+    const response = await axios.get(`${API_URL}/verify-token`, {
       headers: {
         Authorization: `Bearer ${token}`, // Send token as Bearer token
       },

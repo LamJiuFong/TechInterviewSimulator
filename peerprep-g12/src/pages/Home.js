@@ -1,12 +1,12 @@
-import React from 'react';
-import UserList from '../components/UserList';
+// src/pages/Home.js
+import React, { useContext } from 'react';
 
-const HomePage = () => {
+const Home = () => {
   return (
     <div>
-      <h1>Welcome to the User Dashboard</h1>
+      <h1>Welcome to Home Page!</h1>
     </div>
   );
 };
 
-export default HomePage;
+export default Home;
