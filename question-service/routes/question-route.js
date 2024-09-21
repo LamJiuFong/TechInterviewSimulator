@@ -1,9 +1,9 @@
-// routes/questionRoutes.js
-const express = require('express');
-const { getAllQuestions } = require('../controller/question-controller');
+import express from 'express';
+import { getAllQuestions } from '../controller/question-controller.js'; // Use `import` and .js extension for ES modules
+
 const router = express.Router();
 
 // Route to get all questions
 router.get('/', getAllQuestions);
 
-module.exports = router;
+export default router;

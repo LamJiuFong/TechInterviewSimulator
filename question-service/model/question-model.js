@@ -1,5 +1,4 @@
-// model/questionModel.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Define the question schema
 const questionSchema = new mongoose.Schema({
@@ -9,4 +8,5 @@ const questionSchema = new mongoose.Schema({
     questionComplexity: String
 });
 
-module.exports = mongoose.model('Question', questionSchema);
+// Export the model as default
+export default mongoose.model('Question', questionSchema);
