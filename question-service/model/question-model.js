@@ -14,19 +14,16 @@ const questionCategorySchema = new Schema({
     name: {type:String, required:true, unique:true}
 });
 
-const QuestionCategory = mongoose.model('QuestionCategory', questionCategorySchema);
+export const QuestionCategory = mongoose.model('QuestionCategory', questionCategorySchema);
 
 // Schema to represent Question, Question can be queried w/ categories or/and difficulty.
 const questionSchema = new Schema({
     title:{type: String, required: true, unique:true},
     description:{type: String, required:true},
     hint:{type:String},
-    difficulty:{type:int, required:true}, // 0 : easy, 1: medium, 2: difficult
+    difficulty:{type: Number, required:true}, // 0 : easy, 1: medium, 2: difficult
     categories: [{type:Schema.Types.ObjectId, ref:"QuestionCategory"}],
     examples: [questionExampleSchema]
 });
 
-const Question = mongoose.model('Question', questionSchema);
-
-module.exports = {Question, QuestionCategory}
-
+export const Question = mongoose.model('Question', questionSchema);
