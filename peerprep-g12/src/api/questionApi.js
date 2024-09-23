@@ -3,7 +3,7 @@ import { getToken } from "../utils/token";
 
 // Base configuration for the API
 const API = axios.create({
-  baseURL: 'http://localhost:3001', // Change to backend API URL if deployed
+  baseURL: 'http://localhost:3002', // Change to backend API URL if deployed
 });
 
 // Attach token if needed (authentication)
