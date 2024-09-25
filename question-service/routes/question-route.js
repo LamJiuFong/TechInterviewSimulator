@@ -13,14 +13,14 @@ import { verifyAccessToken, verifyIsAdmin } from '../../user-service/middleware/
 const router = express.Router();
 
 // Define the routes
-router.get('/', verifyAccessToken, verifyIsAdmin, getAllQuestions);
-router.get('/:id', verifyAccessToken, verifyIsAdmin, getQuestionById);
-router.get('/search/title', verifyAccessToken, verifyIsAdmin, getQuestionByTitle);
+router.get('/', getAllQuestions);
+router.get('/:id', getQuestionById);
+router.get('/search/title', getQuestionByTitle);
 
-router.post('/', verifyAccessToken, verifyIsAdmin, createNewQuestion);
+router.post('/', createNewQuestion);
 
-router.put('/:id', verifyAccessToken, verifyIsAdmin, updateQuestion);
+router.put('/:id', updateQuestion);
 
-router.delete('/:id', verifyAccessToken, verifyIsAdmin, deleteQuestion);
+router.delete('/:id', deleteQuestion);
 
 export default router;

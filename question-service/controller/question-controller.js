@@ -7,6 +7,8 @@ import {
     deleteQuestionById,
 } from "../model/repository.js";
 
+import { isValidObjectId } from 'mongoose';
+
 // Create a new question
 
 export const createNewQuestion = async (req, res) => {
@@ -36,7 +38,10 @@ export const getAllQuestions = async (req, res) => {
 
 export const getQuestionById = async (req, res) => {
     try {
-        const { questionId } = req.params;  // Extract questionId from request parameters
+        const questionId = req.params.id;  // Extract questionId from request parameters
+        if (!isValidObjectId(questionId)) {
+            res.status(404).json({ message: `Question ${questionId} not found` });
+        }
         const question = await findQuestionById(questionId);  // Fetch question from DB
         if (!question) {
             res.status(404).json({ message: "Question not found" });
@@ -50,7 +55,7 @@ export const getQuestionById = async (req, res) => {
 
 export const getQuestionByTitle = async (req, res) => {
     try {
-        const { questionTitle } = req.params;
+        const { questionTitle } = req.body;
         const question = await findByTitle(questionTitle);
         if (!question) {
             res.status(404).json({ message: "Question not found" });
@@ -64,8 +69,17 @@ export const getQuestionByTitle = async (req, res) => {
 
 export const updateQuestion = async (req, res) => {
     try {
-        const { questionId } = req.params;
+        const questionId = req.params.id;
+        if (!isValidObjectId(questionId)) {
+            res.status(404).json({ message: `Question ${questionId} not found` });
+        }
         const { questionTitle, questionDescription, questionCategory, questionComplexity } = req.body;
+        //check if question is changed to a question that already exists
+        const existingQuestion = await findByTitle(questionTitle);
+        if (existingQuestion) {
+            res.status(400).json({ message: "Question with this title already exists" });
+        }
+        
         const updatedQuestion = await updateQuestionById(questionId, questionTitle, questionDescription, questionCategory, questionComplexity);
         if (!updatedQuestion) {
             res.status(404).json({ message: "Question not found" });
@@ -79,7 +93,11 @@ export const updateQuestion = async (req, res) => {
 
 export const deleteQuestion = async (req, res) => {
     try {
-        const { questionId } = req.params;
+        const questionId = req.params.id;
+        if (!isValidObjectId(questionId)) {
+            res.status(404).json({ message: `Question ${questionId} not found` });
+        }
+
         const deletedQuestion = await deleteQuestionById(questionId);
         if (!deletedQuestion) {
             res.status(404).json({ message: "Question not found" });

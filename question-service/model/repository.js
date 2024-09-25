@@ -1,4 +1,4 @@
-import questionModel from "./question-model";
+import questionModel from "./question-model.js";
 import "dotenv/config";
 import { connect } from "mongoose";
 

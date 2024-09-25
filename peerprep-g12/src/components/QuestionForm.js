@@ -45,7 +45,6 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
     if (isUpdate) {
       update(questionData._id, newQuestion);
       fetchQuestions(); 
-
     } else {
       add(newQuestion);
       fetchQuestions();
