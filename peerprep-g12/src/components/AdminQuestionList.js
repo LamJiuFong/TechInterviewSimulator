@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useQuestions from '../hooks/useQuestions';
 import Accordion from '@mui/material/Accordion';
 import AccordionActions from '@mui/material/AccordionActions';
@@ -6,6 +6,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
+import QuestionForm from './QuestionForm';
 
 
 export default function AdminQuestionList() {
@@ -13,9 +14,25 @@ export default function AdminQuestionList() {
     questions,
     loading,
     error,
-    handleUpdateQuestion,
     handleDeleteQuestion,
   } = useQuestions();
+
+  // State to track the modal open state
+  const [open, setOpen] = useState(false)
+  // State to track the current question being edited
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+
+  // Function to handle opening the modal for a specific question
+  const handleOpen = (question) => {
+    setCurrentQuestion(question); // Set the current question
+    setOpen(true); // Open the modal
+  };
+
+  // Function to handle closing the modal
+  const handleClose= () => {
+    setCurrentQuestion(null); // Reset the current question
+    setOpen(false); // Close the modal
+  };
 
   if (loading) {
     return <div className='loading'>Loading......</div>
@@ -48,7 +65,8 @@ export default function AdminQuestionList() {
                 <p>{question.questionComplexity}</p>
               </AccordionDetails>
               <AccordionActions>
-                <Button onClick={() => handleUpdateQuestion(question._id, {...question, questionTitle: 'Example Updated Title'})}>Update</Button>
+                <Button onClick={() => handleOpen(question)}>Update</Button>
+                <QuestionForm open={open} onClose={handleClose} isUpdate={true} questionData={currentQuestion}/>
                 <Button onClick={() => {
                   console.log(question._id);
                   handleDeleteQuestion(question._id)}}>Delete</Button>
