@@ -8,12 +8,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useQuestions from '../hooks/useQuestions';
 import { DialogActions } from '@mui/material';
 
-export default function QuestionForm({ open, onClose, isUpdate, questionData = null }) {
+export default function QuestionForm({ open, onClose, isUpdate, questionData = null, update, add }) {
   const [questionTitle, setQuestionTitle] = useState('');
   const [questionDescription, setQuestionDescription] = useState('');
   const [questionCategory, setQuestionCategory] = useState('');
   const [questionComplexity, setQuestionComplexity] = useState('');
-  const { fetchQuestions, handleAddQuestion, handleUpdateQuestion } = useQuestions();
+  const { fetchQuestions } = useQuestions();
   const submitButtonRef = useRef(null);
 
   // useEffect to update form state when questionData changes
@@ -30,7 +30,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
       setQuestionCategory('');
       setQuestionComplexity('');
     }
-  }, [isUpdate, questionData]);
+  }, [open, isUpdate, questionData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,11 +43,11 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
     };
 
     if (isUpdate) {
-      handleUpdateQuestion(questionData._id, newQuestion);
+      update(questionData._id, newQuestion);
       fetchQuestions(); 
 
     } else {
-      handleAddQuestion(newQuestion);
+      add(newQuestion);
       fetchQuestions();
     }
 
@@ -77,6 +77,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
                 margin='normal'
               />
               <TextField
+                required
                 id='questionDescription'
                 label='Question Description'
                 value={questionDescription}
@@ -85,6 +86,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
                 margin='normal'
               />
               <TextField
+                required
                 id='questionCategory'
                 label='Question Category'
                 value={questionCategory}
@@ -93,6 +95,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
                 margin='normal'
               />
               <TextField
+                required
                 id='questionComplexity'
                 label='Question Complexity'
                 value={questionComplexity}

@@ -14,6 +14,8 @@ export default function AdminQuestionList() {
     questions,
     loading,
     error,
+    handleAddQuestion,
+    handleUpdateQuestion,
     handleDeleteQuestion,
   } = useQuestions();
 
@@ -66,10 +68,19 @@ export default function AdminQuestionList() {
               </AccordionDetails>
               <AccordionActions>
                 <Button onClick={() => handleOpen(question)}>Update</Button>
-                <QuestionForm open={open} onClose={handleClose} isUpdate={true} questionData={currentQuestion}/>
+                <QuestionForm 
+                  open={open} 
+                  onClose={handleClose} 
+                  isUpdate={true} 
+                  questionData={currentQuestion}
+                  update={handleUpdateQuestion}
+                  add={handleAddQuestion}
+                />
                 <Button onClick={() => {
                   console.log(question._id);
-                  handleDeleteQuestion(question._id)}}>Delete</Button>
+                  handleDeleteQuestion(question._id)}}>
+                    Delete
+                </Button>
               </AccordionActions>
             </Accordion>
           </div>

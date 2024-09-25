@@ -2,10 +2,12 @@ import React, { useState, useRef } from 'react';
 import AdminQuestionList from '../components/AdminQuestionList';
 import QuestionForm from '../components/QuestionForm';
 import { Button } from '@mui/material';
+import useQuestions from '../hooks/useQuestions';
 
 export default function AdminQuestionView() {
   const [open, setOpen] = useState(false);
   const addButtonRef = useRef(null);
+  const { handleAddQuestion, handleUpdateQuestion } = useQuestions();
 
   const handleModalClose = () => {
     setOpen(false);
@@ -22,7 +24,14 @@ export default function AdminQuestionView() {
       <Button ref={addButtonRef} variant='outlined' onClick={() => setOpen(true)}>
         Add Question
       </Button>
-      <QuestionForm open={open} onClose={handleModalClose} isUpdate={false} questionData={null}/>
+      <QuestionForm 
+        open={open} 
+        onClose={handleModalClose} 
+        isUpdate={false} 
+        questionData={null}
+        update={handleUpdateQuestion}
+        add={handleAddQuestion}
+      />
       <AdminQuestionList />
     </div>
   );
