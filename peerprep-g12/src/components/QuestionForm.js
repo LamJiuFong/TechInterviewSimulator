@@ -13,7 +13,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
   const [questionDescription, setQuestionDescription] = useState('');
   const [questionCategory, setQuestionCategory] = useState('');
   const [questionComplexity, setQuestionComplexity] = useState('');
-  const { handleAddQuestion, handleUpdateQuestion } = useQuestions();
+  const { fetchQuestions, handleAddQuestion, handleUpdateQuestion } = useQuestions();
   const submitButtonRef = useRef(null);
 
   // useEffect to update form state when questionData changes
@@ -43,9 +43,12 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
     };
 
     if (isUpdate) {
-      await handleUpdateQuestion(questionData._id, newQuestion);
+      handleUpdateQuestion(questionData._id, newQuestion);
+      fetchQuestions(); 
+
     } else {
-      await handleAddQuestion(newQuestion);
+      handleAddQuestion(newQuestion);
+      fetchQuestions();
     }
 
     onClose(); // Close dialog after submission

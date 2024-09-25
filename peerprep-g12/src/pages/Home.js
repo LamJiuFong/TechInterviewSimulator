@@ -1,5 +1,5 @@
 // src/pages/Home.js
-import React, { useContext } from 'react';
+import React from 'react';
 import LogoutButton from '../components/LogoutButton';
 
 const Home = () => {

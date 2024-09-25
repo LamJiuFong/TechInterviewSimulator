@@ -5,8 +5,6 @@ import { Button } from '@mui/material';
 
 export default function AdminQuestionView() {
   const [open, setOpen] = useState(false);
-
-  // Ref for the "Add Question" button to return focus to it after modal closes
   const addButtonRef = useRef(null);
 
   const handleModalClose = () => {
@@ -21,24 +19,10 @@ export default function AdminQuestionView() {
   return (
     <div className='admin-question-list'>
       <h1>All Questions</h1>
-
-      {/* Button to open the modal for adding a question */}
-      <Button
-        ref={addButtonRef}
-        variant='outlined'
-        onClick={() => setOpen(true)}
-      >
+      <Button ref={addButtonRef} variant='outlined' onClick={() => setOpen(true)}>
         Add Question
       </Button>
-
-      {/* Modal for adding a question */}
-      <QuestionForm
-        open={open}
-        onClose={handleModalClose} // Call the handleModalClose function when the modal closes
-        isUpdate={false}
-      />
-
-      {/* List of questions */}
+      <QuestionForm open={open} onClose={handleModalClose} isUpdate={false} questionData={null}/>
       <AdminQuestionList />
     </div>
   );

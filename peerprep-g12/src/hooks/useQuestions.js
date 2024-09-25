@@ -12,19 +12,20 @@ const useQuestions = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchQuestions = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllQuestions();
+      setQuestions(data);
+    } catch (err) {
+      setError(err.message || 'Failed to fetch questions');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   // Fetch all questions on component mount
   useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        setLoading(true);
-        const data = await getAllQuestions();
-        setQuestions(data);
-      } catch (err) {
-        setError(err.message || 'Failed to fetch questions');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchQuestions();
   }, []);
 
@@ -81,6 +82,7 @@ const useQuestions = () => {
     questions,
     loading,
     error,
+    fetchQuestions,
     handleGetQuestionById,
     handleAddQuestion,
     handleUpdateQuestion,
