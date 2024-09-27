@@ -79,8 +79,10 @@ export const updateQuestion = async (req, res) => {
         //check if question is changed to a different question that already exists
         const existingQuestion = await findByTitle(questionTitle);
        
-        if (existingQuestion && existingQuestion._id.toString() !== questionId) {
-            return res.status(400).json({ message: "Question with this title already exists" });
+        if (existingQuestion) {
+            if (existingQuestion._id.toString() !== questionId){
+                return res.status(400).json({ message: "Question with this title already exists" });
+            }
         }
         
         const updatedQuestion = await updateQuestionById(questionId, questionTitle, questionDescription, questionCategory, questionComplexity);
