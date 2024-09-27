@@ -1,23 +1,40 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import Alert from '@mui/material/Alert';
 import TextField from '@mui/material/TextField';
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
 import useQuestions from '../hooks/useQuestions';
-import { DialogActions } from '@mui/material';
 
 export default function QuestionForm({ open, onClose, isUpdate, questionData = null, update, add }) {
   const [questionTitle, setQuestionTitle] = useState('');
   const [questionDescription, setQuestionDescription] = useState('');
   const [questionCategory, setQuestionCategory] = useState('');
   const [questionComplexity, setQuestionComplexity] = useState('');
-  const { fetchQuestions } = useQuestions();
-  const submitButtonRef = useRef(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const { error } = useQuestions();
+  const complexities = [
+    {
+      value: 'easy',
+      label: 'Easy',
+    },
+    {
+      value: 'medium',
+      label: 'Medium',
+    },
+    {
+      value: 'hard',
+      label: 'Hard',
+    }
+  ]
 
   // useEffect to update form state when questionData changes
   useEffect(() => {
+    setErrorMsg(null);
     if (isUpdate && questionData) {
       setQuestionTitle(questionData.questionTitle || '');
       setQuestionDescription(questionData.questionDescription || '');
@@ -30,7 +47,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
       setQuestionCategory('');
       setQuestionComplexity('');
     }
-  }, [open, isUpdate, questionData]);
+  }, [open, isUpdate, questionData, errorMsg]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,20 +59,23 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
       questionComplexity,
     };
 
-    if (isUpdate) {
-      update(questionData._id, newQuestion);
-      fetchQuestions(); 
-    } else {
-      add(newQuestion);
-      fetchQuestions();
-    }
+    try {
+      if (isUpdate) {
+        update(questionData._id, newQuestion);
+      } else {
+        add(newQuestion);
+      }
+  
+      onClose(); // Close dialog after submission
 
-    onClose(); // Close dialog after submission
-
-    if (submitButtonRef.current) {
-        submitButtonRef.current.focus();
-    }
+    } catch (err) {
+      setErrorMsg(err.message || 'Error occured while submitting the form');
+    } 
   };
+
+  if (error) {
+    return <Alert severity="error">{errorMsg}</Alert>;
+  }
 
   return (
     <React.Fragment>
@@ -65,6 +85,11 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
           <DialogContentText>
             Please {isUpdate ? 'update' : 'add'} the question details below
           </DialogContentText>
+          {errorMsg && (
+            <Alert severity="error" style={{ marginBottom: '15px' }}>
+              {errorMsg}
+            </Alert>
+          )}
           <form onSubmit={handleSubmit}>
             <TextField
                 required
@@ -96,14 +121,21 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
               <TextField
                 required
                 id='questionComplexity'
+                select
                 label='Question Complexity'
                 value={questionComplexity}
                 onChange={(e) => setQuestionComplexity(e.target.value)}
                 fullWidth
                 margin='normal'
-              />
+              >
+                {complexities.map((complexity) => (
+                  <MenuItem key={complexity.value} value={complexity.value}>
+                    {complexity.label}
+                  </MenuItem>
+                ))}
+              </TextField>
                 <DialogActions>
-                    <Button ref={submitButtonRef} type='submit'>
+                    <Button type='submit'>
                         Submit
                     </Button>
                     <Button onClick={onClose}>

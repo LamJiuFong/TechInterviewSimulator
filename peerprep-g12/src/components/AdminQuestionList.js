@@ -7,6 +7,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
 import QuestionForm from './QuestionForm';
+import Alert from '@mui/material/Alert';
 
 export default function AdminQuestionList() {
   const {
@@ -45,10 +46,6 @@ export default function AdminQuestionList() {
     return <div className='loading'>Loading......</div>;
   }
 
-  if (error) {
-    return <div className='error'>{error}</div>;
-  }
-
   if (!questions || questions.length === 0) {
     return <div className='error'>No questions found, add a question now!</div>;
   }
@@ -63,6 +60,9 @@ export default function AdminQuestionList() {
       >
         Add New Question
       </Button>
+
+      {/* Error Message */}
+      {error && <Alert severity="error" style={{ marginBottom: '15px' }}>{error}</Alert>}
 
       {/* Question List */}
       {questions.map((question) => (
