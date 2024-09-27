@@ -19,15 +19,15 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
   const { error } = useQuestions();
   const complexities = [
     {
-      value: 'easy',
+      value: 'Easy',
       label: 'Easy',
     },
     {
-      value: 'medium',
+      value: 'Medium',
       label: 'Medium',
     },
     {
-      value: 'hard',
+      value: 'Hard',
       label: 'Hard',
     }
   ]
