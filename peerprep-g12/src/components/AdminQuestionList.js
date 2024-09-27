@@ -1,3 +1,4 @@
+import './component-styles/AdminQuestionList.css';
 import React, { useState } from 'react';
 import useQuestions from '../hooks/useQuestions';
 import Accordion from '@mui/material/Accordion';
@@ -54,9 +55,8 @@ export default function AdminQuestionList() {
     <div className='admin-question-list'>
       {/* Add Question Button */}
       <Button 
-        variant="outlined" 
+        class='button'
         onClick={handleOpenForAdd} 
-        style={{ marginBottom: '20px' }}
       >
         Add New Question
       </Button>
@@ -67,7 +67,7 @@ export default function AdminQuestionList() {
       {/* Question List */}
       {questions.map((question) => (
         <div className='question-panel' key={question._id}>
-          <Accordion>
+          <Accordion className='question'>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1-content"

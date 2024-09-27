@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <div>
       <h1>Welcome to Home Page!</h1>
-      <Button>
+      <Button class="button">
         <Link to={'/admin/questions'}>
             View all questions
         </Link>
