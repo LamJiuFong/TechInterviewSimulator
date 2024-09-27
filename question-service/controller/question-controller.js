@@ -1,5 +1,5 @@
 import {Question, QuestionCategory} from '../model/question-model.js';
-import {findQuestionById, createQuestion} from '../model/repository.js'
+import {findQuestionById as importedFindQuestionByID, createQuestion} from '../model/repository.js'
 
 // Get all questions
 export const getAllQuestions = async (req, res) => {
@@ -11,10 +11,10 @@ export const getAllQuestions = async (req, res) => {
     }
 };
 
-export async function fetchQuestionById(req, res) {
+export async function findQuestionById(req, res) {
     try {
 
-        const question = await findQuestionById(req.params.questionId);
+        const question = await importedFindQuestionByID(req.params.questionId);
 
         if (question) {
             res.status(200).json(question);

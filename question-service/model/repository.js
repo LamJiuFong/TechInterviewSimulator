@@ -14,7 +14,7 @@ export async function connectToDB() {
 export async function createQuestionCategory(name, sortCode) {
   const category = await QuestionCategory.find({name:name})
 
-  if (category != []) {
+  if (category.length != 0) {
     console.log("Question category exists.")
     return; 
   }
@@ -61,25 +61,13 @@ export async function editQuestion(id, title=null, description=null, categories=
     return;
   }
 
-  if (title != null) {
-    question.title = title;
-  }
-
-  if (description != null) {
-    question.description = description
-  }
-
-  if (hint != null) {
-    question.hint = hint; 
-  }
-
-  if (categories != null) {
-    question.tags = tags;
-  }
-
-  if (examples != null) {
-    question.examples = examples;
-  }
+  const fields = { title, description, categories, examples, hint };
+  
+  Object.keys(fields).forEach(key => {
+    if (fields[key]) {
+      question[key] = fields[key];
+    }
+  });
 
   return question.save()
 }
