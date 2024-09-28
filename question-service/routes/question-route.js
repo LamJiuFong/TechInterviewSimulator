@@ -1,5 +1,4 @@
 import express from 'express';
-<<<<<<< HEAD
 import {
   getAllQuestions,
   createNewQuestion,
@@ -9,10 +8,7 @@ import {
   deleteQuestion
 } from '../controller/question-controller.js';  // Import the controller functions
 
-import { verifyAccessToken, verifyIsAdmin } from '../../user-service/middleware/basic-access-control.js';
-=======
 import { getAllQuestions, findQuestionById, postQuestion } from '../controller/question-controller.js'; // Use `import` and .js extension for ES modules
->>>>>>> dev
 
 const router = express.Router();
 
