@@ -24,6 +24,12 @@ export default function AdminQuestionList() {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
 
+  const difficultyMap = {
+    0 : "Easy",
+    1 : "Medium",
+    2 : "Hard"
+  }
+
   const handleOpenForUpdate = (question) => {
     setCurrentQuestion(question);
     setIsUpdate(true);     
@@ -47,12 +53,15 @@ export default function AdminQuestionList() {
     return <div className='loading'>Loading......</div>;
   }
 
-  if (!questions || questions.length === 0) {
-    return <div className='error'>No questions found, add a question now!</div>;
-  }
-
   return (
     <div className='admin-question-list'>
+      {(!questions || questions.length === 0) 
+      ? 
+        <div className='error'>No questions found, add a question now!</div> 
+      : 
+        (<></>) // not sure if it is good practice
+      }
+
       {/* Add Question Button */}
       <Button 
         class='button'
@@ -73,12 +82,12 @@ export default function AdminQuestionList() {
               aria-controls="panel1-content"
               id={question._id}
             >
-              {question.questionTitle}
+              {question.title}
             </AccordionSummary>
             <AccordionDetails>
-              <p>{question.questionDescription}</p>
-              <p>{question.questionCategory}</p>
-              <p>{question.questionComplexity}</p>
+              <p>{question.description}</p>
+              <p>{question.categories}</p>
+              <p>{difficultyMap[question.difficulty]}</p>
             </AccordionDetails>
             <AccordionActions>
               <Button onClick={() => handleOpenForUpdate(question)}>Update</Button>
@@ -91,13 +100,14 @@ export default function AdminQuestionList() {
       ))}
 
       {/* Question Form for Add or Update */}
-      <QuestionForm 
+      {/* Current Implementation: Singleton, depends on currentQuestion */}
+      <QuestionForm
         open={open} 
         onClose={handleClose} 
         isUpdate={isUpdate} 
         questionData={currentQuestion} 
-        update={handleUpdateQuestion} 
-        add={handleAddQuestion} 
+        update={handleUpdateQuestion}
+        add={handleAddQuestion}
       />
     </div>
   );

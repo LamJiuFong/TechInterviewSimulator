@@ -1,26 +1,21 @@
 import express from 'express';
-import {
-  getAllQuestions,
-  createNewQuestion,
-  getQuestionById,
-  getQuestionByTitle,
-  updateQuestion,
-  deleteQuestion
-} from '../controller/question-controller.js';  // Import the controller functions
-
-import { verifyAccessToken, verifyIsAdmin } from '../../user-service/middleware/basic-access-control.js';
+import { createQuestion, getAllQuestions, getQuestionById, updateQuestionById, deleteQuestionById } from '../controller/question-controller.js'; // Use `import` and .js extension for ES modules
 
 const router = express.Router();
 
 // Define the routes
+router.post("/", createQuestion);
+
 router.get('/', getAllQuestions);
-router.get('/:id', getQuestionById);
+
+router.get("/:id", getQuestionById);
+
+router.put('/:id', updateQuestionById);
+
+router.delete('/:id', deleteQuestionById);
+
+/** Not supported yet
 router.get('/search/title', getQuestionByTitle);
-
-router.post('/', createNewQuestion);
-
-router.put('/:id', updateQuestion);
-
-router.delete('/:id', deleteQuestion);
+*/
 
 export default router;

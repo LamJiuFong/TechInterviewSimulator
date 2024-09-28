@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { 
-  addQuestion, 
-  getAllQuestions, 
+  addQuestion,
+  getAllQuestions,
   getQuestionById,
-  updateQuestion, 
-  deleteQuestion 
+  updateQuestion,
+  deleteQuestion
 } from '../api/questionApi';
 
 const useQuestions = () => {
