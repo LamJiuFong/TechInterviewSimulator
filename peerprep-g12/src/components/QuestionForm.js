@@ -8,15 +8,22 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Chip from '@mui/material/Chip';
+import Select from '@mui/material/Select';
 import useQuestions from '../hooks/useQuestions';
 
 export default function QuestionForm({ open, onClose, isUpdate, questionData = null, update, add }) {
   const [questionTitle, setQuestionTitle] = useState('');
   const [questionDescription, setQuestionDescription] = useState('');
-  const [questionCategory, setQuestionCategory] = useState('');
+  const [questionCategory, setQuestionCategory] = useState([]);
   const [questionComplexity, setQuestionComplexity] = useState('');
+  const [questionLink, setQuestionLink] = useState('');
+  const [questionHints, setQuestionHints] = useState(['']);
+  const [questionExamples, setQuestionExamples] = useState(['']);
   const [errorMsg, setErrorMsg] = useState(null);
-  const { error } = useQuestions();
+  const { error, categories } = useQuestions();
   const complexities = [
     {
       value: 0,
@@ -38,14 +45,20 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
     if (isUpdate && questionData) {
       setQuestionTitle(questionData.title || '');
       setQuestionDescription(questionData.description || '');
-      setQuestionCategory(questionData.categories || '');
+      setQuestionCategory(questionData.categories || []);
       setQuestionComplexity(questionData.difficulty); // 0 || '' will return '' (0 is falsy)
+      setQuestionLink(questionData.link || '');
+      setQuestionHints(questionData.hints || ['']);
+      setQuestionExamples(questionData.examples || ['']);
     } else {
       // Reset form if no question data (for adding new questions)
       setQuestionTitle('');
       setQuestionDescription('');
-      setQuestionCategory('');
+      setQuestionCategory([]);
       setQuestionComplexity('');
+      setQuestionLink('');
+      setQuestionHints(['']);
+      setQuestionExamples(['']);
     }
   }, [open, isUpdate, questionData, errorMsg]);
 
@@ -58,6 +71,9 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
       description: questionDescription,
       categories: questionCategory,
       difficulty: questionComplexity,
+      link: questionLink, // New
+      hints: questionHints, // New
+      examples: questionExamples,
     };
 
     try {
@@ -66,12 +82,12 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
       } else {
         add(newQuestion);
       }
-  
+
       onClose(); // Close dialog after submission
 
     } catch (err) {
       setErrorMsg(err.message || 'Error occured while submitting the form');
-    } 
+    }
   };
 
   if (error) {
@@ -110,15 +126,33 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
               fullWidth
               margin='normal'
             />
-            <TextField
-              required
-              id='questionCategory'
-              label='Question Category'
-              value={questionCategory}
-              onChange={(e) => setQuestionCategory(e.target.value)}
-              fullWidth
-              margin='normal'
-            />
+            <FormControl fullWidth>
+              <InputLabel id="questionCategory">Question Category</InputLabel>
+              <Select
+                required
+                id='questionCategory'
+                label='Question Category'
+                multiple
+                value={questionCategory}
+                onChange={(e) => setQuestionCategory(e.target.value)}
+                fullWidth
+                margin='normal'
+                renderValue={(selected) => (
+                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                      {selected.map((value) => (
+                          <Chip key={value} label={value} style={{ margin: 2 }} />
+                      ))}
+                    </div>
+                )}
+            >
+              {categories.map((category) => (
+                  <MenuItem key={category._id} value={category.name}>
+                    {category.name}
+                  </MenuItem>
+              ))}
+            </Select>
+            </FormControl>
+
             <TextField
               required
               id='questionComplexity'

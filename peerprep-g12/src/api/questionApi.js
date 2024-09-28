@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from "../utils/token"; 
+import { getToken } from "../utils/token";
 
 // Base configuration for the API
 const API = axios.create({
@@ -15,7 +15,7 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-//Create new question TODO: change to createQuestion
+//Create new question
 export const createQuestion = async (questionData) => {
   try {
     const response = await API.post('/api/questions', questionData);
@@ -69,3 +69,27 @@ export const deleteQuestion = async (questionId) => {
         throw error;
     }
 }
+
+export const getQuestionCategories = async () => {
+    try {
+        // const response = await API.get('/api/categories');
+        return categories;
+    } catch (error) {
+        console.error('Error fetching categories:', error.response?.data?.message || error.message);
+        throw error;
+    }
+}
+
+// Todo: Remove below, dummy data
+const categories = [
+    { _id: '1', name: 'Mathematics' },
+    { _id: '2', name: 'Science' },
+    { _id: '3', name: 'History' },
+    { _id: '4', name: 'Literature' },
+    { _id: '5', name: 'Technology' },
+    { _id: '6', name: 'Arts' },
+    { _id: '7', name: 'Geography' },
+    { _id: '8', name: 'Physics' },
+    { _id: '9', name: 'Chemistry' },
+    { _id: '10', name: 'Biology' },
+];

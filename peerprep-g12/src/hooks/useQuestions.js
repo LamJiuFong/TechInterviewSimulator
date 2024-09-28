@@ -4,11 +4,13 @@ import {
   getAllQuestions,
   getQuestionById,
   updateQuestion,
-  deleteQuestion
+  deleteQuestion,
+  getQuestionCategories,
 } from '../api/questionApi';
 
 const useQuestions = () => {
   const [questions, setQuestions] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -24,9 +26,23 @@ const useQuestions = () => {
     }
   }
 
+  // Fetch all categories
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      const data = await getQuestionCategories(); // Fetch categories
+      setCategories(data);  // Set categories state
+    } catch (err) {
+      setError(err.message || 'Failed to fetch categories');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fetch all questions on component mount
   useEffect(() => {
     fetchQuestions();
+    fetchCategories();
   }, []);
 
   useEffect(() => {
@@ -80,6 +96,7 @@ const useQuestions = () => {
 
   return {
     questions,
+    categories,
     loading,
     error,
     fetchQuestions,
