@@ -30,7 +30,6 @@ export async function createQuestion(req, res) {
 export async function getAllQuestions(req, res) {
     try {
         const questions = await importedGetAllQuestions();  // Fetch all questions from DB
-        console.log("getAllQuestions", questions);
         return res.status(200).json(questions);  // Send response as JSON
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -59,11 +58,10 @@ export async function getQuestionById(req, res) {
 export async function updateQuestionById(req, res) {
     try {
         const id = req.params.id;
-
         const data = req.body;
         
         const updatedQuestion = await importedUpdateQuestionById(id, data.title, data.description, data.difficulty, data.categories, data.examples, data.hint);
-
+        
         if (updatedQuestion) {
             return res.status(200).json(updatedQuestion);
         } else {

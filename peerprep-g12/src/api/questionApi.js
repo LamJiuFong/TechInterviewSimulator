@@ -15,7 +15,7 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-//Create new question
+//Create new question TODO: change to createQuestion
 export const addQuestion = async (questionData) => {
   try {
     const response = await API.post('/api/questions', questionData);

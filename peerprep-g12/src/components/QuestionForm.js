@@ -19,15 +19,15 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
   const { error } = useQuestions();
   const complexities = [
     {
-      value: 'Easy',
+      value: 0,
       label: 'Easy',
     },
     {
-      value: 'Medium',
+      value: 1,
       label: 'Medium',
     },
     {
-      value: 'Hard',
+      value: 2,
       label: 'Hard',
     }
   ]
@@ -36,10 +36,10 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
   useEffect(() => {
     setErrorMsg(null);
     if (isUpdate && questionData) {
-      setQuestionTitle(questionData.questionTitle || '');
-      setQuestionDescription(questionData.questionDescription || '');
-      setQuestionCategory(questionData.questionCategory || '');
-      setQuestionComplexity(questionData.questionComplexity || '');
+      setQuestionTitle(questionData.title || '');
+      setQuestionDescription(questionData.description || '');
+      setQuestionCategory(questionData.categories || '');
+      setQuestionComplexity(questionData.difficulty || '');
     } else {
       // Reset form if no question data (for adding new questions)
       setQuestionTitle('');
@@ -52,11 +52,12 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // TODO: match category to the desired format, add hint, add examples
     const newQuestion = {
-      questionTitle,
-      questionDescription,
-      questionCategory,
-      questionComplexity,
+      title: questionTitle,
+      description: questionDescription,
+      categories: questionCategory,
+      difficulty: questionComplexity,
     };
 
     try {
@@ -92,56 +93,56 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
           )}
           <form onSubmit={handleSubmit}>
             <TextField
-                required
-                id='questionTitle'
-                label='Question Title'
-                value={questionTitle}
-                onChange={(e) => setQuestionTitle(e.target.value)}
-                fullWidth
-                margin='normal'
-              />
-              <TextField
-                required
-                id='questionDescription'
-                label='Question Description'
-                value={questionDescription}
-                onChange={(e) => setQuestionDescription(e.target.value)}
-                fullWidth
-                margin='normal'
-              />
-              <TextField
-                required
-                id='questionCategory'
-                label='Question Category'
-                value={questionCategory}
-                onChange={(e) => setQuestionCategory(e.target.value)}
-                fullWidth
-                margin='normal'
-              />
-              <TextField
-                required
-                id='questionComplexity'
-                select
-                label='Question Complexity'
-                value={questionComplexity}
-                onChange={(e) => setQuestionComplexity(e.target.value)}
-                fullWidth
-                margin='normal'
-              >
-                {complexities.map((complexity) => (
-                  <MenuItem key={complexity.value} value={complexity.value}>
-                    {complexity.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-                <DialogActions>
-                    <Button type='submit'>
-                        Submit
-                    </Button>
-                    <Button onClick={onClose}>
-                        Cancel
-                    </Button>
-                </DialogActions>
+              required
+              id='questionTitle'
+              label='Question Title'
+              value={questionTitle}
+              onChange={(e) => setQuestionTitle(e.target.value)}
+              fullWidth
+              margin='normal'
+            />
+            <TextField
+              required
+              id='questionDescription'
+              label='Question Description'
+              value={questionDescription}
+              onChange={(e) => setQuestionDescription(e.target.value)}
+              fullWidth
+              margin='normal'
+            />
+            <TextField
+              required
+              id='questionCategory'
+              label='Question Category'
+              value={questionCategory}
+              onChange={(e) => setQuestionCategory(e.target.value)}
+              fullWidth
+              margin='normal'
+            />
+            <TextField
+              required
+              id='questionComplexity'
+              select
+              label='Question Complexity'
+              value={questionComplexity}
+              onChange={(e) => setQuestionComplexity(e.target.value)}
+              fullWidth
+              margin='normal'
+            >
+              {complexities.map((complexity) => (
+                <MenuItem key={complexity.value} value={complexity.value}>
+                  {complexity.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <DialogActions>
+                <Button type='submit'>
+                    Submit
+                </Button>
+                <Button onClick={onClose}>
+                    Cancel
+                </Button>
+            </DialogActions>
           </form>
         </DialogContent>
       </Dialog>

@@ -36,22 +36,16 @@ export async function getQuestionById(id) {
   return Question.findById(id);
 }
 
-// update, added parameter: difficulty, added: check if updated title is still unique
+// update, added parameter: difficulty, todo: check if updated title is still unique
 export async function updateQuestionById(id, title=null, description=null, difficulty=null, categories=null, examples=null, hint=null) {
 
   const question = await Question.findById(id);
-
   if (!question) {
     console.log("Question does not exist");
     return;
   }
 
-  const questionWithSameTitle = await Question.find({title:title});
-
-  if (questionWithSameTitle.length != 0) {
-    console.log("Question Title exists.");  // throw error maybe
-    return ;
-  }
+  // TODO: what if users edit the title to clash with existing questions?
 
   const fields = { title, description, difficulty, categories, examples, hint };
   

@@ -1,33 +1,6 @@
-import mongoose, { mongo, Mongoose } from 'mongoose';
+import mongoose from 'mongoose';
 
-/**
-// Define the question schema
-const questionSchema = new mongoose.Schema({
-    questionTitle: { 
-        type: String, 
-        required: true,
-        unique: true 
-    },
-    questionDescription: {
-        type: String,
-        required: true
-    },
-    questionCategory: {
-        type: String,
-        required: true
-    },
-    questionComplexity: {
-        type: String,
-        required: true
-    }
-});
-
-// Export the model as default
-export default mongoose.model('questionModel', questionSchema);
-
-*/
-
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 
 // Schema to represent example present in a question
 const questionExampleSchema = new Schema({
@@ -49,8 +22,8 @@ const questionSchema = new Schema({
     description:{type: String, required:true},
     hint:{type:String},
     difficulty:{type: Number, required:true}, // 0 : easy, 1: medium, 2: difficult
-    categories: [{type:Schema.Types.ObjectId, ref:"QuestionCategory"}],
+    categories:{type: String, required:true}, // skip for now [{type:Schema.Types.ObjectId, ref:"QuestionCategory"}],
     examples: [questionExampleSchema]
 });
 
-export const Question = mongoose.model('Question', questionSchema);
+export const Question = mongoose.model('Question', questionSchema, "questions");
