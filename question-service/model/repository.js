@@ -96,25 +96,3 @@ export async function getFilteredQuestions(query) {
   export async function findByTitle(title) {
     return questionModel.findOne({ questionTitle: title });
 */
-
-// --------------------------------  Below is for question categories ---------------------------------------
-export async function createQuestionCategory(name, sortCode) {
-  const category = await QuestionCategory.find({name:name})
-
-  if (category.length != 0) {
-    console.log("Question category exists.")
-    return; 
-  }
-
-  const newCategory = new QuestionCategory({name, sortCode})
-  
-  return newCategory.save()
-}
-
-export async function getAllQuestionCategories() {
-  return QuestionCategory.find();
-}
-
-export async function deleteQuestionCategory(id) {
-  return QuestionCategory.findByIdAndDelete(id)
-}

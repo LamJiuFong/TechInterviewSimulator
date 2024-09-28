@@ -37,10 +37,10 @@ export async function getAllQuestions(req, res) {
 };
 
 // Get filtered questions based on query parameters
-// Example route: /filter?difficulty=0&category=DP,Array
+// Example route: /filter?difficulty=0&category=DP,Array&title=TwoSum
 export const getFilteredQuestions = async (req, res) => {
     try {
-        const { difficulty, category } = req.query;  // Extract query parameters
+        const { difficulty, category, title } = req.query;  // Extract query parameters
         
         let query = {};
 
@@ -50,6 +50,10 @@ export const getFilteredQuestions = async (req, res) => {
 
         if (category) {
             query.categories = { $elemMatch: { $in: category.split(',') }};  // Filter by category
+        }
+
+        if (title) {
+            query.title = { $regex: title, $options: 'i' };  // Filter by title
         }
         
         const questions = await getFilteredQuestionsDB(query);
