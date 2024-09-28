@@ -1,6 +1,7 @@
 import questionModel from "./question-model.js";
 import "dotenv/config";
 import { connect } from "mongoose";
+import {Question, QuestionCategory} from "./question-model.js"
 
 export async function connectToDB() {
     let mongoDBUri =
@@ -11,37 +12,77 @@ export async function connectToDB() {
     await connect(mongoDBUri);
   }
 
-  export async function createQuestion(questionTitle, questionDescription, questionCategory, questionComplexity) {
-    return new questionModel({ questionTitle, questionDescription, questionCategory, questionComplexity }).save();
-  }
-
-  export async function findQuestionById(questionId) {
-    return questionModel.findById(questionId);
-  }
-
+/**
   export async function findByTitle(title) {
     return questionModel.findOne({ questionTitle: title });
+*/
+
+
+export async function createQuestionCategory(name, sortCode) {
+  const category = await QuestionCategory.find({name:name})
+
+  if (category.length != 0) {
+    console.log("Question category exists.")
+    return; 
   }
 
-  export async function findAllQuestions() {
-    return questionModel.find();
+  const newCategory = new QuestionCategory({name, sortCode})
+  
+  return newCategory.save()
+}
+
+export async function deleteQuestionCategory(id) {
+  return QuestionCategory.findByIdAndDelete(id)
+}
+
+export async function getAllQuestionCategories() {
+  return QuestionCategory.find();
+}
+
+export async function createQuestion(title, description, difficulty, categories, examples, hint=null) {
+
+  const question = await Question.find({title:title});
+
+  console.log(question);
+
+  if (question.length != 0) {
+    console.log("Question Title exists.");
+    return ;
   }
 
-  export async function updateQuestionById(questionId, questionTitle, questionDescription, questionCategory, questionComplexity) {
-    return questionModel.findByIdAndUpdate(
-      questionId,
-      {
-        $set: {
-          questionTitle,
-          questionDescription,
-          questionCategory,
-          questionComplexity,
-        },
-      },
-      { new: true },  // return the updated question
-    );
+  const newQuestion = new Question({title, description, hint, difficulty, categories, examples})
+  
+  return newQuestion.save()
+}
+
+export async function deleteQuestionByID(id) {
+  return Question.findByIdAndDelete(id);
+}
+
+export async function editQuestion(id, title=null, description=null, categories=null, examples=null, hint=null) {
+
+  const question = await Question.findById(id);
+
+  if (!question) {
+    console.log("Question does not exist");
+    return;
   }
 
-  export async function deleteQuestionById(questionId) {
-    return questionModel.findByIdAndDelete(questionId);
-  }
+  const fields = { title, description, categories, examples, hint };
+  
+  Object.keys(fields).forEach(key => {
+    if (fields[key]) {
+      question[key] = fields[key];
+    }
+  });
+
+  return question.save()
+}
+
+export async function findQuestionById(id) {
+  return Question.findById(id);
+}
+
+export async function getAllQuestions() {
+  return Question.find();
+}
