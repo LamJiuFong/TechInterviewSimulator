@@ -1,10 +1,36 @@
 import {Question, QuestionCategory} from '../model/question-model.js';
-import {findQuestionById as importedFindQuestionByID, createQuestion} from '../model/repository.js'
+import {findQuestionById as importedFindQuestionByID, createQuestion, getFilteredQuestions as getFilteredQuestionsDB} from '../model/repository.js'
 
+import mongoose from 'mongoose';
 // Get all questions
 export const getAllQuestions = async (req, res) => {
     try {
         const questions = await Question.find();  // Fetch all questions from DB
+        res.status(200).json(questions);  // Send response as JSON
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Get filtered questions based on query parameters
+// Example route: /filter?difficulty=0,1&category=DP,Array
+export const getFilteredQuestions = async (req, res) => {
+    try {
+        const { difficulty, category } = req.query;  // Extract query parameters
+        
+        let query = {};
+
+        if (difficulty) {
+            query.difficulty = { $in: difficulty.split(',') };  // Filter by difficulty
+        }
+
+        if (category) {
+            query.categories = { $in: category.split(',') };  // Filter by category
+        }
+        
+        const questions = await getFilteredQuestionsDB(query);
+
+
         res.status(200).json(questions);  // Send response as JSON
     } catch (error) {
         res.status(500).json({ message: error.message });
