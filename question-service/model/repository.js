@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { connect } from "mongoose";
-import {Question, QuestionCategory} from "./question-model.js"
+import { Question, QuestionCategory } from "./question-model.js"
 
 export async function connectToDB() {
     let mongoDBUri =
@@ -9,29 +9,9 @@ export async function connectToDB() {
         : process.env.DB_LOCAL_URI;
   
     await connect(mongoDBUri);
-  }
-
-export async function createQuestionCategory(name, sortCode) {
-  const category = await QuestionCategory.find({name:name})
-
-  if (category.length != 0) {
-    console.log("Question category exists.")
-    return; 
-  }
-
-  const newCategory = new QuestionCategory({name, sortCode})
-  
-  return newCategory.save()
 }
 
-export async function deleteQuestionCategory(id) {
-  return QuestionCategory.findByIdAndDelete(id)
-}
-
-export async function getAllQuestionCategories() {
-  return QuestionCategory.find();
-}
-
+// maybe throw error
 export async function createQuestion(title, description, difficulty, categories, examples, hint=null) {
 
   const question = await Question.find({title:title});
@@ -48,20 +28,26 @@ export async function createQuestion(title, description, difficulty, categories,
   return newQuestion.save()
 }
 
-export async function deleteQuestionByID(id) {
-  return Question.findByIdAndDelete(id);
+export async function getAllQuestions() {
+  return Question.find();
 }
 
-export async function editQuestion(id, title=null, description=null, categories=null, examples=null, hint=null) {
+export async function getQuestionById(id) {
+  return Question.findById(id);
+}
+
+// update, added parameter: difficulty, todo: check if updated title is still unique
+export async function updateQuestionById(id, title=null, description=null, difficulty=null, categories=null, examples=null, hint=null) {
 
   const question = await Question.findById(id);
-
   if (!question) {
     console.log("Question does not exist");
     return;
   }
 
-  const fields = { title, description, categories, examples, hint };
+  // TODO: what if users edit the title to clash with existing questions?
+
+  const fields = { title, description, difficulty, categories, examples, hint };
   
   Object.keys(fields).forEach(key => {
     if (fields[key]) {
@@ -72,10 +58,35 @@ export async function editQuestion(id, title=null, description=null, categories=
   return question.save()
 }
 
-export async function findQuestionById(id) {
-  return Question.findById(id);
+// delete
+export async function deleteQuestionById(id) {
+  return Question.findByIdAndDelete(id); // will throw error if question id is not found?
 }
 
-export async function getAllQuestion() {
-  return Question.find();
+
+/** To be added later
+  export async function findByTitle(title) {
+    return questionModel.findOne({ questionTitle: title });
+*/
+
+// --------------------------------  Below is for question categories ---------------------------------------
+export async function createQuestionCategory(name, sortCode) {
+  const category = await QuestionCategory.find({name:name})
+
+  if (category.length != 0) {
+    console.log("Question category exists.")
+    return; 
+  }
+
+  const newCategory = new QuestionCategory({name, sortCode})
+  
+  return newCategory.save()
+}
+
+export async function getAllQuestionCategories() {
+  return QuestionCategory.find();
+}
+
+export async function deleteQuestionCategory(id) {
+  return QuestionCategory.findByIdAndDelete(id)
 }

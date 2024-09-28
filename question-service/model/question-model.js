@@ -1,11 +1,11 @@
-import mongoose, { mongo, Mongoose } from 'mongoose';
+import mongoose from 'mongoose';
 
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 
 // Schema to represent example present in a question
 const questionExampleSchema = new Schema({
     input: {type:String, required:true},
-    output:{type:String, required:true}
+    output: {type:String, required:true}
 });
 
 // Schema to represent question category (e.g. DP, Array, Divide&Conquer etc.)
@@ -22,8 +22,8 @@ const questionSchema = new Schema({
     description:{type: String, required:true},
     hint:{type:String},
     difficulty:{type: Number, required:true}, // 0 : easy, 1: medium, 2: difficult
-    categories: [{type:Schema.Types.ObjectId, ref:"QuestionCategory"}],
+    categories:{type: String, required:true}, // skip for now [{type:Schema.Types.ObjectId, ref:"QuestionCategory"}],
     examples: [questionExampleSchema]
 });
 
-export const Question = mongoose.model('Question', questionSchema);
+export const Question = mongoose.model('Question', questionSchema, "questions");
