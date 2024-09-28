@@ -39,7 +39,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
       setQuestionTitle(questionData.title || '');
       setQuestionDescription(questionData.description || '');
       setQuestionCategory(questionData.categories || '');
-      setQuestionComplexity(questionData.difficulty || '');
+      setQuestionComplexity(questionData.difficulty); // 0 || '' will return '' (0 is falsy)
     } else {
       // Reset form if no question data (for adding new questions)
       setQuestionTitle('');
