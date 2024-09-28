@@ -21,8 +21,9 @@ const questionSchema = new Schema({
     title:{type: String, required: true, unique:true},
     description:{type: String, required:true},
     hint:{type:String},
-    difficulty:{type: Number, required:true}, // 0 : easy, 1: medium, 2: difficult
+    difficulty:{type: String, required:true}, // 0 : easy, 1: medium, 2: difficult
     categories:[{type: String, required:true}], // TODO: to discuss the necessity of linking categories
+    link:{type: String, required:true}, 
     examples: [questionExampleSchema]
 });
 
