@@ -16,6 +16,10 @@ export async function createUser(req, res) {
   try {
     const { username, email, password } = req.body;
     if (username && email && password) {
+      if (password.length < 8) {
+        return res.status(422).json({message: "Password must have at least 8 characters"});
+      }
+
       const existingUser = await _findUserByUsernameOrEmail(username, email);
       if (existingUser) {
         return res.status(409).json({ message: "username or email already exists" });

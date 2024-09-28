@@ -1,0 +1,12 @@
+.admin-question-list {
+    padding: 0px 50px 50px 50px;
+}
+
+.question-panel {
+    font-family: 'Roboto', sans-serif;
+    padding-bottom: 10px;
+
+    .question {
+        border: 3px solid #9CDDDB;
+    }
+}
