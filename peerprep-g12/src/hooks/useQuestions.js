@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { 
-  addQuestion,
+  createQuestion,
   getAllQuestions,
   getQuestionById,
   updateQuestion,
@@ -44,7 +44,7 @@ const useQuestions = () => {
 
   const handleAddQuestion = async (questionData) => {
     try {
-      const newQuestion = await addQuestion(questionData);
+      const newQuestion = await createQuestion(questionData);
       // Add the new question to the local state
       setQuestions((prevQuestions) => [...prevQuestions, newQuestion]);
     } catch (err) {
