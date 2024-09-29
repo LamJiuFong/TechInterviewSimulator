@@ -27,20 +27,8 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
   const [questionExamples, setQuestionExamples] = useState([{ input: '', output: '' }]);
   const [errorMsg, setErrorMsg] = useState(null);
   const { error, categories } = useQuestions();
-  const complexities = [
-    {
-      value: 0,
-      label: 'Easy',
-    },
-    {
-      value: 1,
-      label: 'Medium',
-    },
-    {
-      value: 2,
-      label: 'Hard',
-    }
-  ]
+  const complexities = ['Easy', 'Medium', 'Hard'];
+
 
   // useEffect to update form state when questionData changes
   useEffect(() => {
@@ -197,8 +185,8 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
                 margin='normal'
             >
               {complexities.map((complexity) => (
-                  <MenuItem key={complexity.value} value={complexity.value}>
-                    {complexity.label}
+                  <MenuItem key={complexity} value={complexity}>
+                    {complexity}
                   </MenuItem>
               ))}
             </TextField>

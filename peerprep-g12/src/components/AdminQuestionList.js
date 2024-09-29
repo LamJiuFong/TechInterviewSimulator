@@ -24,12 +24,6 @@ export default function AdminQuestionList() {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
 
-  const difficultyMap = {
-    0 : "Easy",
-    1 : "Medium",
-    2 : "Hard"
-  }
-
   const handleOpenForUpdate = (question) => {
     setCurrentQuestion(question);
     setIsUpdate(true);     
@@ -98,7 +92,7 @@ export default function AdminQuestionList() {
               </div>
 
               {/* Display Difficulty */}
-              <p><strong>Difficulty:</strong> {difficultyMap[question.difficulty]}</p>
+              <p><strong>Difficulty:</strong> {question.difficulty}</p>
 
               {/* Display Links */}
               {question.links && question.links.length > 0 && (
