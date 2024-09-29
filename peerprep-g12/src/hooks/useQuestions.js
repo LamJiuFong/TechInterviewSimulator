@@ -54,7 +54,7 @@ const useQuestions = () => {
       const wantedQuestion = await getQuestionById(questionId);
       setQuestions([wantedQuestion]);  // Replacing all questions with the selected one
     } catch (err) {
-      setError(err.message || 'Failed to fetch question');
+      setError(err.response?.data?.message || err.message);
     } 
   };
 
@@ -64,7 +64,7 @@ const useQuestions = () => {
       // Add the new question to the local state
       setQuestions((prevQuestions) => [...prevQuestions, newQuestion]);
     } catch (err) {
-      setError(err.message || 'Failed to add question');
+      setError(err.response?.data?.message || err.message);
     }
   };
 
@@ -79,7 +79,7 @@ const useQuestions = () => {
       );
       console.log("After adding: ", questions);
     } catch (err) {
-      setError(err.message || 'Failed to update question');
+      setError(err.response?.data?.message || err.message);
     } 
   };
 
@@ -90,7 +90,7 @@ const useQuestions = () => {
       // Remove the deleted question from local state
       setQuestions((prevQuestions) => prevQuestions.filter((q) => q._id !== questionId));
     } catch (err) {
-      setError(err.message || 'Failed to delete question');
+      setError(err.response?.data?.message || err.message);
     } 
   };
 
