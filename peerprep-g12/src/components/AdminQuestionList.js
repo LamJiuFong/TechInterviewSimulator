@@ -12,7 +12,7 @@ import Alert from '@mui/material/Alert';
 
 export default function AdminQuestionList() {
   const {
-    questions,
+      questions,
     loading,
     error,
     handleAddQuestion,
@@ -93,16 +93,10 @@ export default function AdminQuestionList() {
 
               {/* Display Difficulty */}
               <p><strong>Difficulty:</strong> {question.difficulty}</p>
-
               {/* Display Links */}
-              {question.links && question.links.length > 0 && (
+              {question.link && (
                   <div>
-                    <p><strong>Links:</strong></p>
-                    <ul>
-                      {question.links.map((link, index) => (
-                          <li key={index}><a href={link} target="_blank" rel="noopener noreferrer">{link}</a></li>
-                      ))}
-                    </ul>
+                    <p><strong>Links:</strong>  <a href={question.link} target="_blank" rel="noopener noreferrer" className="blue-link">{question.link}</a></p>
                   </div>
               )}
 

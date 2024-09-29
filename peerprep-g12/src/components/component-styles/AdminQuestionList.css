@@ -10,3 +10,12 @@
         border: 3px solid #9CDDDB;
     }
 }
+
+.blue-link {
+    color: blue;
+    text-decoration: underline;
+}
+
+.blue-link:hover {
+    color: darkblue;
+}

@@ -13,7 +13,7 @@ export async function createQuestion(req, res) {
         const data = req.body
         console.log(data);
 
-        const question = await importedCreateQuestion(data.title, data.description, data.difficulty, data.categories, data.examples,data.link, data.hint);
+        const question = await importedCreateQuestion(data.title, data.description, data.difficulty, data.categories, data.examples,data.link, data.hints);
 
         if (question) {
             res.status(200).json(question);
