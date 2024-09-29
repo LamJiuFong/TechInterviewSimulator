@@ -3,10 +3,10 @@ import {
     getQuestionById as importedGetQuestionById,
     getAllQuestions as importedGetAllQuestions,
     updateQuestionById as importedUpdateQuestionById,
-    deleteQuestionById as importedDeleteQuestionById
+    deleteQuestionById as importedDeleteQuestionById,
+    getFilteredQuestions as getFilteredQuestionsDB
 } from "../model/repository.js";
 
-// create question
 export async function createQuestion(req, res) {
     try {
 
@@ -31,6 +31,35 @@ export async function getAllQuestions(req, res) {
     try {
         const questions = await importedGetAllQuestions();  // Fetch all questions from DB
         return res.status(200).json(questions);  // Send response as JSON
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+// Get filtered questions based on query parameters
+// Example route: /filter?difficulty=0&category=DP,Array&title=TwoSum
+export const getFilteredQuestions = async (req, res) => {
+    try {
+        const { difficulty, category, title } = req.query;  // Extract query parameters
+        
+        let query = {};
+
+        if (difficulty) {
+            query.difficulty = difficulty;  // Filter by difficulty
+        }
+
+        if (category) {
+            query.categories = { $elemMatch: { $in: category.split(',') }};  // Filter by category
+        }
+
+        if (title) {
+            query.title = { $regex: title, $options: 'i' };  // Filter by title
+        }
+        
+        const questions = await getFilteredQuestionsDB(query);
+
+
+        res.status(200).json(questions);  // Send response as JSON
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

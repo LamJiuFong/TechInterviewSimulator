@@ -16,8 +16,6 @@ export async function createQuestion(title, description, difficulty, categories,
 
   const question = await Question.find({title:title});
 
-  console.log(question);
-
   if (question.length != 0) {
     console.log("Question Title exists.");
     return ;
@@ -90,3 +88,11 @@ export async function getAllQuestionCategories() {
 export async function deleteQuestionCategory(id) {
   return QuestionCategory.findByIdAndDelete(id)
 }
+
+export async function getFilteredQuestions(query) {
+  return Question.find(query);
+}
+/** To be added later
+  export async function findByTitle(title) {
+    return questionModel.findOne({ questionTitle: title });
+*/

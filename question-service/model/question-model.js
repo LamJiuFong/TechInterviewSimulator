@@ -21,8 +21,9 @@ const questionSchema = new Schema({
     title:{type: String, required: true, unique:true},
     description:{type: String, required:true},
     hint:{type:String},
-    difficulty:{type: Number, required:true}, // 0 : easy, 1: medium, 2: difficult
-    categories:{type: String, required:true}, // skip for now [{type:Schema.Types.ObjectId, ref:"QuestionCategory"}],
+    difficulty:{type: String, required:true}, // Easy, Medium, Difficult
+    categories:[{type: String, required:true}],
+    link:{type: String, required:true}, 
     examples: [questionExampleSchema]
 });
 
