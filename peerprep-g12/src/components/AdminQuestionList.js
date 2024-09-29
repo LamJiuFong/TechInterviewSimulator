@@ -1,5 +1,5 @@
 import './component-styles/AdminQuestionList.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useQuestions from '../hooks/useQuestions';
 import Accordion from '@mui/material/Accordion';
 import AccordionActions from '@mui/material/AccordionActions';
@@ -9,10 +9,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
 import QuestionForm from './QuestionForm';
 import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function AdminQuestionList() {
   const {
-      questions,
+    questions,
     loading,
     error,
     handleAddQuestion,
@@ -23,6 +25,17 @@ export default function AdminQuestionList() {
   const [open, setOpen] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    if (error) {
+      setShowError(true);
+    }
+  }, [error]);
+
+  const handleCloseError = () => {
+    setShowError(false);
+  }
 
   const handleOpenForUpdate = (question) => {
     setCurrentQuestion(question);
@@ -65,7 +78,24 @@ export default function AdminQuestionList() {
       </Button>
 
       {/* Error Message */}
-      {error && <Alert severity="error" style={{ marginBottom: '15px' }}>{error}</Alert>}
+      {error && showError && (
+        <Alert
+          severity="error"
+          style={{ marginBottom: '15px' }}
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={handleCloseError} // Close button to dismiss the alert
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+        >
+          {error}
+        </Alert>
+      )}
 
       {/* Question List */}
       {questions.map((question) => (

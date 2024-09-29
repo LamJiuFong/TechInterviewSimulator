@@ -13,6 +13,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Chip from '@mui/material/Chip';
 import Select from '@mui/material/Select';
 import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useQuestions from '../hooks/useQuestions';
@@ -26,6 +27,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
   const [questionHints, setQuestionHints] = useState(['']);
   const [questionExamples, setQuestionExamples] = useState([{ input: '', output: '' }]);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [showError, setShowError] = useState(false);
   const { error, categories } = useQuestions();
   const complexities = ['Easy', 'Medium', 'Hard'];
 
@@ -33,6 +35,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
   // useEffect to update form state when questionData changes
   useEffect(() => {
     setErrorMsg(null);
+    setShowError(false);
     if (isUpdate && questionData) {
       setQuestionTitle(questionData.title || '');
       setQuestionDescription(questionData.description || '');
@@ -113,6 +116,10 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
     }
   };
 
+  const handleCloseError = () => {
+    setShowError(false);  // Hide the error alert when closed
+  };
+
   if (error) {
     return <Alert severity="error">{errorMsg}</Alert>;
   }
@@ -125,8 +132,22 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
           <DialogContentText>
             Please {isUpdate ? 'update' : 'add'} the question details below
           </DialogContentText>
-          {errorMsg && (
-            <Alert severity="error" style={{ marginBottom: '15px' }}>
+          {/* Error Alert */}
+          {showError && errorMsg && (
+            <Alert
+              severity="error"
+              style={{ marginBottom: '15px' }}
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={handleCloseError}  // Dismiss the error
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
               {errorMsg}
             </Alert>
           )}
@@ -191,6 +212,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
               ))}
             </TextField>
             <TextField
+                required
                 id="questionLink"
                 label="Question Link"
                 value={questionLink}
@@ -205,6 +227,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
                   <div key={index} style={{display: 'flex', alignItems: 'flex-start', marginBottom: '24px'}}>
                     <div style={{flexGrow: 1}}>
                       <TextField
+                          required
                           label={`Example ${index + 1} - Input`}
                           value={example.input}
                           onChange={(e) => handleExampleChange(index, 'input', e.target.value)}
@@ -213,6 +236,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
                           placeholder="Input"
                       />
                       <TextField
+                          required
                           label={`Example ${index + 1} - Output`}
                           value={example.output}
                           onChange={(e) => handleExampleChange(index, 'output', e.target.value)}
