@@ -12,7 +12,7 @@ export async function connectToDB() {
 }
 
 // maybe throw error
-export async function createQuestion(title, description, difficulty, categories, examples, hint=null) {
+export async function createQuestion(title, description, difficulty, categories, examples, link, hints=null) {
 
   const question = await Question.find({title:title});
 
@@ -21,7 +21,7 @@ export async function createQuestion(title, description, difficulty, categories,
     return ;
   }
 
-  const newQuestion = new Question({title, description, hint, difficulty, categories, examples})
+  const newQuestion = new Question({title, description, hints, difficulty, categories, link, examples})
   
   return newQuestion.save()
 }
@@ -34,26 +34,41 @@ export async function getQuestionById(id) {
   return Question.findById(id);
 }
 
-// update, added parameter: difficulty, todo: check if updated title is still unique
-export async function updateQuestionById(id, title=null, description=null, difficulty=null, categories=null, examples=null, hint=null) {
+// update, added parameter: difficulty
+export async function updateQuestionById(id, title=null, description=null, difficulty=null, categories=null, examples=null, hints=null, link=null) {
 
-  const question = await Question.findById(id);
-  if (!question) {
-    console.log("Question does not exist");
-    return;
-  }
-
-  // TODO: what if users edit the title to clash with existing questions?
-
-  const fields = { title, description, difficulty, categories, examples, hint };
-  
-  Object.keys(fields).forEach(key => {
-    if (fields[key]) {
-      question[key] = fields[key];
+  try {
+    const question = await Question.findById(id);
+    if (!question) {
+      console.log("Question does not exist");
+      throw new Error("Question does not exists");
     }
-  });
 
-  return question.save()
+    const fields = { title, description, difficulty, categories, examples, hints, link };
+
+    // if title exists to be edited, check if it is unique
+    if (title) {
+      const titleCheck = await Question.findOne({ title: title, _id: { $ne: id } });
+
+      if (titleCheck) {
+        console.log("The title exists.")
+        throw new Error("The title exists for another question");
+        
+      }
+    }
+
+    Object.keys(fields).forEach(key => {
+      if (fields[key]) {
+        question[key] = fields[key];
+      }
+    });
+
+    return question.save();
+    
+  } catch (error) {
+    console.error("Error updating the question at repository.js.");
+    throw error;
+  }
 }
 
 // delete

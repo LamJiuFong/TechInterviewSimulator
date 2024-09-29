@@ -2,6 +2,7 @@ import {
     createQuestion as importedCreateQuestion, 
     getQuestionById as importedGetQuestionById,
     getAllQuestions as importedGetAllQuestions,
+    getAllQuestionCategories as importedGetAllQuestionCategories,
     updateQuestionById as importedUpdateQuestionById,
     deleteQuestionById as importedDeleteQuestionById,
     getFilteredQuestions as getFilteredQuestionsDB
@@ -9,10 +10,9 @@ import {
 
 export async function createQuestion(req, res) {
     try {
-
         const data = req.body
 
-        const question = await importedCreateQuestion(data.title, data.description, data.difficulty, data.categories, data.examples, data.hint);
+        const question = await importedCreateQuestion(data.title, data.description, data.difficulty, data.categories, data.examples,data.link, data.hints);
 
         if (question) {
             res.status(200).json(question);
@@ -34,7 +34,18 @@ export async function getAllQuestions(req, res) {
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
-};
+}
+
+// Get all categories
+export async function getAllCategories(req, res) {
+    try {
+        const categories = await importedGetAllQuestionCategories();  // Fetch all questions from DB
+        return res.status(200).json(categories);  // Send response as JSON
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
 
 // Get filtered questions based on query parameters
 // Example route: /filter?difficulty=0&category=DP,Array&title=TwoSum
@@ -68,7 +79,6 @@ export const getFilteredQuestions = async (req, res) => {
 // Get question by id
 export async function getQuestionById(req, res) {
     try {
-
         const question = await importedGetQuestionById(req.params.id);
 
         if (question) {
@@ -89,7 +99,7 @@ export async function updateQuestionById(req, res) {
         const id = req.params.id;
         const data = req.body;
         
-        const updatedQuestion = await importedUpdateQuestionById(id, data.title, data.description, data.difficulty, data.categories, data.examples, data.hint);
+        const updatedQuestion = await importedUpdateQuestionById(id, data.title, data.description, data.difficulty, data.categories, data.examples, data.hints, data.link);
         
         if (updatedQuestion) {
             return res.status(200).json(updatedQuestion);

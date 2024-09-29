@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from "../utils/token"; 
+import { getToken } from "../utils/token";
 
 // Base configuration for the API
 const API = axios.create({
@@ -15,8 +15,8 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-//Create new question TODO: change to createQuestion
-export const addQuestion = async (questionData) => {
+//Create new question
+export const createQuestion = async (questionData) => {
   try {
     const response = await API.post('/api/questions', questionData);
     return response.data;
@@ -66,6 +66,17 @@ export const deleteQuestion = async (questionId) => {
         return response.data;
     } catch (error) {
         console.error('Error deleting question:', error.response?.data?.message || error.message);
+        throw error;
+    }
+}
+
+export const getQuestionCategories = async () => {
+    try {
+        const response = await API.get('/api/questions/categories/all');
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching categories:', error.response?.data?.message || error.message);
         throw error;
     }
 }
