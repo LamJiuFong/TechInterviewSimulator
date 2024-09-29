@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { connect } from "mongoose";
-import {Question, QuestionCategory} from "./question-model.js"
+import { Question, QuestionCategory } from "./question-model.js"
 
 export async function connectToDB() {
     let mongoDBUri =
@@ -9,8 +9,65 @@ export async function connectToDB() {
         : process.env.DB_LOCAL_URI;
   
     await connect(mongoDBUri);
+}
+
+// maybe throw error
+export async function createQuestion(title, description, difficulty, categories, examples, hint=null) {
+
+  const question = await Question.find({title:title});
+
+  if (question.length != 0) {
+    console.log("Question Title exists.");
+    return ;
   }
 
+  const newQuestion = new Question({title, description, hint, difficulty, categories, examples})
+  
+  return newQuestion.save()
+}
+
+export async function getAllQuestions() {
+  return Question.find();
+}
+
+export async function getQuestionById(id) {
+  return Question.findById(id);
+}
+
+// update, added parameter: difficulty, todo: check if updated title is still unique
+export async function updateQuestionById(id, title=null, description=null, difficulty=null, categories=null, examples=null, hint=null) {
+
+  const question = await Question.findById(id);
+  if (!question) {
+    console.log("Question does not exist");
+    return;
+  }
+
+  // TODO: what if users edit the title to clash with existing questions?
+
+  const fields = { title, description, difficulty, categories, examples, hint };
+  
+  Object.keys(fields).forEach(key => {
+    if (fields[key]) {
+      question[key] = fields[key];
+    }
+  });
+
+  return question.save()
+}
+
+// delete
+export async function deleteQuestionById(id) {
+  return Question.findByIdAndDelete(id); // will throw error if question id is not found?
+}
+
+
+/** To be added later
+  export async function findByTitle(title) {
+    return questionModel.findOne({ questionTitle: title });
+*/
+
+// --------------------------------  Below is for question categories ---------------------------------------
 export async function createQuestionCategory(name, sortCode) {
   const category = await QuestionCategory.find({name:name})
 
@@ -24,58 +81,18 @@ export async function createQuestionCategory(name, sortCode) {
   return newCategory.save()
 }
 
-export async function deleteQuestionCategory(id) {
-  return QuestionCategory.findByIdAndDelete(id)
-}
-
 export async function getAllQuestionCategories() {
   return QuestionCategory.find();
 }
 
-export async function createQuestion(title, description, difficulty, categories, examples, hint=null) {
-
-  const question = await Question.find({title:title});
-
-  console.log(question);
-
-  if (question.length != 0) {
-    console.log("Question Title exists.");
-    return ;
-  }
-
-  const newQuestion = new Question({title, description, hint, difficulty, categories, examples})
-  
-  return newQuestion.save()
+export async function deleteQuestionCategory(id) {
+  return QuestionCategory.findByIdAndDelete(id)
 }
 
-export async function deleteQuestionByID(id) {
-  return Question.findByIdAndDelete(id);
+export async function getFilteredQuestions(query) {
+  return Question.find(query);
 }
-
-export async function editQuestion(id, title=null, description=null, categories=null, examples=null, hint=null) {
-
-  const question = await Question.findById(id);
-
-  if (!question) {
-    console.log("Question does not exist");
-    return;
-  }
-
-  const fields = { title, description, categories, examples, hint };
-  
-  Object.keys(fields).forEach(key => {
-    if (fields[key]) {
-      question[key] = fields[key];
-    }
-  });
-
-  return question.save()
-}
-
-export async function findQuestionById(id) {
-  return Question.findById(id);
-}
-
-export async function getAllQuestion() {
-  return Question.find();
-}
+/** To be added later
+  export async function findByTitle(title) {
+    return questionModel.findOne({ questionTitle: title });
+*/

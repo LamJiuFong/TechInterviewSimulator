@@ -1,13 +1,23 @@
 import express from 'express';
-import { getAllQuestions, findQuestionById, postQuestion } from '../controller/question-controller.js'; // Use `import` and .js extension for ES modules
+import { createQuestion, getAllQuestions, getQuestionById, updateQuestionById, deleteQuestionById, getFilteredQuestions } from '../controller/question-controller.js'; // Use `import` and .js extension for ES modules
 
 const router = express.Router();
 
-// Route to get all questions
+// Define the routes
+router.post("/", createQuestion);
+
 router.get('/', getAllQuestions);
 
-router.get("/:questionId", findQuestionById);
+router.get('/filter', getFilteredQuestions);
 
-router.post("/", postQuestion);
+router.get("/:id", getQuestionById);
+
+router.put('/:id', updateQuestionById);
+
+router.delete('/:id', deleteQuestionById);
+
+/** Not supported yet
+router.get('/search/title', getQuestionByTitle);
+*/
 
 export default router;
