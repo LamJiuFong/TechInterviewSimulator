@@ -85,9 +85,59 @@ export default function AdminQuestionList() {
               {question.title}
             </AccordionSummary>
             <AccordionDetails>
-              <p>{question.description}</p>
-              <p>{question.categories}</p>
-              <p>{difficultyMap[question.difficulty]}</p>
+              <p><strong>Description:</strong> {question.description}</p>
+
+              {/* Display Categories */}
+              <div>
+                <p><strong>Categories:</strong></p>
+                <ul>
+                  {question.categories.map((category, index) => (
+                      <li key={index}>{category}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Display Difficulty */}
+              <p><strong>Difficulty:</strong> {difficultyMap[question.difficulty]}</p>
+
+              {/* Display Links */}
+              {question.links && question.links.length > 0 && (
+                  <div>
+                    <p><strong>Links:</strong></p>
+                    <ul>
+                      {question.links.map((link, index) => (
+                          <li key={index}><a href={link} target="_blank" rel="noopener noreferrer">{link}</a></li>
+                      ))}
+                    </ul>
+                  </div>
+              )}
+
+              {/* Display Hints */}
+              {question.hints && question.hints.length > 0 && (
+                  <div>
+                    <p><strong>Hints:</strong></p>
+                    <ul>
+                      {question.hints.map((hint, index) => (
+                          <li key={index}>{hint}</li>
+                      ))}
+                    </ul>
+                  </div>
+              )}
+
+              {/* Display Examples */}
+              {question.examples && question.examples.length > 0 && (
+                  <div>
+                    <p><strong>Examples:</strong></p>
+                    {question.examples.map((example, index) => (
+                        <div key={index}>
+                          <p><strong>Example {index + 1}:</strong></p>
+                          <p><strong>Input:</strong> {example.input}</p>
+                          <p><strong>Output:</strong> {example.output}</p>
+                        </div>
+                    ))}
+                  </div>
+              )}
+
             </AccordionDetails>
             <AccordionActions>
               <Button onClick={() => handleOpenForUpdate(question)}>Update</Button>

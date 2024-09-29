@@ -101,7 +101,6 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // TODO: match category to the desired format, add hint, add examples
     const newQuestion = {
       title: questionTitle,
       description: questionDescription,
@@ -252,10 +251,10 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
               </Button>
             </div>
 
-            <div style={{marginTop: '15px'}}>
+            <div style={{marginTop: '10px'}}>
               <InputLabel>Hints</InputLabel>
               {questionHints.map((hint, index) => (
-                  <div key={index} style={{display: 'flex', alignItems: 'center', marginBottom: '10px'}}>
+                  <div key={index} style={{display: 'flex', alignItems: 'center'}}>
                     <TextField
                         value={hint}
                         onChange={(e) => handleHintChange(index, e.target.value)}
@@ -272,7 +271,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
                     </IconButton>
                   </div>
               ))}
-              <Button variant="outlined" onClick={handleAddHint} startIcon={<AddIcon/>}>
+              <Button variant="outlined" onClick={handleAddHint} startIcon={<AddIcon/>} style={{marginTop: '15px'}}>
                 Add Hint
               </Button>
             </div>
