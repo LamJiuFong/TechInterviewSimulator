@@ -11,7 +11,6 @@ import {
 export async function createQuestion(req, res) {
     try {
         const data = req.body
-        console.log(data);
 
         const question = await importedCreateQuestion(data.title, data.description, data.difficulty, data.categories, data.examples,data.link, data.hints);
 
