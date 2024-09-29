@@ -100,7 +100,7 @@ export async function updateQuestionById(req, res) {
         const id = req.params.id;
         const data = req.body;
         
-        const updatedQuestion = await importedUpdateQuestionById(id, data.title, data.description, data.difficulty, data.categories, data.examples, data.hint);
+        const updatedQuestion = await importedUpdateQuestionById(id, data.title, data.description, data.difficulty, data.categories, data.examples, data.hints, data.link);
         
         if (updatedQuestion) {
             return res.status(200).json(updatedQuestion);

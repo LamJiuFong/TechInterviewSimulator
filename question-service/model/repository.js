@@ -35,7 +35,7 @@ export async function getQuestionById(id) {
 }
 
 // update, added parameter: difficulty, todo: check if updated title is still unique
-export async function updateQuestionById(id, title=null, description=null, difficulty=null, categories=null, examples=null, hint=null) {
+export async function updateQuestionById(id, title=null, description=null, difficulty=null, categories=null, examples=null, hints=null, link=null) {
 
   try {
     const question = await Question.findById(id);
@@ -46,19 +46,19 @@ export async function updateQuestionById(id, title=null, description=null, diffi
 
     // TODO: what if users edit the title to clash with existing questions?
 
-    const fields = { title, description, difficulty, categories, examples, hint };
+    const fields = { title, description, difficulty, categories, examples, hints, link };
 
     // if title exists to be edited, check if it is unique
     if (title) {
-      const titleCheck = await Question.find({title: title});
+      const titleCheck = await Question.findOne({ title: title, _id: { $ne: id } });
 
-      if (titleCheck.length != 0) {
+      if (titleCheck) {
         console.log("The title exists.")
         throw new Error("The title exists for another question");
         
       }
     }
-    
+
     Object.keys(fields).forEach(key => {
       if (fields[key]) {
         question[key] = fields[key];
