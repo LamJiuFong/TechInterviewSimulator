@@ -12,6 +12,9 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Chip from '@mui/material/Chip';
 import Select from '@mui/material/Select';
+import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import useQuestions from '../hooks/useQuestions';
 
 export default function QuestionForm({ open, onClose, isUpdate, questionData = null, update, add }) {
@@ -21,7 +24,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
   const [questionComplexity, setQuestionComplexity] = useState('');
   const [questionLink, setQuestionLink] = useState('');
   const [questionHints, setQuestionHints] = useState(['']);
-  const [questionExamples, setQuestionExamples] = useState(['']);
+  const [questionExamples, setQuestionExamples] = useState([{ input: '', output: '' }]);
   const [errorMsg, setErrorMsg] = useState(null);
   const { error, categories } = useQuestions();
   const complexities = [
@@ -49,7 +52,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
       setQuestionComplexity(questionData.difficulty); // 0 || '' will return '' (0 is falsy)
       setQuestionLink(questionData.link || '');
       setQuestionHints(questionData.hints || ['']);
-      setQuestionExamples(questionData.examples || ['']);
+      setQuestionExamples(questionData.examples || [{ input: '', output: '' }]);
     } else {
       // Reset form if no question data (for adding new questions)
       setQuestionTitle('');
@@ -58,9 +61,42 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
       setQuestionComplexity('');
       setQuestionLink('');
       setQuestionHints(['']);
-      setQuestionExamples(['']);
+      setQuestionExamples([{ input: '', output: '' }]);
     }
   }, [open, isUpdate, questionData, errorMsg]);
+
+  const handleAddHint = () => {
+    setQuestionHints([...questionHints, '']);
+  };
+
+  const handleRemoveHint = (index) => {
+    const updatedHints = [...questionHints];
+    updatedHints.splice(index, 1);
+    setQuestionHints(updatedHints);
+  };
+
+  const handleHintChange = (index, value) => {
+    const updatedHints = [...questionHints];
+    updatedHints[index] = value;
+    setQuestionHints(updatedHints);
+  };
+
+  const handleAddExample = () => {
+    setQuestionExamples([...questionExamples, { input: '', output: '' }]);
+  };
+
+  const handleRemoveExample = (index) => {
+    const updatedExamples = [...questionExamples];
+    updatedExamples.splice(index, 1);
+    setQuestionExamples(updatedExamples);
+  };
+
+  const handleExampleChange = (index, field, value) => {
+    const updatedExamples = [...questionExamples];
+    updatedExamples[index][field] = value;
+    setQuestionExamples(updatedExamples);
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,8 +107,8 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
       description: questionDescription,
       categories: questionCategory,
       difficulty: questionComplexity,
-      link: questionLink, // New
-      hints: questionHints, // New
+      link: questionLink,
+      hints: questionHints,
       examples: questionExamples,
     };
 
@@ -109,73 +145,145 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
           )}
           <form onSubmit={handleSubmit}>
             <TextField
-              required
-              id='questionTitle'
-              label='Question Title'
-              value={questionTitle}
-              onChange={(e) => setQuestionTitle(e.target.value)}
-              fullWidth
-              margin='normal'
-            />
-            <TextField
-              required
-              id='questionDescription'
-              label='Question Description'
-              value={questionDescription}
-              onChange={(e) => setQuestionDescription(e.target.value)}
-              fullWidth
-              margin='normal'
-            />
-            <FormControl fullWidth>
-              <InputLabel id="questionCategory">Question Category</InputLabel>
-              <Select
                 required
-                id='questionCategory'
-                label='Question Category'
-                multiple
-                value={questionCategory}
-                onChange={(e) => setQuestionCategory(e.target.value)}
+                id='questionTitle'
+                label='Question Title'
+                value={questionTitle}
+                onChange={(e) => setQuestionTitle(e.target.value)}
                 fullWidth
                 margin='normal'
-                renderValue={(selected) => (
-                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                      {selected.map((value) => (
-                          <Chip key={value} label={value} style={{ margin: 2 }} />
-                      ))}
-                    </div>
-                )}
-            >
-              {categories.map((category) => (
-                  <MenuItem key={category._id} value={category.name}>
-                    {category.name}
-                  </MenuItem>
-              ))}
-            </Select>
+            />
+            <TextField
+                required
+                id='questionDescription'
+                label='Question Description'
+                value={questionDescription}
+                onChange={(e) => setQuestionDescription(e.target.value)}
+                fullWidth
+                margin='normal'
+            />
+            <FormControl fullWidth margin='normal' required>
+              <InputLabel id="questionCategory">Question Category</InputLabel>
+              <Select
+                  id='questionCategory'
+                  label='Question Category'
+                  multiple
+                  value={questionCategory}
+                  onChange={(e) => setQuestionCategory(e.target.value)}
+
+                  renderValue={(selected) => (
+                      <div style={{display: 'flex', flexWrap: 'wrap'}}>
+                        {selected.map((value) => (
+                            <Chip key={value} label={value} style={{margin: 2}}/>
+                        ))}
+                      </div>
+                  )}
+              >
+                {categories.map((category) => (
+                    <MenuItem key={category._id} value={category.name}>
+                      {category.name}
+                    </MenuItem>
+                ))}
+              </Select>
             </FormControl>
 
             <TextField
-              required
-              id='questionComplexity'
-              select
-              label='Question Complexity'
-              value={questionComplexity}
-              onChange={(e) => setQuestionComplexity(e.target.value)}
-              fullWidth
-              margin='normal'
+                required
+                id='questionComplexity'
+                select
+                label='Question Complexity'
+                value={questionComplexity}
+                onChange={(e) => setQuestionComplexity(e.target.value)}
+                fullWidth
+                margin='normal'
             >
               {complexities.map((complexity) => (
-                <MenuItem key={complexity.value} value={complexity.value}>
-                  {complexity.label}
-                </MenuItem>
+                  <MenuItem key={complexity.value} value={complexity.value}>
+                    {complexity.label}
+                  </MenuItem>
               ))}
             </TextField>
+            <TextField
+                id="questionLink"
+                label="Question Link"
+                value={questionLink}
+                onChange={(e) => setQuestionLink(e.target.value)}
+                fullWidth
+                margin="normal"
+            />
+
+            <div style={{marginTop: '10px'}}>
+              <InputLabel>Examples</InputLabel>
+              {questionExamples.map((example, index) => (
+                  <div key={index} style={{display: 'flex', alignItems: 'flex-start', marginBottom: '24px'}}>
+                    <div style={{flexGrow: 1}}>
+                      <TextField
+                          label={`Example ${index + 1} - Input`}
+                          value={example.input}
+                          onChange={(e) => handleExampleChange(index, 'input', e.target.value)}
+                          fullWidth
+                          margin="normal"
+                          placeholder="Input"
+                      />
+                      <TextField
+                          label={`Example ${index + 1} - Output`}
+                          value={example.output}
+                          onChange={(e) => handleExampleChange(index, 'output', e.target.value)}
+                          fullWidth
+                          margin="normal"
+                          placeholder="Output"
+                      />
+                    </div>
+                    <IconButton
+                        aria-label="delete"
+                        onClick={() => handleRemoveExample(index)}
+                        style={{
+                          marginLeft: '10px',
+                          marginTop: '10px',
+                          width: 'auto',
+                        }}
+                    >
+                      <DeleteIcon/>
+                    </IconButton>
+                  </div>
+              ))}
+              <Button variant="outlined" onClick={handleAddExample} startIcon={<AddIcon/>}>
+                Add Example
+              </Button>
+            </div>
+
+            <div style={{marginTop: '15px'}}>
+              <InputLabel>Hints</InputLabel>
+              {questionHints.map((hint, index) => (
+                  <div key={index} style={{display: 'flex', alignItems: 'center', marginBottom: '10px'}}>
+                    <TextField
+                        value={hint}
+                        onChange={(e) => handleHintChange(index, e.target.value)}
+                        fullWidth
+                        placeholder={`Hint ${index + 1}`}
+                        margin="normal"
+                    />
+                    <IconButton
+                        aria-label="delete"
+                        onClick={() => handleRemoveHint(index)}
+                        style={{marginLeft: '10px', width: 'auto',}}
+                    >
+                      <DeleteIcon/>
+                    </IconButton>
+                  </div>
+              ))}
+              <Button variant="outlined" onClick={handleAddHint} startIcon={<AddIcon/>}>
+                Add Hint
+              </Button>
+            </div>
+
             <DialogActions>
-                <Button type='submit'>
-                    Submit
-                </Button>
-                <Button onClick={onClose}>
-                    Cancel
-                </Button>
+              <Button type='submit'>
+                Submit
+              </Button>
+              <Button onClick={onClose}>
+                Cancel
+              </Button>
             </DialogActions>
           </form>
         </DialogContent>
