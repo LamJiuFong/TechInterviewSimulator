@@ -1,5 +1,5 @@
 import express from 'express';
-import { createQuestion, getAllQuestions, getQuestionById, updateQuestionById, deleteQuestionById } from '../controller/question-controller.js'; // Use `import` and .js extension for ES modules
+import { createQuestion, getAllQuestions, getQuestionById, updateQuestionById, deleteQuestionById, getFilteredQuestions } from '../controller/question-controller.js'; // Use `import` and .js extension for ES modules
 
 const router = express.Router();
 
@@ -7,6 +7,8 @@ const router = express.Router();
 router.post("/", createQuestion);
 
 router.get('/', getAllQuestions);
+
+router.get('/filter', getFilteredQuestions);
 
 router.get("/:id", getQuestionById);
 
