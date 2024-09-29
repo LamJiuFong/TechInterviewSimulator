@@ -12,7 +12,7 @@ export async function connectToDB() {
 }
 
 // maybe throw error
-export async function createQuestion(title, description, difficulty, categories, examples, hint=null) {
+export async function createQuestion(title, description, difficulty, categories, examples, link, hints=null) {
 
   const question = await Question.find({title:title});
 
@@ -21,7 +21,7 @@ export async function createQuestion(title, description, difficulty, categories,
     return ;
   }
 
-  const newQuestion = new Question({title, description, hint, difficulty, categories, examples})
+  const newQuestion = new Question({title, description, hints, difficulty, categories, link, examples})
   
   return newQuestion.save()
 }

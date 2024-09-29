@@ -20,7 +20,7 @@ export const QuestionCategory = mongoose.model('QuestionCategory', questionCateg
 const questionSchema = new Schema({
     title:{type: String, required: true, unique:true},
     description:{type: String, required:true},
-    hint:{type:String},
+    hints:[{type:String}],
     difficulty:{type: String, required:true}, // Easy, Medium, Difficult
     categories:[{type: String, required:true}],
     link:{type: String, required:true}, 
