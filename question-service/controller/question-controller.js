@@ -10,9 +10,19 @@ import {
 
 export async function createQuestion(req, res) {
     try {
-        const data = req.body
 
-        const question = await importedCreateQuestion(data.title, data.description, data.difficulty, data.categories, data.examples,data.link, data.hints);
+        const { title, description, categories, difficulty, link, hints, examples } = req.body;
+
+        // Trim input strings
+        const trimmedTitle = title.trim();
+        const trimmedDescription = description.trim();
+        const trimmedLink = link.trim();
+        const trimmedHints = hints.map((hint) => hint.trim());
+        const trimmedExamples = examples.map((example) => ({
+            input: example.input.trim(),
+            output: example.output.trim(),
+        }));
+        const question = await importedCreateQuestion(trimmedTitle, trimmedDescription, difficulty, categories, trimmedExamples, trimmedLink, trimmedHints);
 
         if (question) {
             res.status(200).json(question);
@@ -97,10 +107,30 @@ export async function getQuestionById(req, res) {
 export async function updateQuestionById(req, res) {
     try {
         const id = req.params.id;
-        const data = req.body;
-        
-        const updatedQuestion = await importedUpdateQuestionById(id, data.title, data.description, data.difficulty, data.categories, data.examples, data.hints, data.link);
-        
+        // Destructure and trim input strings
+        const { title, description, categories, difficulty, link, hints, examples } = req.body;
+
+        const trimmedTitle = title.trim();
+        const trimmedDescription = description.trim();
+        const trimmedLink = link.trim();
+        const trimmedHints = hints.map((hint) => hint.trim());
+        const trimmedExamples = examples.map((example) => ({
+            input: example.input.trim(),
+            output: example.output.trim(),
+        }));
+
+        // Update the question using the trimmed inputs
+        const updatedQuestion = await importedUpdateQuestionById(
+            id,
+            trimmedTitle,
+            trimmedDescription,
+            difficulty, // Assuming difficulty doesn't need trimming
+            categories, // Assuming categories are already in the desired format
+            trimmedExamples,
+            trimmedHints,
+            trimmedLink
+        );
+
         if (updatedQuestion) {
             return res.status(200).json(updatedQuestion);
         } else {
