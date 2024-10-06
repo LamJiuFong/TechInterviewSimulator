@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+    frontend:
+        build: ./peerprep-g12
+        ports:
+            - "3000:80" # Map host port 3000 to container port 80 (Nginx default)
+
+    question-service:
+        build: ./question-service
+        ports:
+            - "3002:3002"
+
+    user-service:
+        build: ./user-service
+        ports:
+            - "3001:3001"
