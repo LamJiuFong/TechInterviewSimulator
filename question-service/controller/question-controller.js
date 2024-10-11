@@ -62,7 +62,6 @@ export async function getAllCategories(req, res) {
 export const getFilteredQuestions = async (req, res) => {
     try {
         const { difficulty, category, title } = req.query;  // Extract query parameters
-        console.log(category)
         let query = {};
 
         if (difficulty) {
