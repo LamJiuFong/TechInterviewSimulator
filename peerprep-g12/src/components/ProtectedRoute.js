@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, verifyUser } = useAuth();
@@ -20,7 +21,11 @@ const ProtectedRoute = ({ children }) => {
     checkAuth();
   }, [isAuthenticated, verifyUser, navigate]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <CircularProgress />
+    </div>
+  );;
 
   return isAuthenticated ? children : null;
 };
