@@ -80,3 +80,14 @@ export const getQuestionCategories = async () => {
         throw error;
     }
 }
+
+export const getFilteredQuestions = async (queryString) => {
+  try {
+      const response = await API.get(`/api/questions/filter/${queryString}`);
+      console.log(response);
+      return response.data;
+  } catch (error) {
+      console.error('Error fetching categories:', error.response?.data?.message || error.message);
+      throw error;
+  }
+}
