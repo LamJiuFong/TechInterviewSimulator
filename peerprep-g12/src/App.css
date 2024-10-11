@@ -7,7 +7,7 @@ body, html {
   font-family: 'Roboto', sans-serif;
 }
 button, .button {
-  border-radius: 50px;
+  border-radius: 10px;
   border: 2px solid;
   background-color: #9CDDDB;
   display: flex;
@@ -20,6 +20,18 @@ button, .button {
   color: black;
   margin: 10px 10px 10px 0px;
   cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+button:hover, .button:hover {
+  background-color: #82bab8; /* Darker shade on hover */
+  color: white; /* Change text color on hover */
+  transform: scale(1.02); /* Slightly increase the size */
+}
+
+button:active, .button:active {
+  background-color: #6ca19f; /* Even darker shade on click */
+  transform: scale(1); /* Reset size on click */
 }
 
 a {

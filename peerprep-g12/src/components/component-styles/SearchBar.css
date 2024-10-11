@@ -1,0 +1,26 @@
+.search-bar {
+    border: 3px solid #9CDDDB;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Aligns items to the left */
+    max-width: 100%;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.search-input {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px; /* Space between the inputs */
+}
+
+.search-input > * {
+    flex: 1; /* Make each input take up equal space */
+}
+
+.search-button {
+    align-self: flex-end;
+}

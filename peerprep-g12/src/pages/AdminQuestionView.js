@@ -26,9 +26,8 @@ export default function AdminQuestionView() {
     );
   }
   return (
-    <div>
-      <h1 className='all-questions-title'>All Questions</h1>
-      
+    <div style={{display: 'flex', flexDirection: 'column', margin: '0 50px 50px 50px', gap: '20px'}}>
+      <h1 className='all-questions-title'>Question Bank</h1>
       <SearchBar 
         categories={categories} 
         handleFilterQuestion={handleFilterQuestion} />

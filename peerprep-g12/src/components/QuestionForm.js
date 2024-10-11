@@ -288,7 +288,7 @@ export default function QuestionForm({ open, onClose, isUpdate, questionData = n
               </Button>
             </div>
 
-            <DialogActions>
+            <DialogActions sx={{ justifyContent: 'center' }}>
               <Button type='submit'>
                 Submit
               </Button>

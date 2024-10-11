@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './component-styles/SearchBar.css';
 import { TextField, Select, MenuItem, InputLabel, FormControl, Chip } from '@mui/material';
 
 
@@ -37,63 +38,67 @@ const SearchBar = ({ categories, handleFilterQuestion }) => {
     <div
       component="form"
       className='search-bar'
-      sx={{ display: 'flex', gap: 2, flexDirection: 'column', alignItems: 'center' }}
     >
-      {/* Title Input */}
-      <TextField
-        label="Title"
-        variant="outlined"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="e.g., Two Sum"
-        fullWidth
-      />
+        <label style={{fontWeight: 'bold', padding: '5px 5px 5px 5px', fontSize: "20px"}}>
+            Filter question
+        </label>
+        <div className='search-input'>
+            
+            {/* Title Input */}
+            <TextField
+                label="Title"
+                variant="outlined"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g., Two Sum"
+            />
 
-      {/* Difficulty Dropdown */}
-      <FormControl fullWidth className='search-select'>
-        <InputLabel id="difficulty-label">Difficulty</InputLabel>
-        <Select
-          labelId="difficulty-label"
-          value={difficulty}
-          onChange={(e) => setDifficulty(e.target.value)}
-          label="Difficulty"
-        >
-          {difficulties.map((diff) => (
-            <MenuItem key={diff} value={diff}>
-              {diff}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      {/* Category Dropdown */}
-      <FormControl fullWidth margin='normal' className='search-select'>
-        <InputLabel id="questionCategory">Question Category</InputLabel>
-        <Select
-            id='questionCategory'
-            label='Question Category'
-            multiple
-            value={selectedCategories}
-            onChange={(e) => setSelectedCategories(e.target.value)}
-
-            renderValue={(selected) => (
-                <div style={{display: 'flex', flexWrap: 'wrap'}}>
-                {selected.map((value) => (
-                    <Chip key={value} label={value} style={{margin: 2}}/>
+            {/* Difficulty Dropdown */}
+            <FormControl className='search-select'>
+                <InputLabel id="difficulty-label">Difficulty</InputLabel>
+                <Select
+                labelId="difficulty-label"
+                value={difficulty}
+                onChange={(e) => setDifficulty(e.target.value)}
+                label="Difficulty"
+                >
+                {difficulties.map((diff) => (
+                    <MenuItem key={diff} value={diff}>
+                    {diff}
+                    </MenuItem>
                 ))}
-                </div>
-            )}
-        >
-        {categories.map((category) => (
-            <MenuItem key={category._id} value={category.name}>
-                {category.name}
-            </MenuItem>
-        ))}
-        </Select>
-    </FormControl>
+                </Select>
+            </FormControl>
+
+            {/* Category Dropdown */}
+            <FormControl className='search-select'>
+                <InputLabel id="questionCategory">Question Category</InputLabel>
+                <Select
+                    id='questionCategory'
+                    label='Question Category'
+                    multiple
+                    value={selectedCategories}
+                    onChange={(e) => setSelectedCategories(e.target.value)}
+
+                    renderValue={(selected) => (
+                        <div style={{display: 'flex', flexWrap: 'wrap'}}>
+                        {selected.map((value) => (
+                            <Chip key={value} label={value} style={{margin: 2}}/>
+                        ))}
+                        </div>
+                    )}
+                >
+                {categories.map((category) => (
+                    <MenuItem key={category._id} value={category.name}>
+                        {category.name}
+                    </MenuItem>
+                ))}
+                </Select>
+            </FormControl>
+        </div>
 
       {/* Search Button */}
-      <button type="submit" onClick={handleSearch} variant="contained" color="primary" fullWidth>
+      <button type="submit" className='search-button' onClick={handleSearch} variant="contained" color="primary" fullWidth>
         Search
       </button>
     </div>

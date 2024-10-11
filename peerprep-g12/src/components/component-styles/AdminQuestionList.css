@@ -1,10 +1,7 @@
-.admin-question-list {
-    padding: 0px 50px 50px 50px;
-}
-
 .question-panel {
     font-family: 'Roboto', sans-serif;
     padding-bottom: 10px;
+    padding-top: 10px;
 
     .question {
         border: 3px solid #9CDDDB;
@@ -18,59 +15,4 @@
 
 .blue-link:hover {
     color: darkblue;
-}
-
-
-/* SearchBar.css */
-
-/* Container for the search bar */
-.search-bar {
-    display: flex; /* Use flexbox for alignment */
-    flex-direction: column; /* Stack label and input vertically */
-    margin: 20px 0; /* Space above and below */
-    width: 100%; /* Full width of the parent */
-    max-width: 600px; /* Limit the max width */
-}
-
-/* Input field styles */
-.search-input {
-    padding: 10px; /* Padding inside the input */
-    border: 2px solid #9CDDDB; /* Border to match the question panel */
-    border-radius: 5px; /* Rounded corners */
-    font-family: 'Roboto', sans-serif; /* Font style */
-    font-size: 1rem; /* Font size */
-    outline: none; /* Remove outline on focus */
-    transition: border-color 0.3s; /* Smooth transition for border color */
-}
-
-/* Input field focus effect */
-.search-input:focus {
-    border-color: #007BFF; /* Change border color on focus */
-}
-
-/* Button styles */
-.search-button {
-    padding: 10px 15px; /* Padding for the button */
-    margin-top: 10px; /* Space above the button */
-    border: none; /* Remove default border */
-    border-radius: 5px; /* Rounded corners */
-    background-color: #9CDDDB; /* Match the color scheme */
-    color: white; /* Text color */
-    font-family: 'Roboto', sans-serif; /* Font style */
-    font-size: 1rem; /* Font size */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Smooth transition for background color */
-}
-
-/* Button hover effect */
-.search-button:hover {
-    background-color: #007BFF; /* Darker shade on hover */
-}
-
-/* Label styles */
-.search-label {
-    margin-bottom: 5px; /* Space below the label */
-    font-family: 'Roboto', sans-serif; /* Font style */
-    font-size: 1.1rem; /* Slightly larger font size for label */
-    color: #333; /* Dark text color */
 }
