@@ -83,7 +83,7 @@ export const getQuestionCategories = async () => {
 
 export const getFilteredQuestions = async (queryString) => {
   try {
-      const response = await API.get(`/api/questions/filter/${queryString}`);
+      const response = await API.get(`/api/questions/filter?${queryString}`);
       console.log(response);
       return response.data;
   } catch (error) {

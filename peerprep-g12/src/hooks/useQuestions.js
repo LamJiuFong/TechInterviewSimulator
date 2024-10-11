@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { 
   createQuestion,
   getAllQuestions,
+  getFilteredQuestions,
   getQuestionById,
   updateQuestion,
   deleteQuestion,
@@ -41,8 +42,8 @@ const useQuestions = () => {
 
   // Fetch all questions on component mount
   useEffect(() => {
-    fetchQuestions();
     fetchCategories();
+    fetchQuestions();
   }, []);
 
   useEffect(() => {
@@ -94,6 +95,16 @@ const useQuestions = () => {
     } 
   };
 
+  const handleFilterQuestion = async (queryString) => {
+    try {
+      const filteredQuestion = await getFilteredQuestions(queryString);
+      // Update the question list to filtered question
+      setQuestions(filteredQuestion);
+    } catch (err) {
+      setError(err.response?.data?.message || err.message);
+    } 
+  };
+
   return {
     questions,
     categories,
@@ -104,6 +115,7 @@ const useQuestions = () => {
     handleAddQuestion,
     handleUpdateQuestion,
     handleDeleteQuestion,
+    handleFilterQuestion,
   };
 };
 

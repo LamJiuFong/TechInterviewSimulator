@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Box, Chip } from '@mui/material';
-import useQuestions from '../hooks/useQuestions';
+import { TextField, Select, MenuItem, InputLabel, FormControl, Chip } from '@mui/material';
 
 
-const SearchBar = () => {
+const SearchBar = ({ categories, handleFilterQuestion }) => {
   const [difficulty, setDifficulty] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [title, setTitle] = useState('');
-  const { categories } = useQuestions();
 
   // Predefined difficulties
   const difficulties = ['Easy', 'Medium', 'Hard'];
@@ -29,16 +27,16 @@ const SearchBar = () => {
     if (title) {
       params.append('title', title);
     }
+    handleFilterQuestion(params.toString());
     setDifficulty("");
     setSelectedCategories([]);
     setTitle("");
-    console.log(params.toString())
   };
 
   return (
-    <Box
+    <div
       component="form"
-      onSubmit={handleSearch}
+      className='search-bar'
       sx={{ display: 'flex', gap: 2, flexDirection: 'column', alignItems: 'center' }}
     >
       {/* Title Input */}
@@ -52,7 +50,7 @@ const SearchBar = () => {
       />
 
       {/* Difficulty Dropdown */}
-      <FormControl fullWidth>
+      <FormControl fullWidth className='search-select'>
         <InputLabel id="difficulty-label">Difficulty</InputLabel>
         <Select
           labelId="difficulty-label"
@@ -69,7 +67,7 @@ const SearchBar = () => {
       </FormControl>
 
       {/* Category Dropdown */}
-      <FormControl fullWidth margin='normal'>
+      <FormControl fullWidth margin='normal' className='search-select'>
         <InputLabel id="questionCategory">Question Category</InputLabel>
         <Select
             id='questionCategory'
@@ -95,10 +93,10 @@ const SearchBar = () => {
     </FormControl>
 
       {/* Search Button */}
-      <Button type="submit" variant="contained" color="primary" fullWidth>
+      <button type="submit" onClick={handleSearch} variant="contained" color="primary" fullWidth>
         Search
-      </Button>
-    </Box>
+      </button>
+    </div>
   );
 };
 

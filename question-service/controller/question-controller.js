@@ -62,15 +62,15 @@ export async function getAllCategories(req, res) {
 export const getFilteredQuestions = async (req, res) => {
     try {
         const { difficulty, category, title } = req.query;  // Extract query parameters
-        
+        console.log(category)
         let query = {};
 
         if (difficulty) {
             query.difficulty = difficulty;  // Filter by difficulty
         }
 
-        if (category) {
-            query.categories = { $elemMatch: { $in: category.split(',') }};  // Filter by category
+        if (category && category.length > 0) {
+            query.categories = { $elemMatch: { $in: category }};  // Filter by category
         }
 
         if (title) {

@@ -1,6 +1,5 @@
 import './component-styles/AdminQuestionList.css';
 import React, { useEffect, useState } from 'react';
-import useQuestions from '../hooks/useQuestions';
 import Accordion from '@mui/material/Accordion';
 import AccordionActions from '@mui/material/AccordionActions';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -12,15 +11,13 @@ import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function AdminQuestionList() {
-  const {
-    questions,
-    loading,
-    error,
-    handleAddQuestion,
-    handleUpdateQuestion,
-    handleDeleteQuestion,
-  } = useQuestions();
+export default function AdminQuestionList({ 
+    questions, 
+    error, 
+    handleAddQuestion, 
+    handleUpdateQuestion, 
+    handleDeleteQuestion 
+  }) {
 
   const [open, setOpen] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -55,10 +52,6 @@ export default function AdminQuestionList() {
     setCurrentQuestion(null);
     setOpen(false);
   };
-
-  if (loading) {
-    return <div className='loading'>Loading......</div>;
-  }
 
   return (
     <div className='admin-question-list'>

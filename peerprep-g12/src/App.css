@@ -19,6 +19,7 @@ button, .button {
   font-family: 'Roboto', sans-serif;
   color: black;
   margin: 10px 10px 10px 0px;
+  cursor: pointer;
 }
 
 a {
