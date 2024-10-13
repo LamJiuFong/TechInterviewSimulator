@@ -1,6 +1,8 @@
+import './component-styles/LoginForm.css';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import TextField from '@mui/material/TextField';
 
 const LoginForm = () => {
   const { loginUser } = useAuth();
@@ -20,29 +22,38 @@ const LoginForm = () => {
     }
   };
 
+  const handleSignupRedirect = () => {
+    navigate('/signup'); // Redirect to the signup page
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+    <form onSubmit={handleSubmit} className='login-form'>
+      <h2 className='login-form-header'>Welcome to Peerprep!</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div>
-        <label>Email:</label>
-        <input
-          type="email"
+        <TextField
+          required
+          id='email'
+          label='Email'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+          fullWidth
+          margin='normal'
+          />
       </div>
       <div>
-        <label>Password:</label>
-        <input
-          type="password"
+        <TextField
+          required
+          id='password'
+          label='Password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+          fullWidth
+          margin='normal'
+          />
       </div>
       <button type="submit">Login</button>
+      <button onClick={handleSignupRedirect}>Don't have an account? Sign up</button>
     </form>
   );
 };
