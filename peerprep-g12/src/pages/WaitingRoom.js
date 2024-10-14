@@ -10,7 +10,7 @@ export default function WaitingRoom() {
 
   return (
     <div>
-        <h1>Create a session now!</h1>
+        <h1>Start practicing now</h1>
         <CreateSessionForm categories={categories} handleCreateSession={handleCreateSession}/>
     </div>
   )
