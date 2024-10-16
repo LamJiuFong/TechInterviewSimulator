@@ -28,6 +28,8 @@ export default function CreateSessionForm({categories, handleCreateSession}) {
         setLoading(false);
         setErrorMessage('Failed to find a match. 😞');
       }
+
+      // Need to handle case where match is found, then show sucess message
     }
 
     // Clean up the interval when the component unmounts or the timer stops
