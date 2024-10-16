@@ -24,3 +24,10 @@
 .create-session-button {
     align-self: flex-end;
 }
+
+span.loading-section, span.error-message {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+

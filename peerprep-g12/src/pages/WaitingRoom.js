@@ -4,6 +4,7 @@ import useQuestions from '../hooks/useQuestions'
 
 export default function WaitingRoom() {
   const { categories } = useQuestions();
+  // TODO: write a hook to handle create session
   const handleCreateSession = () => {
     console.log('Session created!');
   }

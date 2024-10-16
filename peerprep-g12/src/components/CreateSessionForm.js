@@ -1,6 +1,7 @@
 import './component-styles/CreateSessionForm.css';
 import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, InputLabel, FormControl, Chip } from '@mui/material';
+import LoadingDots from './LoadingDots';
 
 export default function CreateSessionForm({categories, handleCreateSession}) {
   const difficulties = ['Easy', 'Medium', 'Hard'];
@@ -106,13 +107,13 @@ export default function CreateSessionForm({categories, handleCreateSession}) {
       {/* Loading Animation and Timer */}
       {loading && (
         <div className="loading-section">
-          <p>Loading... Time elapsed: {timer}s</p>
-          {/* You can replace this text with a spinner/animation */}
+          <LoadingDots />
+          <span>Time elapsed: {timer}s</span>
         </div>
       )}
 
       {/* Error/Success Message */}
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {errorMessage && <span className="error-message">{errorMessage}</span>}
     </div>
   );
 }
