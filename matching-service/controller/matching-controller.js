@@ -48,6 +48,16 @@ export async function removeUserFromQueue(category, difficulty, socket, io)
     cancelMatchmakeUsers.set(userId, Date.now());
 }
 
+const difficultyMap = {
+    "easy": 1,
+    "medium": 2,
+    "hard": 3,
+    1: "easy",
+    2: "medium",
+    3: "hard"
+}
+
+
 // TODO: Handle race condition when horizontal scaling matchmaking service 
 async function matchUserInQueue()
 {
@@ -116,11 +126,9 @@ async function matchUserInQueue()
             }
 
             // * if successfully find 2 user, match them 
-            const difficulty = Math.floor((parseInt(firstOpponent[3]) + parseInt(secondOpponent[3])) / 2);
+            const difficulty = difficultyMap[Math.floor((difficultyMap[firstOpponent[3]] + difficultyMap[secondOpponent[3]]) / 2)];
 
-            io.to(firstOpponent[1]).emit("match-found", secondOpponent[0]);
-            io.to(secondOpponent[1]).emit("match-found", firstOpponent[0]);
-
+            emitMatchFound(firstOpponent, secondOpponent, category, difficulty)
             
 
         }
@@ -138,7 +146,7 @@ async function matchUserInQueue()
             // * Prompt user timeout 
             if (time > TIMEOUT)
             {
-                io.to(remainingUser[1]).emit("timeout");
+                io.to(remainingUser[1]).emit("timeout", remainingUser[0]);
             }
             else if (!cancelMatchmakeUsers.has(remainingUser[0]) || !cancelMatchmakeUsers.get(remainingUser[0]) > remainingUser[2]) 
             {
@@ -199,8 +207,7 @@ async function matchUserInQueue()
                     break;
                 }
 
-                io.to(firstOpponent[1]).emit("match-found", secondOpponent[0]);
-                io.to(secondOpponent[1]).emit("match-found", firstOpponent[0]);
+                emitMatchFound(firstOpponent, secondOpponent, category, difficulty);
             }
 
             if (queueSize == 1)
@@ -215,9 +222,8 @@ async function matchUserInQueue()
                 if (noDifficultyQueueSize > 0) 
                 {
                     let opponent = await redis.lpop(category);
-                    opponent = opponent.split(":")
-                    io.to(opponent[1]).emit("match-found", remainingUser[0]);
-                    io.to(remainingUser[1]).emit("match-found", opponent[0]);
+                    opponent = opponent.split(":");
+                    emitMatchFound(opponent, remainingUser, category, difficulty);
                     continue;
                 }
 
@@ -227,9 +233,8 @@ async function matchUserInQueue()
 
                 if (time > LOOSEN_DIFFICULTY_TIME) 
                 {   
-                    remainingUser = remainingUser.join(":")
-                    redis.rpush(category,`${remainingUser}:${difficulty}`);
-                    io.to(remainingUser[1]).emit("loosen-difficulty");
+                    redis.rpush(category,`${remainingUser.join(":")}:${difficulty}`);
+                    io.to(remainingUser[1]).emit("loosen-difficulty", remainingUser[0]);
                 }
                 else 
                 {
@@ -244,3 +249,23 @@ async function matchUserInQueue()
 }
 
 setInterval(matchUserInQueue, CHECK_INTERVAL);
+
+
+// helper function
+function emitMatchFound(player1, player2, category, difficulty) {
+    const matchInfo = {
+      category: category,
+      difficulty: difficulty
+    };
+  
+    io.to(player1[1]).emit("match-found", {
+      userId: player1[0],
+      opponentId: player2[0],
+      ...matchInfo
+    });
+    io.to(player2[1]).emit("match-found", {
+      userId: player2[0],
+      opponentId: player1[0],
+      ...matchInfo
+    });
+  }
