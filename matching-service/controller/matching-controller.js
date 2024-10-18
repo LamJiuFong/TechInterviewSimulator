@@ -1,5 +1,6 @@
 import Redis from 'ioredis';
 import { io } from '../index.js';
+import {fetchCategories} from '../internal-services/question-service.js';
 
 
 const redis = new Redis({
@@ -34,8 +35,8 @@ export async function getMatchInUserQueue(category, difficulty, socket, io)
     let userId = socket.handshake.query.id;
     let userIdSocketId = `${userId}:${socket.id}:${Date.now()}`;
     const queueName = `${category}:${difficulty}`;
-    
     redis.rpush(queueName, userIdSocketId);
+    matchUserInQueue();
     
 }
 
@@ -63,8 +64,7 @@ async function matchUserInQueue()
 {
     console.log("==============================================================")
 
-    // TODO: Query category from question service or store cached version of categories in redis
-    const categories = ["array"];
+    const categories = await fetchCategories();
     const difficulties = ["easy", "medium", "hard"];
 
 
