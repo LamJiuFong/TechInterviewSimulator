@@ -1,11 +1,13 @@
 import Redis from 'ioredis';
+import { io } from '../index.js';
+
 
 const redis = new Redis({
     host: 'localhost',
     port: 6379,
   });
 
-const CHECK_INTERVAL = 5000; // interval to run schedule matching
+const CHECK_INTERVAL = 3000; // interval to run schedule matching
 const LOOSEN_DIFFICULTY_TIME = 10000; // number of checks by 
 const TIMEOUT = 30000;
 
@@ -49,9 +51,10 @@ export async function removeUserFromQueue(category, difficulty, socket, io)
 // TODO: Handle race condition when horizontal scaling matchmaking service 
 async function matchUserInQueue()
 {
+    console.log("==============================================================")
 
     // TODO: Query category from question service or store cached version of categories in redis
-    const categories = [];
+    const categories = ["array"];
     const difficulties = ["easy", "medium", "hard"];
 
 
@@ -59,19 +62,24 @@ async function matchUserInQueue()
     {
 
         // * First handle the all difficulty queue at the start of each category
-        const queueName = category;
-        const queueSize = await redis.llen(queueName);
+        let queueName = category;
+        let queueSize = await redis.llen(queueName);
+
+        console.log(queueName)
+        console.log(queueSize)
         
         // * Match all available pairs in the queue 
         while (queueSize > 1)
         {
-            let firstOpponent = await redis.lpop(queueName).split(":");
+            let firstOpponent = await redis.lpop(queueName) 
+            firstOpponent = firstOpponent.split(":");
             queueSize--;
 
             // * If the current entry has already been cancelled, find the next available one
             while (queueSize > 0 && cancelMatchmakeUsers.has(firstOpponent[0]) && cancelMatchmakeUsers.get(firstOpponent[0]) > firstOpponent[2])
             {
-                firstOpponent = await redis.lpop(queueName).split(":");
+                firstOpponent = await redis.lpop(queueName);
+                firstOpponent = firstOpponent.split(":");
                 queueSize--;
             }
 
@@ -81,26 +89,28 @@ async function matchUserInQueue()
                 // * if not ttl, put the user back in queue
                 if (!cancelMatchmakeUsers.has(firstOpponent[0]) || !cancelMatchmakeUsers.get(firstOpponent[0]) > firstOpponent[2]) 
                 {
-                    redis.rpush(queueName, firstOpponent);
+                    redis.rpush(queueName, firstOpponent.join(":"));
                     queueSize++;
                 }
 
                 break;
             }
-            let secondOpponent = await reids.lpop(queueName).split(":");
+            let secondOpponent = await redis.lpop(queueName);
+            secondOpponent = secondOpponent.split(":");
             queueSize--;
 
             // * Find available secondOpoponent
             while (queueSize > 0 && cancelMatchmakeUsers.has(secondOpponent[0]) && cancelMatchmakeUsers.get(secondOpponent[0]) > secondOpponent[2])
             {
-                secondOpponent = await redis.lpop(queueName).split(":");
+                secondOpponent = await redis.lpop(queueName);
+                secondOpponent = secondOpponent.split(":");
                 queueSize--;
             }
 
             // * If last user in queue also cancelled, place first player back in queue
             if (queueSize == 0 && cancelMatchmakeUsers.has(secondOpponent[0]) && cancelMatchmakeUsers.get(secondOpponent[0]) > secondOpponent[2])
             {
-                redis.rpush(queueName, firstOpponent);
+                redis.rpush(queueName, firstOpponent.join(":"));
                 queueSize++;
                 break;
             }
@@ -109,7 +119,7 @@ async function matchUserInQueue()
             const difficulty = Math.floor((parseInt(firstOpponent[3]) + parseInt(secondOpponent[3])) / 2);
 
             io.to(firstOpponent[1]).emit("match-found", secondOpponent[0]);
-            io.to(secondOpponent[1]).emit("match-found", firstOpponent[1]);
+            io.to(secondOpponent[1]).emit("match-found", firstOpponent[0]);
 
             
 
@@ -118,19 +128,22 @@ async function matchUserInQueue()
         // * Check on last person in queue ttl
         if (queueSize == 1)
         {
-            let remainingUser = await redis.lpop(queueName).split(":");
+            let remainingUser = await redis.lpop(queueName);
+            console.log(remainingUser)
+            remainingUser = remainingUser.split(":");
 
             const time = Date.now() - parseInt(remainingUser[2]);
+            console.log(time);
 
             // * Prompt user timeout 
             if (time > TIMEOUT)
             {
-                io.to(remainingUser[1]).emit("matchmake-timeout");
+                io.to(remainingUser[1]).emit("timeout");
             }
-            elif (!cancelMatchmakeUsers.has(remainingUser[0]) || !cancelMatchmakeUsers.get(remainingUser[0]) > remainingUser[2]) 
+            else if (!cancelMatchmakeUsers.has(remainingUser[0]) || !cancelMatchmakeUsers.get(remainingUser[0]) > remainingUser[2]) 
             {
                 // * Push back to queue if did not timeout nor entry is cancelled
-                redis.rpush(queueName, remainingUser)
+                redis.rpush(queueName, remainingUser.join(":"))
             }
 
         }
@@ -139,57 +152,62 @@ async function matchUserInQueue()
         for (const difficulty of difficulties) 
         {
             queueName = `${category}:${difficulty}`;
-            queueSize = redis.llen(queueName);
-
+            queueSize = await redis.llen(queueName);
+            console.log(queueName)
+            console.log(queueSize)
             // * Same logic for (category) queue
             while (queueSize > 1)
             {
-                let firstOpponent = await redis.lpop(queueName).split(":");
+                let firstOpponent = await redis.lpop(queueName)
+                firstOpponent = firstOpponent.split(":");
                 queueSize--;
 
                 while (queueSize > 0 && cancelMatchmakeUsers.has(firstOpponent[0]) && cancelMatchmakeUsers.get(firstOpponent[0]) > firstOpponent[2])
                 {
-                    firstOpponent = await redis.lpop(queueName).split(":");
+                    firstOpponent = await redis.lpop(queueName);
+                    firstOpponent = firstOpponent.split(":");
                     queueSize--;
                 }
 
-                
+
                 if (queueSize == 0) 
                 {
                     // if not ttl, put the user back in queue
                     if (!cancelMatchmakeUsers.has(firstOpponent[0]) || !cancelMatchmakeUsers.get(firstOpponent[0]) > firstOpponent[2]) 
                     {
-                        redis.rpush(queueName, firstOpponent);
+                        redis.rpush(queueName, firstOpponent.join(":"));
                         queueSize++;
                     }
 
                     break;
                 }
-                let secondOpponent = await reids.lpop(queueName).split(":");
+                let secondOpponent = await redis.lpop(queueName);
+                secondOpponent = secondOpponent.split(":");
                 queueSize--;
 
                 while (queueSize > 0 && cancelMatchmakeUsers.has(secondOpponent[0]) && cancelMatchmakeUsers.get(secondOpponent[0]) > secondOpponent[2])
                 {
-                    secondOpponent = await redis.lpop(queueName).split(":");
+                    secondOpponent = await redis.lpop(queueName);
+                    secondOpponent = secondOpponent.split(":");
                     queueSize--;
                 }
 
                 if (cancelMatchmakeUsers.has(secondOpponent[0]) && cancelMatchmakeUsers.get(secondOpponent[0]) > secondOpponent[2])
                 {
-                    redis.rpush(queueName, firstOpponent);
+                    redis.rpush(queueName, firstOpponent.join(":"));
                     queueSize++;
                     break;
                 }
 
-                const difficulty = Math.floor((parseInt(firstOpponent[3]) + parseInt(secondOpponent[3])) / 2);
-
                 io.to(firstOpponent[1]).emit("match-found", secondOpponent[0]);
-                io.to(secondOpponent[1]).emit("match-found", firstOpponent[1]);
+                io.to(secondOpponent[1]).emit("match-found", firstOpponent[0]);
             }
 
             if (queueSize == 1)
             {
-                let remainingUser = await redis.lpop(queueName).split(":");
+                let remainingUser = await redis.lpop(queueName)
+                console.log(remainingUser);
+                remainingUser = remainingUser.split(":");
 
                 // * check if there's any player from loosen_difficulty queue to match with 
                 const noDifficultyQueueSize = await redis.llen(category);
@@ -197,22 +215,25 @@ async function matchUserInQueue()
                 if (noDifficultyQueueSize > 0) 
                 {
                     let opponent = await redis.lpop(category);
-
+                    opponent = opponent.split(":")
                     io.to(opponent[1]).emit("match-found", remainingUser[0]);
-                    io.to(remainingUser[1]).emit("match-found", opponent[1]);
+                    io.to(remainingUser[1]).emit("match-found", opponent[0]);
                     continue;
                 }
 
                 const time = Date.now() - parseInt(remainingUser[2]);
+                console.log(remainingUser[2])
+                console.log(time);
 
                 if (time > LOOSEN_DIFFICULTY_TIME) 
-                {
+                {   
+                    remainingUser = remainingUser.join(":")
                     redis.rpush(category,`${remainingUser}:${difficulty}`);
                     io.to(remainingUser[1]).emit("loosen-difficulty");
                 }
                 else 
                 {
-                    redis.rpush(queueName, remainingUser);
+                    redis.rpush(queueName, remainingUser.join(":"));
                 }
             }
             

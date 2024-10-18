@@ -33,6 +33,8 @@ httpServer.listen(3006, () => {
 }
 );
 
+export { io };
+
 export default app;
 
 
