@@ -14,6 +14,11 @@ const Home = () => {
             View all questions
         </Link>
       </Button>
+      <Button class="button">
+        <Link to={'/waiting-room'}>
+            Start a new session
+        </Link>
+      </Button>
       <LogoutButton />
     </div>
   );

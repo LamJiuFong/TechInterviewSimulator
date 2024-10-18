@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SignupPage from "./pages/SignupPage";
 import AdminQuestionView from "./pages/AdminQuestionView";
+import WaitingRoom from './pages/WaitingRoom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -27,6 +28,7 @@ const App = () => {
             <Route path="/signup" element={<SignupPage/>}/>
             <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
             <Route path="/admin/questions" element={<ProtectedRoute><AdminQuestionView /></ProtectedRoute>} />
+            <Route path="/waiting-room" element={<ProtectedRoute><WaitingRoom /></ProtectedRoute>} />
           </Routes>
         </Router>
       </div>
