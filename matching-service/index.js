@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import http from "http";
 import {Server} from "socket.io";
-import {getMatchInUserQueue} from "./controller/matching-controller.js";
+import {getMatchInUserQueue, removeUserFromQueue} from "./controller/matching-controller.js";
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -17,8 +17,12 @@ app.get('/', (req, res) => {
 const io = new Server(httpServer);
 
 io.on('connection', (socket) => {
-    socket.on('get-match', (category, difficulty) => {     
+    socket.on('enter-match', (category, difficulty) => {     
         getMatchInUserQueue(category, difficulty, socket, io);
+    });
+
+    socket.on('cancel-match', () => {
+        removeUserFromQueue(socket);
     });
 
     socket.on('disconnect', () => {

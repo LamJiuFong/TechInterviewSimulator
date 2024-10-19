@@ -8,7 +8,7 @@ const redis = new Redis({
     port: 6379,
   });
 
-const CHECK_INTERVAL = 3000; // interval to run schedule matching
+const CHECK_INTERVAL = 1000; // interval to run schedule matching
 const LOOSEN_DIFFICULTY_TIME = 10000; // number of checks by 
 const TIMEOUT = 30000;
 
@@ -35,12 +35,10 @@ export async function getMatchInUserQueue(category, difficulty, socket, io)
     let userId = socket.handshake.query.id;
     let userIdSocketId = `${userId}:${socket.id}:${Date.now()}`;
     const queueName = `${category}:${difficulty}`;
-    redis.rpush(queueName, userIdSocketId);
-    matchUserInQueue();
-    
+    redis.rpush(queueName, userIdSocketId);    
 }
 
-export async function removeUserFromQueue(category, difficulty, socket, io)
+export async function removeUserFromQueue(socket)
 {
     let userId = socket.handshake.query.id;
     
@@ -64,7 +62,7 @@ async function matchUserInQueue()
 {
     console.log("==============================================================")
 
-    const categories = await fetchCategories();
+    const categories = ["Array"];
     const difficulties = ["easy", "medium", "hard"];
 
 
@@ -97,7 +95,7 @@ async function matchUserInQueue()
             if (queueSize == 0) 
             {
                 // * if not ttl, put the user back in queue
-                if (!cancelMatchmakeUsers.has(firstOpponent[0]) || !cancelMatchmakeUsers.get(firstOpponent[0]) > firstOpponent[2]) 
+                if (!cancelMatchmakeUsers.has(firstOpponent[0]) || cancelMatchmakeUsers.get(firstOpponent[0]) < firstOpponent[2]) 
                 {
                     redis.rpush(queueName, firstOpponent.join(":"));
                     queueSize++;
@@ -137,18 +135,18 @@ async function matchUserInQueue()
         if (queueSize == 1)
         {
             let remainingUser = await redis.lpop(queueName);
-            console.log(remainingUser)
             remainingUser = remainingUser.split(":");
 
             const time = Date.now() - parseInt(remainingUser[2]);
-            console.log(time);
-
+            console.log( `cancel time: ${cancelMatchmakeUsers.get(remainingUser[0])}`)
+            console.log(`enter match time: ${remainingUser[2]}`)
+            console.log(`is cancel time smaller than matching time: ${cancelMatchmakeUsers.get(remainingUser[0]) < remainingUser[2]}`)
             // * Prompt user timeout 
             if (time > TIMEOUT)
             {
                 io.to(remainingUser[1]).emit("timeout", remainingUser[0]);
             }
-            else if (!cancelMatchmakeUsers.has(remainingUser[0]) || !cancelMatchmakeUsers.get(remainingUser[0]) > remainingUser[2]) 
+            else if (!cancelMatchmakeUsers.has(remainingUser[0]) || cancelMatchmakeUsers.get(remainingUser[0]) < remainingUser[2]) 
             {
                 // * Push back to queue if did not timeout nor entry is cancelled
                 redis.rpush(queueName, remainingUser.join(":"))
@@ -181,7 +179,7 @@ async function matchUserInQueue()
                 if (queueSize == 0) 
                 {
                     // if not ttl, put the user back in queue
-                    if (!cancelMatchmakeUsers.has(firstOpponent[0]) || !cancelMatchmakeUsers.get(firstOpponent[0]) > firstOpponent[2]) 
+                    if (!cancelMatchmakeUsers.has(firstOpponent[0]) || cancelMatchmakeUsers.get(firstOpponent[0]) < firstOpponent[2]) 
                     {
                         redis.rpush(queueName, firstOpponent.join(":"));
                         queueSize++;
@@ -190,6 +188,7 @@ async function matchUserInQueue()
                     break;
                 }
                 let secondOpponent = await redis.lpop(queueName);
+                console.log(secondOpponent)
                 secondOpponent = secondOpponent.split(":");
                 queueSize--;
 
@@ -213,7 +212,6 @@ async function matchUserInQueue()
             if (queueSize == 1)
             {
                 let remainingUser = await redis.lpop(queueName)
-                console.log(remainingUser);
                 remainingUser = remainingUser.split(":");
 
                 // * check if there's any player from loosen_difficulty queue to match with 
@@ -228,8 +226,6 @@ async function matchUserInQueue()
                 }
 
                 const time = Date.now() - parseInt(remainingUser[2]);
-                console.log(remainingUser[2])
-                console.log(time);
 
                 if (time > LOOSEN_DIFFICULTY_TIME) 
                 {   
