@@ -60,9 +60,8 @@ const difficultyMap = {
 // TODO: Handle race condition when horizontal scaling matchmaking service 
 async function matchUserInQueue()
 {
-    console.log("==============================================================")
 
-    const categories = ["Array"];
+    const categories = await fetchCategories();
     const difficulties = ["easy", "medium", "hard"];
 
 
@@ -73,8 +72,6 @@ async function matchUserInQueue()
         let queueName = category;
         let queueSize = await redis.llen(queueName);
 
-        console.log(queueName)
-        console.log(queueSize)
         
         // * Match all available pairs in the queue 
         while (queueSize > 1)
@@ -138,9 +135,6 @@ async function matchUserInQueue()
             remainingUser = remainingUser.split(":");
 
             const time = Date.now() - parseInt(remainingUser[2]);
-            console.log( `cancel time: ${cancelMatchmakeUsers.get(remainingUser[0])}`)
-            console.log(`enter match time: ${remainingUser[2]}`)
-            console.log(`is cancel time smaller than matching time: ${cancelMatchmakeUsers.get(remainingUser[0]) < remainingUser[2]}`)
             // * Prompt user timeout 
             if (time > TIMEOUT)
             {
@@ -159,8 +153,6 @@ async function matchUserInQueue()
         {
             queueName = `${category}:${difficulty}`;
             queueSize = await redis.llen(queueName);
-            console.log(queueName)
-            console.log(queueSize)
             // * Same logic for (category) queue
             while (queueSize > 1)
             {
@@ -188,7 +180,6 @@ async function matchUserInQueue()
                     break;
                 }
                 let secondOpponent = await redis.lpop(queueName);
-                console.log(secondOpponent)
                 secondOpponent = secondOpponent.split(":");
                 queueSize--;
 
