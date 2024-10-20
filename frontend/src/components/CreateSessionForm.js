@@ -3,14 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, InputLabel, FormControl, Chip } from '@mui/material';
 import LoadingDots from './LoadingDots';
 
-export default function CreateSessionForm({categories, handleCreateSession}) {
+export default function CreateSessionForm({categories, handleCreateSession, isTimeout, isMatchFound}) {
   const difficulties = ['Easy', 'Medium', 'Hard'];
   const [difficulty, setDifficulty] = useState('');
   const [category, setCategory] = useState([]);
   const [timer, setTimer] = useState(0);  // Track elapsed time
   const [loading, setLoading] = useState(false);  // Loading state
   const [errorMessage, setErrorMessage] = useState('');  // Error or success message
-  const [matchTimeout] = useState(10);  // Timeout limit (10 seconds)
 
   // useEffect to handle the timer and match status
   useEffect(() => {
@@ -23,18 +22,23 @@ export default function CreateSessionForm({categories, handleCreateSession}) {
       }, 1000);
 
       // If timer reaches timeout, show failure message
-      if (timer >= matchTimeout) {
+      if (isTimeout) {
         clearInterval(interval);
         setLoading(false);
         setErrorMessage('Failed to find a match. 😞');
       }
 
+      if (isMatchFound) {
+        clearInterval(interval);
+        setLoading(false);
+        setErrorMessage('Match Found!');
+      }
       // Need to handle case where match is found, then show sucess message
     }
 
     // Clean up the interval when the component unmounts or the timer stops
     return () => clearInterval(interval);
-  }, [loading, timer, matchTimeout]);
+  }, [loading, timer, isMatchFound, isTimeout]);
 
   // Handle Create Session
   const handleSubmit = () => {
@@ -42,7 +46,7 @@ export default function CreateSessionForm({categories, handleCreateSession}) {
       setLoading(true);  // Start loading
       setTimer(0);  // Reset the timer
       setErrorMessage('');  // Clear previous messages
-      handleCreateSession();
+      handleCreateSession(category[0], difficulty);
     } else {
       alert('Please select a difficulty and at least one category.');
     }

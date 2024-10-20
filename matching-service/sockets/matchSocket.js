@@ -5,7 +5,9 @@ const matchSocket = (io) => {
         console.log('A user connected:', socket.id);
         
         // User enters match
-        socket.on('enter-match', (category, difficulty) => {
+        socket.on('enter-match', (criteria) => {
+            const {category, difficulty} = criteria;
+            console.log(`User enter match with ${category} and ${difficulty}`);
             getMatchInUserQueue(category, difficulty, socket, io);
         });
 
