@@ -12,6 +12,15 @@ const TIMEOUT = 30000;
 const cancelMatchmakeUsers = new Map();
 
 
+const difficultyMap = {
+    "easy": 1,
+    "medium": 2,
+    "hard": 3,
+    1: "easy",
+    2: "medium",
+    3: "hard"
+}
+
 /*
 Matching Logic :
 
@@ -42,15 +51,6 @@ export async function removeUserFromQueue(socket)
     // keep track of timestamp of current cancel to prevent cancelling future matching 
     // * Only keep track of the latest cancel, if there exists any stray entry in match queue before this timestamp will be removed
     cancelMatchmakeUsers.set(userId, Date.now());
-}
-
-const difficultyMap = {
-    "easy": 1,
-    "medium": 2,
-    "hard": 3,
-    1: "easy",
-    2: "medium",
-    3: "hard"
 }
 
 
