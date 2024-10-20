@@ -10,6 +10,7 @@ import QuestionForm from './QuestionForm';
 import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { useAuth } from '../context/AuthContext';
 
 export default function AdminQuestionList({ 
     questions, 
@@ -18,7 +19,7 @@ export default function AdminQuestionList({
     handleUpdateQuestion, 
     handleDeleteQuestion 
   }) {
-
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
@@ -63,12 +64,14 @@ export default function AdminQuestionList({
       }
 
       {/* Add Question Button */}
+      {user.isAdmin && 
       <Button 
         class='button'
         onClick={handleOpenForAdd} 
       >
         Add New Question
       </Button>
+      }
 
       {/* Error Message */}
       {error && showError && (
@@ -150,12 +153,14 @@ export default function AdminQuestionList({
               )}
 
             </AccordionDetails>
-            <AccordionActions>
-              <Button onClick={() => handleOpenForUpdate(question)}>Update</Button>
-              <Button onClick={() => handleDeleteQuestion(question._id)}>
-                Delete
-              </Button>
-            </AccordionActions>
+            {user.isAdmin &&
+              <AccordionActions>
+                <Button onClick={() => handleOpenForUpdate(question)}>Update</Button>
+                <Button onClick={() => handleDeleteQuestion(question._id)}>
+                  Delete
+                </Button>
+              </AccordionActions>
+            }
           </Accordion>
         </div>
       ))}

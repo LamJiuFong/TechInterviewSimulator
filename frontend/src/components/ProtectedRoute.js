@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext.js";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, verifyUser } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await verifyUser();
         setLoading(false);
       } catch {
         navigate("/login");
@@ -19,7 +18,7 @@ const ProtectedRoute = ({ children }) => {
     };
 
     checkAuth();
-  }, [isAuthenticated, verifyUser, navigate]);
+  }, [user, navigate]);
 
   if (loading) return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -27,7 +26,7 @@ const ProtectedRoute = ({ children }) => {
     </div>
   );;
 
-  return isAuthenticated ? children : null;
+  return user ? children : null;
 };
 
 export default ProtectedRoute;
