@@ -46,7 +46,6 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
     const handleMatchFound = (match) => {
       socket.off('match-found', handleMatchFound);
       setMatchFound(true);
-      console.log(match);
       resolve(match);
     };
 

@@ -32,6 +32,8 @@ export default function CreateSessionForm({categories, handleCreateSession, hand
         clearInterval(interval);
         setLoading(false);
         setErrorMessage('Match Found!');
+      } else {
+        setErrorMessage('');
       }
       // Need to handle case where match is found, then show sucess message
     }
