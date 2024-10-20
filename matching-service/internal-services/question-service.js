@@ -1,7 +1,7 @@
 import axios from 'axios';
 import "dotenv/config";
 
-const QUESTION_SERVICE_URL = process.env.QUESTION_SERVICE_URL || 'http://question-service:3000';
+const QUESTION_SERVICE_URL = process.env.QUESTION_SERVICE_URL || 'http://localhost:3002';
 
 // Base configuration for the API
 const API = axios.create({
