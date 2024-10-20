@@ -1,8 +1,9 @@
 import './component-styles/LoginForm.css';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext.js";
 import TextField from '@mui/material/TextField';
+import { login } from '../api/authApi.js';
 
 const LoginForm = () => {
   const { loginUser } = useAuth();
@@ -15,7 +16,8 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await loginUser(email, password);
+      const user = await login(email, password);
+      loginUser(user);
       navigate("/home");
     } catch (err) {
       setError(err.message);
