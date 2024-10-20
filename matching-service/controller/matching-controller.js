@@ -3,8 +3,8 @@ import {fetchCategories} from '../internal-services/question-service.js';
 
 
 const redis = new Redis({
-    host: 'localhost',
-    port: 6379,
+    host: process.env.REDIS_HOST || "localhost",
+    port: process.env.REDIS_PORT || 6379
   });
 
 const LOOSEN_DIFFICULTY_TIME = 10000; // number of checks by 
@@ -13,12 +13,12 @@ const cancelMatchmakeUsers = new Map();
 
 
 const difficultyMap = {
-    "easy": 1,
-    "medium": 2,
-    "hard": 3,
-    1: "easy",
-    2: "medium",
-    3: "hard"
+    "Easy": 1,
+    "Medium": 2,
+    "Hard": 3,
+    1: "Easy",
+    2: "Medium",
+    3: "Hard"
 }
 
 /*
@@ -59,7 +59,7 @@ export async function matchUserInQueue(io)
 {
 
     const categories = await fetchCategories();
-    const difficulties = ["easy", "medium", "hard"];
+    const difficulties = ["Easy", "Medium", "Hard"];
 
 
     for (const category of categories) 

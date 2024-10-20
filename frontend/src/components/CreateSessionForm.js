@@ -1,16 +1,15 @@
 import './component-styles/CreateSessionForm.css';
 import React, { useState, useEffect } from 'react';
-import { Select, MenuItem, InputLabel, FormControl, Chip } from '@mui/material';
+import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import LoadingDots from './LoadingDots';
 
-export default function CreateSessionForm({categories, handleCreateSession}) {
+export default function CreateSessionForm({categories, handleCreateSession, handleCancelMatch, isTimeout, isMatchFound}) {
   const difficulties = ['Easy', 'Medium', 'Hard'];
   const [difficulty, setDifficulty] = useState('');
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState('');
   const [timer, setTimer] = useState(0);  // Track elapsed time
   const [loading, setLoading] = useState(false);  // Loading state
   const [errorMessage, setErrorMessage] = useState('');  // Error or success message
-  const [matchTimeout] = useState(10);  // Timeout limit (10 seconds)
 
   // useEffect to handle the timer and match status
   useEffect(() => {
@@ -23,18 +22,25 @@ export default function CreateSessionForm({categories, handleCreateSession}) {
       }, 1000);
 
       // If timer reaches timeout, show failure message
-      if (timer >= matchTimeout) {
+      if (isTimeout) {
         clearInterval(interval);
         setLoading(false);
         setErrorMessage('Failed to find a match. 😞');
       }
 
+      if (isMatchFound) {
+        clearInterval(interval);
+        setLoading(false);
+        setErrorMessage('Match Found!');
+      } else {
+        setErrorMessage('');
+      }
       // Need to handle case where match is found, then show sucess message
     }
 
     // Clean up the interval when the component unmounts or the timer stops
     return () => clearInterval(interval);
-  }, [loading, timer, matchTimeout]);
+  }, [loading, timer, isMatchFound, isTimeout]);
 
   // Handle Create Session
   const handleSubmit = () => {
@@ -42,7 +48,19 @@ export default function CreateSessionForm({categories, handleCreateSession}) {
       setLoading(true);  // Start loading
       setTimer(0);  // Reset the timer
       setErrorMessage('');  // Clear previous messages
-      handleCreateSession();
+      handleCreateSession(category, difficulty);
+    } else {
+      alert('Please select a difficulty and at least one category.');
+    }
+  };
+
+  // Handle Cancel 
+  const handleCancel = () => {
+    if (difficulty && category.length > 0) {
+      handleCancelMatch();
+      setLoading(false);  // Start loading
+      setTimer(0);  // Reset the timer
+      setErrorMessage('');  // Clear previous messages
     } else {
       alert('Please select a difficulty and at least one category.');
     }
@@ -62,6 +80,7 @@ export default function CreateSessionForm({categories, handleCreateSession}) {
             value={difficulty} 
             onChange={(e) => setDifficulty(e.target.value)} 
             label="Difficulty"
+            disabled = {loading}
           >
             {difficulties.map((difficulty, index) => (
               <MenuItem key={index} value={difficulty}>{difficulty}</MenuItem>
@@ -74,16 +93,9 @@ export default function CreateSessionForm({categories, handleCreateSession}) {
           <Select
             id='questionCategory'
             label='Question Category'
-            multiple
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            renderValue={(selected) => (
-              <div style={{display: 'flex', flexWrap: 'wrap'}}>
-                {selected.map((value) => (
-                  <Chip key={value} label={value} style={{margin: 2}}/>
-                ))}
-              </div>
-            )}
+            disabled = {loading}
           >
             {categories.map((category) => (
               <MenuItem key={category._id} value={category.name}>
@@ -95,7 +107,8 @@ export default function CreateSessionForm({categories, handleCreateSession}) {
       </div>
 
       {/* Submit Button */}
-      <button 
+      { !loading && (
+        <button 
         type='submit' 
         className='create-session-button' 
         onClick={handleSubmit} 
@@ -105,6 +118,20 @@ export default function CreateSessionForm({categories, handleCreateSession}) {
       >
         Create Session
       </button>
+      )}
+
+      { loading && (
+        <button 
+        type='submit' 
+        className='cancel-matching-button' 
+        onClick={handleCancel} 
+        variant="contained" 
+        color="primary" 
+        fullWidth
+      >
+        Cancel
+      </button>
+      )}
 
       {/* Loading Animation and Timer */}
       {loading && (
