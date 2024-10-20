@@ -14,10 +14,12 @@ const matchSocket = (io) => {
         // User cancels match
         socket.on('cancel-match', () => {
             removeUserFromQueue(socket);
+            console.log("User cancel matching");
         });
 
         // User disconnects
         socket.on('disconnect', () => {
+            removeUserFromQueue(socket);
             console.log('User disconnected:', socket.id);
         });
     });
