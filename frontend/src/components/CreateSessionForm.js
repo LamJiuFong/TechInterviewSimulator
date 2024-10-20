@@ -1,12 +1,12 @@
 import './component-styles/CreateSessionForm.css';
 import React, { useState, useEffect } from 'react';
-import { Select, MenuItem, InputLabel, FormControl, Chip } from '@mui/material';
+import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import LoadingDots from './LoadingDots';
 
 export default function CreateSessionForm({categories, handleCreateSession, handleCancelMatch, isTimeout, isMatchFound}) {
   const difficulties = ['Easy', 'Medium', 'Hard'];
   const [difficulty, setDifficulty] = useState('');
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState('');
   const [timer, setTimer] = useState(0);  // Track elapsed time
   const [loading, setLoading] = useState(false);  // Loading state
   const [errorMessage, setErrorMessage] = useState('');  // Error or success message
@@ -46,7 +46,7 @@ export default function CreateSessionForm({categories, handleCreateSession, hand
       setLoading(true);  // Start loading
       setTimer(0);  // Reset the timer
       setErrorMessage('');  // Clear previous messages
-      handleCreateSession(category[0], difficulty);
+      handleCreateSession(category, difficulty);
     } else {
       alert('Please select a difficulty and at least one category.');
     }
@@ -55,7 +55,7 @@ export default function CreateSessionForm({categories, handleCreateSession, hand
   // Handle Cancel 
   const handleCancel = () => {
     if (difficulty && category.length > 0) {
-      handleCancelMatch(category[0], difficulty);
+      handleCancelMatch();
       setLoading(false);  // Start loading
       setTimer(0);  // Reset the timer
       setErrorMessage('');  // Clear previous messages
@@ -78,6 +78,7 @@ export default function CreateSessionForm({categories, handleCreateSession, hand
             value={difficulty} 
             onChange={(e) => setDifficulty(e.target.value)} 
             label="Difficulty"
+            disabled = {loading}
           >
             {difficulties.map((difficulty, index) => (
               <MenuItem key={index} value={difficulty}>{difficulty}</MenuItem>
@@ -90,16 +91,9 @@ export default function CreateSessionForm({categories, handleCreateSession, hand
           <Select
             id='questionCategory'
             label='Question Category'
-            multiple
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            renderValue={(selected) => (
-              <div style={{display: 'flex', flexWrap: 'wrap'}}>
-                {selected.map((value) => (
-                  <Chip key={value} label={value} style={{margin: 2}}/>
-                ))}
-              </div>
-            )}
+            disabled = {loading}
           >
             {categories.map((category) => (
               <MenuItem key={category._id} value={category.name}>
