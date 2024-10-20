@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, InputLabel, FormControl, Chip } from '@mui/material';
 import LoadingDots from './LoadingDots';
 
-export default function CreateSessionForm({categories, handleCreateSession, isTimeout, isMatchFound}) {
+export default function CreateSessionForm({categories, handleCreateSession, handleCancelMatch, isTimeout, isMatchFound}) {
   const difficulties = ['Easy', 'Medium', 'Hard'];
   const [difficulty, setDifficulty] = useState('');
   const [category, setCategory] = useState([]);
@@ -47,6 +47,18 @@ export default function CreateSessionForm({categories, handleCreateSession, isTi
       setTimer(0);  // Reset the timer
       setErrorMessage('');  // Clear previous messages
       handleCreateSession(category[0], difficulty);
+    } else {
+      alert('Please select a difficulty and at least one category.');
+    }
+  };
+
+  // Handle Cancel 
+  const handleCancel = () => {
+    if (difficulty && category.length > 0) {
+      handleCancelMatch(category[0], difficulty);
+      setLoading(false);  // Start loading
+      setTimer(0);  // Reset the timer
+      setErrorMessage('');  // Clear previous messages
     } else {
       alert('Please select a difficulty and at least one category.');
     }
@@ -99,7 +111,8 @@ export default function CreateSessionForm({categories, handleCreateSession, isTi
       </div>
 
       {/* Submit Button */}
-      <button 
+      { !loading && (
+        <button 
         type='submit' 
         className='create-session-button' 
         onClick={handleSubmit} 
@@ -109,6 +122,20 @@ export default function CreateSessionForm({categories, handleCreateSession, isTi
       >
         Create Session
       </button>
+      )}
+
+      { loading && (
+        <button 
+        type='submit' 
+        className='cancel-matching-button' 
+        onClick={handleCancel} 
+        variant="contained" 
+        color="primary" 
+        fullWidth
+      >
+        Cancel
+      </button>
+      )}
 
       {/* Loading Animation and Timer */}
       {loading && (

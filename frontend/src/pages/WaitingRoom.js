@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import CreateSessionForm from '../components/CreateSessionForm'
 import useQuestions from '../hooks/useQuestions'
 import { useAuth } from '../context/AuthContext';
-import { closeSocket, enterMatch, initializeSocket } from '../api/matchingApi';
+import { closeSocket, enterMatch, initializeSocket, cancelMatch } from '../api/matchingApi';
 
 export default function WaitingRoom() {
 
@@ -24,10 +24,15 @@ export default function WaitingRoom() {
     console.log('Session created!');
   }
 
+  const handleCancelMatch = () => {
+    cancelMatch();
+    console.log("Match cancelled!");
+  }
+
   return (
     <div>
         <h1>Start practicing now</h1>
-        <CreateSessionForm categories={categories} handleCreateSession={handleCreateSession} isMatchFound={isMatchFound} isTimeout={isTimeout}/>
+        <CreateSessionForm categories={categories} handleCreateSession={handleCreateSession} handleCancelMatch={handleCancelMatch} isMatchFound={isMatchFound} isTimeout={isTimeout}/>
     </div>
   )
 }
