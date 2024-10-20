@@ -3,6 +3,8 @@ import cors from 'cors';
 import http from "http";
 import {Server} from "socket.io";
 import {getMatchInUserQueue, removeUserFromQueue} from "./controller/matching-controller.js";
+import matchSocket from './sockets/matchSocket.js';
+import matchScheduler from './schedulers/matchScheduler.js';
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -16,28 +18,14 @@ app.get('/', (req, res) => {
 
 const io = new Server(httpServer);
 
-io.on('connection', (socket) => {
-    socket.on('enter-match', (category, difficulty) => {     
-        getMatchInUserQueue(category, difficulty, socket, io);
-    });
+matchSocket(io);
 
-    socket.on('cancel-match', () => {
-        removeUserFromQueue(socket);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
-});
-
-
+matchScheduler(io);
 
 httpServer.listen(3006, () => {
     console.log('Matching service listening on port 3006');
 }
 );
-
-export { io };
 
 export default app;
 

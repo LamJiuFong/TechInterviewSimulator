@@ -1,5 +1,4 @@
 import Redis from 'ioredis';
-import { io } from '../index.js';
 import {fetchCategories} from '../internal-services/question-service.js';
 
 
@@ -8,10 +7,8 @@ const redis = new Redis({
     port: 6379,
   });
 
-const CHECK_INTERVAL = 1000; // interval to run schedule matching
 const LOOSEN_DIFFICULTY_TIME = 10000; // number of checks by 
 const TIMEOUT = 30000;
-
 const cancelMatchmakeUsers = new Map();
 
 
@@ -19,13 +16,13 @@ const cancelMatchmakeUsers = new Map();
 Matching Logic :
 
 1. Client requests to join matching queue -> form webSocket with matching service
-2. Join Matching Queue (REDIS LIST), of key (Category, difficulty), with entry (UserID, timestamp)
+2. Join Matching Queue (REDIS LIST), of key (Category, difficulty), with entry (UserId, SocketId, timestamp)
 3. Run schedule matching (5 - 10s) with scheduler (w/ setInterval)
     a. iterate through each (category, difficulty) queue
         i. If len(queue) > 2 : pop the queue by pair until len(queue) < 2, notify match found for both user
         ii If len(queue) == 1: check time stamp if it exceeds the waiting time on same category
             - If exceeds, pop out and notify timeout 
-            - If exceed timing for same difficulty, pop from current queue, put into (category) queue, with new time stamp with new key (UserId, timestamp, difficulty)
+            - If exceed timing for same difficulty, pop from current queue, put into (category) queue, with new time stamp with new key (UserId, SocketId, timestamp, difficulty)
 
 */
 
@@ -33,9 +30,9 @@ export async function getMatchInUserQueue(category, difficulty, socket, io)
 {   
     // * User in queue is of userId:socketId:timestamp, placed in (category:difficulty) list
     let userId = socket.handshake.query.id;
-    let userIdSocketId = `${userId}:${socket.id}:${Date.now()}`;
+    let userIdSocketIdTimestamp  = `${userId}:${socket.id}:${Date.now()}`;
     const queueName = `${category}:${difficulty}`;
-    redis.rpush(queueName, userIdSocketId);    
+    redis.rpush(queueName, userIdSocketIdTimestamp);    
 }
 
 export async function removeUserFromQueue(socket)
@@ -58,7 +55,7 @@ const difficultyMap = {
 
 
 // TODO: Handle race condition when horizontal scaling matchmaking service 
-async function matchUserInQueue()
+export async function matchUserInQueue(io)
 {
 
     const categories = await fetchCategories();
@@ -123,7 +120,7 @@ async function matchUserInQueue()
             // * if successfully find 2 user, match them 
             const difficulty = difficultyMap[Math.floor((difficultyMap[firstOpponent[3]] + difficultyMap[secondOpponent[3]]) / 2)];
 
-            emitMatchFound(firstOpponent, secondOpponent, category, difficulty)
+            emitMatchFound(io, firstOpponent, secondOpponent, category, difficulty)
             
 
         }
@@ -197,7 +194,7 @@ async function matchUserInQueue()
                     break;
                 }
 
-                emitMatchFound(firstOpponent, secondOpponent, category, difficulty);
+                emitMatchFound(io, firstOpponent, secondOpponent, category, difficulty);
             }
 
             if (queueSize == 1)
@@ -212,7 +209,7 @@ async function matchUserInQueue()
                 {
                     let opponent = await redis.lpop(category);
                     opponent = opponent.split(":");
-                    emitMatchFound(opponent, remainingUser, category, difficulty);
+                    emitMatchFound(io, opponent, remainingUser, category, difficulty);
                     continue;
                 }
 
@@ -235,11 +232,9 @@ async function matchUserInQueue()
     
 }
 
-setInterval(matchUserInQueue, CHECK_INTERVAL);
-
 
 // helper function
-function emitMatchFound(player1, player2, category, difficulty) {
+function emitMatchFound(io, player1, player2, category, difficulty) {
     const matchInfo = {
       category: category,
       difficulty: difficulty
