@@ -8,11 +8,9 @@ const QUESTION_SERVICE = process.env.QUESTION_SERVICE;
 export const questionRouter = express.Router();
 
 // Create question
-questionRouter.post('/', verifyAccessToken, verifyIsAdmin, async (req, res) => {
+questionRouter.post('/', async (req, res) => {
     try {
-        const response = await axios.post(`${QUESTION_SERVICE}/api/questions/`, {
-            body: req.body
-        });
+        const response = await axios.post(`${QUESTION_SERVICE}/api/questions/`, req.body);
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({ message: error.message });
@@ -20,11 +18,9 @@ questionRouter.post('/', verifyAccessToken, verifyIsAdmin, async (req, res) => {
 });
 
 // Get all questions
-questionRouter.get('/', verifyAccessToken, async (req, res) => {
+questionRouter.get('/', async (req, res) => {
     try {
-        const response = await axios.get(`${QUESTION_SERVICE}/api/questions/`, {
-            body: req.body
-        });
+        const response = await axios.get(`${QUESTION_SERVICE}/api/questions/`, req.body);
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({ message: error.message });
@@ -32,11 +28,11 @@ questionRouter.get('/', verifyAccessToken, async (req, res) => {
 });
 
 // Get filtered questions
-questionRouter.get('/filter', verifyAccessToken, async (req, res) => {
+questionRouter.get('/filter', async (req, res) => {
     try {
-        const response = await axios.get(`${QUESTION_SERVICE}/api/questions/filter`, {
-            body: req.body
-        });
+        const queryString = req.originalUrl.split('?')[1] || '';
+        console.log('Query String:', queryString);
+        const response = await axios.get(`${QUESTION_SERVICE}/api/questions/filter?${queryString}`);
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({ message: error.message });
@@ -44,12 +40,10 @@ questionRouter.get('/filter', verifyAccessToken, async (req, res) => {
 });
 
 // Get question by id
-questionRouter.get('/:id', verifyAccessToken, async (req, res) => {
+questionRouter.get('/:id', async (req, res) => {
     try {
-        const { questionId } = req.params;
-        const response = await axios.get(`${QUESTION_SERVICE}/api/questions/${questionId}`, {
-            body: req.body
-        });
+        const { id } = req.params;
+        const response = await axios.get(`${QUESTION_SERVICE}/api/questions/${id}`);
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({ message: error.message });
@@ -57,12 +51,10 @@ questionRouter.get('/:id', verifyAccessToken, async (req, res) => {
 });
 
 // Update question by id
-questionRouter.put('/:id', verifyAccessToken, verifyIsAdmin, async (req, res) => {
+questionRouter.put('/:id', async (req, res) => {
     try {
-        const { questionId } = req.params;
-        const response = await axios.get(`${QUESTION_SERVICE}/api/questions/${questionId}`, {
-            body: req.body
-        });
+        const { id } = req.params;
+        const response = await axios.put(`${QUESTION_SERVICE}/api/questions/${id}`, req.body);
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({ message: error.message });
@@ -70,12 +62,10 @@ questionRouter.put('/:id', verifyAccessToken, verifyIsAdmin, async (req, res) =>
 });
 
 // Delete question by id
-questionRouter.delete('/:id', verifyAccessToken, verifyIsAdmin, async (req, res) => {
+questionRouter.delete('/:id', async (req, res) => {
     try {
-        const { questionId } = req.params;
-        const response = await axios.delete(`${QUESTION_SERVICE}/api/questions/${questionId}`, {
-            body: req.body
-        });
+        const { id } = req.params;
+        const response = await axios.delete(`${QUESTION_SERVICE}/api/questions/${id}`);
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({ message: error.message });
@@ -83,11 +73,9 @@ questionRouter.delete('/:id', verifyAccessToken, verifyIsAdmin, async (req, res)
 });
 
 // Get all question categories
-questionRouter.get('/categories/all', verifyAccessToken, async (req, res) => {
+questionRouter.get('/categories/all', async (req, res) => {
     try {
-        const response = await axios.delete(`${QUESTION_SERVICE}/api/questions/categories/all`, {
-            body: req.body
-        });
+        const response = await axios.get(`${QUESTION_SERVICE}/api/questions/categories/all`);
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({ message: error.message });
