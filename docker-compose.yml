@@ -2,9 +2,20 @@ version: "3"
 
 services:
     frontend:
-        build: ./peerprep-g12
+        build: ./frontend
         ports:
             - "3000:80" # Map host port 3000 to container port 80 (Nginx default)
+
+    apigateway:
+        build: ./api-gateway
+        ports:
+            - "3003:3003"
+        depends_on:
+            - user-service
+            - question-service
+        environment:
+            USER_SERVICE_URL: http://user-service:3001
+            QUESTION_SERVICE_URL: http://question-service:3002
 
     question-service:
         build: ./question-service
@@ -15,3 +26,26 @@ services:
         build: ./user-service
         ports:
             - "3001:3001"
+
+    matching-service:
+        build: ./matching-service
+        ports:
+            - "3006:3006"
+        depends_on:
+            - redis
+            - question-service
+        environment:
+            REDIS_HOST: redis
+            REDIS_PORT: 6379
+            QUESTION_SERVICE_URL: http://question-service:3002/
+
+    redis:
+        image: redis
+        container_name: redis-server
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+
+volumes:
+    redis_data:
