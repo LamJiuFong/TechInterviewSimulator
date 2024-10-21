@@ -1,0 +1,18 @@
+.question-panel {
+    font-family: 'Roboto', sans-serif;
+    padding-bottom: 10px;
+    padding-top: 10px;
+
+    .question {
+        border: 3px solid #9CDDDB;
+    }
+}
+
+.blue-link {
+    color: blue;
+    text-decoration: underline;
+}
+
+.blue-link:hover {
+    color: darkblue;
+}
