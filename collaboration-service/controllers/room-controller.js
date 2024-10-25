@@ -1,5 +1,11 @@
 // controllers/RoomController.js
 import RoomRepository from '../model/repository.js';
+import Redis from 'ioredis';
+
+const roomRedis = new Redis({
+    host: process.env.REDIS_HOST || "localhost",
+    port: process.env.REDIS_PORT || 6379
+  });
 
 const RoomController = {
     // Create a new room
@@ -35,37 +41,32 @@ const RoomController = {
         }
     },
 
-    // Add user to room
-    async addUserToRoom(req, res) {
-        try {
-            const { userId } = req.body;
-            const room = await RoomRepository.addUserToRoom(req.params.id, userId);
-            res.status(200).json({ message: "User added", room });
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
+    async addUserToRoom(roomId, userId) {
+        const room = await RoomRepository.addUserToRoom(roomId, userId);
+        await roomRedis.sadd(`room:${roomId}`, userId);
+
+        const members = await roomRedis.smembers(`room:${roomId}`);
+        console.log('Members of the set:', members);
+
+        return room;
     },
 
-    // Remove user from room
-    async removeUserFromRoom(req, res) {
-        try {
-            const { userId } = req.body;
-            const room = await RoomRepository.removeUserFromRoom(req.params.id, userId);
-            res.status(200).json({ message: "User removed", room });
-        } catch (error) {
-            res.status(400).json({ error: error.message });
+    async removeUserFromRoom(roomId, userId) {
+        const room = await RoomRepository.removeUserFromRoom(roomId, userId);
+        await roomRedis.srem(`room:${roomId}`, userId);
+
+        const members = await roomRedis.smembers(`room:${roomId}`);
+        console.log('Members of the set:', members);
+
+        const userCount = await roomRedis.scard(`room:${roomId}`);
+        if (userCount === 0) {
+            // If no users are left in Redis, archive the room in the database
+            await RoomRepository.archiveRoom(roomId);
         }
+        return room;
     },
 
-    // Archive room (deactivate it)
-    async archiveRoom(req, res) {
-        try {
-            const room = await RoomRepository.archiveRoom(req.params.id);
-            res.status(200).json({ message: "Room archived", room });
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    }
+
 };
 
-export default RoomController;
+export { RoomController, roomRedis };

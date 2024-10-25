@@ -46,10 +46,12 @@ services:
             - "3004:3004"
         depends_on:
             - question-service
+            - redis
         environment:
+            REDIS_HOST: redis
+            REDIS_PORT: 6379
             QUESTION_SERVICE_URL: http://question-service:3002/
         restart: on-failure
-
 
     redis:
         image: redis
