@@ -254,21 +254,20 @@ function emitMatchFound(io, player1, player2, category, difficulty) {
   }
 
   // Helper function to print a Redis list's state
-async function printRedisList(queueName) {
+  async function printRedisList(queueName) {
     const list = await redis.lrange(queueName, 0, -1); // Fetch entire list
     if (list.length === 0) {
-        console.log(`List "${queueName}" is empty`);
-    } else {
-        console.log(`List "${queueName}" contains ${list.length} items:`);
-        list.forEach((item, index) => {
-            console.log(`Index ${index}: ${item}`);
-        });
+        return; // Return early if the list is empty
     }
+
+    console.log(`List "${queueName}" contains ${list.length} items:`);
+    list.forEach((item, index) => {
+        console.log(`Index ${index}: ${item}`);
+    });
 }
 
 // Call this after running matchUserInQueue to print all queue states
 async function printAllQueues(categories, difficulties) {
-    console.log("Current redis state: =================================================================");
     for (const category of categories) {
         await printRedisList(category); // Print (category) queue
         for (const difficulty of difficulties) {
