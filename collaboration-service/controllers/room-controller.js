@@ -11,7 +11,14 @@ const RoomController = {
     // Create a new room
     async createRoom(req, res) {
         try {
-            const room = await RoomRepository.createRoom();
+            const { category, difficulty } = req.body;
+            // Validate if both category and difficulty are provided
+            if (!category || !difficulty) {
+                return res.status(400).json({ 
+                    error: "Both 'category' and 'difficulty' are required." 
+                });
+            }
+            const room = await RoomRepository.createRoom(category, difficulty);
             res.status(200).json({ message: "Room created", room });
         } catch (error) {
             res.status(500).json({ error: error.message });

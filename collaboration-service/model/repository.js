@@ -14,8 +14,13 @@ export async function connectToDB() {
 
 const RoomRepository = {
     // Create a new room
-    async createRoom() {
-        const room = new Room();
+    async createRoom(category, difficulty) {
+        const room = new Room({
+            question: {
+                category,
+                difficulty
+            }
+        });
         await room.save();
         return room;
     },
