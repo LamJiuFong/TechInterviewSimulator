@@ -14,10 +14,8 @@ export async function connectToDB() {
 
 const RoomRepository = {
     // Create a new room
-    async createRoom(roomId) {
-        const room = new Room({
-            room_id: roomId,
-        });
+    async createRoom() {
+        const room = new Room();
         await room.save();
         return room;
     },

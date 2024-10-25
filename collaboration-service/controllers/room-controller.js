@@ -5,8 +5,7 @@ const RoomController = {
     // Create a new room
     async createRoom(req, res) {
         try {
-            const { roomId } = req.body;
-            const room = await RoomRepository.createRoom(roomId);
+            const room = await RoomRepository.createRoom();
             res.status(200).json({ message: "Room created", room });
         } catch (error) {
             res.status(500).json({ error: error.message });

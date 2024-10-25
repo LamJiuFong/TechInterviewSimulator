@@ -3,11 +3,6 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const roomSchema = new Schema({
-    room_id: { 
-        type: String, 
-        required: true, 
-        unique: true  // Ensure room names are unique
-    },
     created_at: { 
         type: Date, 
         default: Date.now  // Automatically set when the room is created
