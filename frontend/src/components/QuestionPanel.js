@@ -82,7 +82,7 @@ const QuestionPanel = () => {
         {!selectedQuestion ? (
           <>
             <Typography variant="h6" gutterBottom>
-              Question List
+              Choose a question
             </Typography>
             <List>
               {questions.map((question) => (

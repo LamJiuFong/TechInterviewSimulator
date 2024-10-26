@@ -1,6 +1,6 @@
 
 import { RoomController } from "../controllers/room-controller.js";
-import { broadcastMessage } from "../controllers/room-controller.js";
+import { ChatController } from "../controllers/chat-controller.js";
 
 const collaborationSocket = (io) => {
     io.on("connection", (socket) => {
@@ -14,11 +14,8 @@ const collaborationSocket = (io) => {
             RoomController.removeUserFromRoom(roomId, userId);
         });
 
-        socket.on("message", async (roomId, message) => {
-            const result = await broadcastMessage(userId, roomId, message, io);
-            if (result.error) {
-                socket.emit("error", {message: result.error});
-            }
+        socket.on("message", (roomId, message) => {
+            ChatController.broadcastMessage(userId, roomId, message, io);
         });
     
         socket.on("disconnect", () => {

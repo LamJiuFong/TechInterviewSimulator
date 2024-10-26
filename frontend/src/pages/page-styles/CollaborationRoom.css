@@ -1,0 +1,25 @@
+/* Container for the entire collaboration room */
+.collaboration-room {
+    display: flex;
+    flex-direction: row;
+    height: 100vh; /* Take up the full viewport height */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Styling for QuestionPanel to take up 3/4 of the space */
+.question-panel {
+    flex: 3; /* Takes up three parts of the layout */
+    padding-right: 10px;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* Styling for RoomChat to take up 1/4 of the space */
+.room-chat {
+    flex: 1; /* Takes up one part of the layout */
+    border: 3px solid #9CDDDB;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 100%;
+}
