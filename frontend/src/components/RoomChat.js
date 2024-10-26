@@ -1,20 +1,52 @@
 import './component-styles/RoomChat.css'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SendIcon from '@mui/icons-material/Send';
+import { initializeSocket, sendMessage, listenForMessages, leaveCollaborationRoom } from '../api/collaborationApi';
 
-export default function RoomChat({userId, roomId}) {
+export default function RoomChat({userId = 'exampleUser', roomId = 'exampleRoom'}) {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]);
 
+    useEffect(() => {
+        initializeSocket(userId, roomId)
+            .then((socket) => {
+                console.log('Socket initialized:', socket);
+                listenForMessages((message) => {
+                    console.log('Received message:', message);
+                    setMessages((prevMessages) => [...prevMessages, message]);
+                });
+            })
+            .catch((error) => {
+                console.error('Error initializing socket:', error.message);
+            });
+
+        return () => {
+            console.log('Leaving room:', roomId);
+            leaveCollaborationRoom(roomId, userId);
+        }
+    }, [userId, roomId]);
+
     const handleSendMessage = () => {
-        console.log('Sending message:', input);
+        if (!input.trim()) return;
+        sendMessage(roomId, userId, input);
+
+        setMessages((prevMessages) => [
+            ...prevMessages, 
+            { sender: userId, content: input, timestamp: new Date().toISOString() }
+        ])
         setInput('');
     }
 
   return (
     <div className='chat-container'>
         <div className='messages'>
-            Messages here
+            {messages.map((msg, index) => {
+                return (
+                    <div key={index} className={msg.sender === userId ? 'You' : 'Partner'}>
+                        <strong>{msg.sender === userId ? 'You' : 'Partner'}:</strong> {msg.content}{msg.content}
+                    </div>
+                )
+            })}
         </div>
         <div className='input'>
             <input
@@ -22,7 +54,7 @@ export default function RoomChat({userId, roomId}) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder='Type a message...'
-                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage}
             />
             <button onClick={handleSendMessage}>
                 <SendIcon />

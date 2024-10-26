@@ -10,7 +10,7 @@ const port = process.env.PORT || 3004;
 const httpServer = http.createServer(index);
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3002",
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
     methods: ["GET", "POST"],
   },
   // path: "/collaboration-service/socket.io/",

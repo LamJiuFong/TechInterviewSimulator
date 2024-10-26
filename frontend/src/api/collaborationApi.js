@@ -47,3 +47,10 @@ export const listenForMessages = (onMessageReceived) => {
   
     socket.on('receive-message', onMessageReceived);
 };
+
+export const leaveCollaborationRoom = (roomId, userId) => {
+    if (socket && socket.connected) {
+        socket.emit('leave-room', roomId, userId); // Notify the server that the user is leaving the room
+        socket.disconnect();
+    }
+};
