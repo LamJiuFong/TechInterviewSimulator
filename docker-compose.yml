@@ -16,6 +16,7 @@ services:
         environment:
             USER_SERVICE_URL: http://user-service:3001
             QUESTION_SERVICE_URL: http://question-service:3002
+            CODE_EXECUTION_SERVICE_URL: http://code-execution-service:3007
 
     question-service:
         build: ./question-service
@@ -52,6 +53,11 @@ services:
             REDIS_PORT: 6379
             QUESTION_SERVICE_URL: http://question-service:3002/
         restart: on-failure
+
+    code-execution-service:
+        build: ./code-execution-service
+        ports:
+            - "3007:3007"
 
     redis:
         image: redis

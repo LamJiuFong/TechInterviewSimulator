@@ -11,6 +11,7 @@ import cors from "cors";
 import { authRouter } from "./router/authRouter.js";
 import { userRouter } from "./router/userRouter.js";
 import { questionRouter } from "./router/questionRouter.js";
+import { codeExecutionRouter } from "./router/codeExecutionRouter.js";
 
 export const QUESTION_SERVICE =
     process.env.QUESTION_SERVICE_URL || "http://localhost:3002";
@@ -44,6 +45,7 @@ app.use((req, res, next) => {
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/api/questions", questionRouter);
+app.use("/api/code-execution", codeExecutionRouter);
 
 app.listen(3210, () => {
     console.log("Backend listening on port 3003");
