@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, List, ListItem, ListItemButton, ListItemText, Typography, Button, Chip, Link } from '@mui/material';
+import CodeEditor from './CodeEditor';
 
 // Sample list of questions following your structure
 const questions = [
@@ -163,6 +164,7 @@ const QuestionPanel = () => {
           Select a question from the list to view details.
         </Typography>
       </Box>
+      {/* <CodeEditor /> */}
     </Box>
   );
 };
