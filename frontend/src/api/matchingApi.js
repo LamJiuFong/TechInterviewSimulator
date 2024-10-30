@@ -49,6 +49,13 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
       resolve(match);
     };
 
+    const handleAccept = (acceptanceId) => {
+      console.log("accepted!!!")
+    }
+
+    const handleReject = (acceptanceId) => {
+      console.log("rejected!!! :(")
+    }
 
     const handleTimeout = () => {
         setTimeout(true);
@@ -57,12 +64,26 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
 
     socket.on('match-found', handleMatchFound);
     socket.on('timeout', handleTimeout);
+    socket.on('collaboration-accepted', handleAccept);
+    socket.on('collaboration-rejected', handleReject);
   });
 };
 
 export const cancelMatch = () => {
   if (socket && socket.connected) {
     socket.emit('cancel-match');    
+  }
+};
+
+export const acceptMatch = (acceptanceId) => {
+  if (socket && socket.connected) {
+    socket.emit('accept-match', acceptanceId);    
+  }
+};
+
+export const rejectMatch = (acceptanceId) => {
+  if (socket && socket.connected) {
+    socket.emit('reject-match', acceptanceId);    
   }
 };
 

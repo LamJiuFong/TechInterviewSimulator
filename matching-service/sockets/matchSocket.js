@@ -1,4 +1,4 @@
-import { getMatchInUserQueue, removeUserFromQueue } from "../controller/matching-controller.js";
+import { acceptCollaboration, getMatchInUserQueue, rejectCollaboration, removeUserFromQueue } from "../controller/matching-controller.js";
 
 const matchSocket = (io) => {
     io.on('connection', (socket) => {
@@ -16,6 +16,20 @@ const matchSocket = (io) => {
             removeUserFromQueue(socket);
             console.log(`User ${socket.handshake.query.id} cancel matching`);
         });
+
+        // User accept match
+        socket.on('accept-match', (acceptanceId) => {
+            acceptCollaboration(acceptanceId, socket.handshake.query.id, io);
+            console.log(`User ${socket.handshake.query.id} accept match`);
+        });
+
+        // User reject match
+        socket.on('reject-match', (acceptanceId) => {
+            rejectCollaboration(acceptanceId, socket.handshake.query.id, io);
+            console.log(`User ${socket.handshake.query.id} reject match`);
+        });
+
+
 
         // User disconnects
         socket.on('disconnect', () => {

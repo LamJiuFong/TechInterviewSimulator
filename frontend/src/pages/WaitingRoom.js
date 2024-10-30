@@ -7,6 +7,8 @@ import {
     enterMatch,
     initializeSocket,
     cancelMatch,
+    acceptMatch,
+    rejectMatch,
 } from "../api/matchingApi";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
@@ -43,12 +45,12 @@ export default function WaitingRoom() {
     };
 
     const onAccept = () => {
-        console.log("match accepted");
+        acceptMatch(matchDetails.acceptanceId);
         setMatchFound(false);
     };
 
     const onReject = () => {
-        console.log("match rejected");
+        rejectMatch(matchDetails.acceptanceId);
         setMatchFound(false);
     };
 
