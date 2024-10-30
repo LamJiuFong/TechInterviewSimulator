@@ -26,7 +26,6 @@ export default function WaitingRoom() {
         };
     }, [user.id]);
 
-    // TODO: write a hook to handle create session
     const handleCreateSession = (category, difficulty) => {
         enterMatch(category, difficulty, setMatchFound, setTimeout)
             .then((match) => {

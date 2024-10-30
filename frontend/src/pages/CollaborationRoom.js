@@ -1,12 +1,17 @@
-import QuesitonPanel from "../components/QuestionPanel";
+import './page-styles/CollaborationRoom.css';
+import RoomChat from "../components/RoomChat";
+import QuestionPanel from '../components/QuestionPanel';
 
-
-export default function CollaborationRoom() {
+export default function CollaborationRoom({userId, roomId}) {
     
     return (
-        <div>
-            <h1>Happy coding...</h1>
-            <QuesitonPanel/>
+        <div className='collaboration-room'>
+            <div className='question-panel'>
+                <QuestionPanel/>
+            </div>
+            <div className='room-chat'>
+                <RoomChat userId={userId} roomId={roomId}/>
+            </div>
         </div>
     );
 }

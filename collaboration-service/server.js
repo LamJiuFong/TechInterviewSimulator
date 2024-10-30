@@ -1,30 +1,27 @@
-import http from "http";
-import index from "./index.js";
-import { Server } from "socket.io"
+import { httpServer } from "./index.js"; // Import `httpServer` from `index.js`
 import { connectToDB } from "./model/repository.js";
 import "dotenv/config";
-import collaborationSocket from "./sockets/collaborationSocket.js";
 
 const port = process.env.PORT || 3004;
 
-const httpServer = http.createServer(index);
-const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3002",
-    methods: ["GET", "POST"],
-  },
-  // path: "/collaboration-service/socket.io/",
-});
+const dbUri = process.env.DB_URI;
 
-collaborationSocket(io);
+if (!dbUri) {
+  console.error("MongoDB URI is not defined in environment variables. Please set DB_URI.");
+  process.exit(1);
+}
 
-await connectToDB().then(() => {
-  console.log("MongoDB Connected!");
+// Connect to MongoDB and start the server
+connectToDB()
+  .then(() => {
+    console.log("MongoDB Connected!");
 
-  httpServer.listen(port);
-  console.log("Collaboration service server listening on http://localhost:" + port);
-}).catch((err) => {
-  console.error("Failed to connect to DB");
-  console.error(err);
-});
-
+    httpServer.listen(port, () => {
+      console.log("Collaboration service server listening on http://localhost:" + port);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to connect to DB");
+    console.error(err);
+    process.exit(1);
+  });
