@@ -4,12 +4,12 @@ import "dotenv/config";
 
 const port = process.env.PORT || 3004;
 
-const dbUri = process.env.DB_URI;
+// const dbUri = process.env.DB_URI;
 
-if (!dbUri) {
-  console.error("MongoDB URI is not defined in environment variables. Please set DB_URI.");
-  process.exit(1);
-}
+// if (!dbUri) {
+//   console.error("MongoDB URI is not defined in environment variables. Please set DB_URI.");
+//   process.exit(1);
+// }
 
 // Connect to MongoDB and start the server
 connectToDB()
