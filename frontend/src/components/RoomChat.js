@@ -4,7 +4,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { initializeSocket, sendMessage, listenForMessages, leaveCollaborationRoom } from '../api/collaborationApi';
 import VideoChat from './VideoChat';
 
-export default function RoomChat({userId = 'exampleUser', roomId = 'exampleRoom'}) {
+export default function RoomChat({userId, roomId}) {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]);
 
@@ -63,7 +63,7 @@ export default function RoomChat({userId = 'exampleUser', roomId = 'exampleRoom'
                 </button>
             </div>
         </div>
-        <VideoChat userId={userId} roomId={roomId} />
+        {/* <VideoChat userId={userId} roomId={roomId} /> Commented out first due to some bugs - listens to socket before socket is connected */} 
     </div>
   )
 }

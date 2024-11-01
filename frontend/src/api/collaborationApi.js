@@ -2,12 +2,14 @@ import io from 'socket.io-client';
 
 let socket;
 
+const COLLABORATION_SERVICE_URL = 'http://localhost:3004';
+
 export const initializeSocket = (userId, roomId) => {
     if (!userId) {
         throw new Error('User ID is required to initialize the socket connection');
     }
 
-    socket = io('http://localhost:3004', {
+    socket = io(COLLABORATION_SERVICE_URL, {
         query: { id: userId },
         transports: ['websocket', 'polling'],
         withCredentials: true,
