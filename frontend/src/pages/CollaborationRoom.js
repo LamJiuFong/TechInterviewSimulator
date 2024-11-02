@@ -33,9 +33,9 @@ export default function CollaborationRoom() {
             <div className='code-editor'>
                 <CodeEditor roomId={roomInfo._id}/>
             </div>
-            {/* <div className='room-chat'>
+            <div className='room-chat'>
                 <RoomChat userId={user.id} roomId={roomInfo._id}/> 
-            </div> */}
+            </div>
             </>
             }   
         </div>
