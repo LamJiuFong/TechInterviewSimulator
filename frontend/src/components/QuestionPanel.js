@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Box, List, ListItem, ListItemButton, ListItemText, Typography, Button, Chip, Link } from '@mui/material';
-import CodeEditor from './CodeEditor';
 import { getFilteredQuestions } from '../api/questionApi';
 
 // Sample list of questions following your structure
@@ -172,12 +171,11 @@ const QuestionPanel = ({ category, difficulty }) => {
       </Box>
 
       {/* Area to indicate if no question is selected */}
-      <Box sx={{ flex: 1, p: 4, display: selectedQuestion ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {/* <Box sx={{ flex: 1, p: 4, display: selectedQuestion ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Typography variant="h6" color="text.secondary">
           Select a question from the list to view details.
         </Typography>
-      </Box>
-      {/* <CodeEditor /> */}
+      </Box> */}
     </Box>
   );
 };

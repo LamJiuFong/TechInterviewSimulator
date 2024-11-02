@@ -18,6 +18,10 @@ const collaborationSocket = (io) => {
             socket.to(roomId).emit("user-left", userId);
         });
 
+        socket.on("write-code", (roomId, code) => {
+            socket.to(roomId).emit("read-code", code);
+        })
+
         //Handling the sending of messages
         socket.on("message", (roomId, message) => {
             ChatController.broadcastMessage(userId, roomId, message, io);

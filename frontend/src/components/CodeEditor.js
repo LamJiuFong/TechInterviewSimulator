@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Toolbar, Button, MenuItem, Select, TextField, CircularProgress } from '@mui/material';
 import useCodeExecution from '../hooks/useCodeExecution';
+import { initializeCodeReader, writeCode } from '../api/collaborationApi';
+import { Editor } from "@monaco-editor/react";
 
 const languageOptions = [
   { "language_id": 50, "label": "C (GCC 9.2.0)" },
@@ -12,9 +14,20 @@ const languageOptions = [
   { "language_id": 71, "label": "Python (3.8.1)" }
 ];
 
-const CodeEditor = () => {
+const languageMap = {
+  50: "c",
+  54: "cpp",
+  51: "csp",
+  60: "go",
+  62: "java",
+  63: "javascript",
+  71: "python"
+}
+
+const CodeEditor = ({ roomId }) => {
   const [language, setLanguage] = useState(71); // Default to Python
   const [code, setCode] = useState('');
+  const [languageName, setLanguageName] = useState("python");
   
   const {
     loading,
@@ -26,6 +39,10 @@ const CodeEditor = () => {
     handleCreateSubmission,
     handleGetSubmissionResult,
   } = useCodeExecution();
+
+  useEffect(() => {
+    initializeCodeReader(setCode);
+  }, []);
 
   useEffect(() => {
     // Poll for results when submission token exists
@@ -40,10 +57,12 @@ const CodeEditor = () => {
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);
+    setLanguageName(languageMap[event.target.value]);
   };
 
-  const handleCodeChange = (event) => {
-    setCode(event.target.value);
+  const handleCodeChange = (value) => {
+    setCode(value);
+    writeCode(roomId, value);
   };
 
   const handleRun = async () => {
@@ -126,7 +145,7 @@ const CodeEditor = () => {
       </Toolbar>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', my: 2 }}>
-        <TextField
+        {/* <TextField
           multiline
           rows={15}
           value={code}
@@ -145,6 +164,12 @@ const CodeEditor = () => {
               color: '#fff'
             }
           }}
+        /> */}
+        <Editor 
+        height={"50vh"}
+        language={languageName}
+        value={code}
+        onChange={handleCodeChange}
         />
       </Box>
 

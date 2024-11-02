@@ -7,9 +7,17 @@
     box-sizing: border-box;
 }
 
-/* Styling for QuestionPanel to take up 3/4 of the space */
+/* Styling for QuestionPanel to take up 1/4 of the space */
 .question-panel {
-    flex: 3; /* Takes up three parts of the layout */
+    flex: 1; /* Takes up one part of the layout */
+    padding-right: 10px;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* Styling for QuestionPanel to take up 2/4 of the space */
+.code-editor {
+    flex: 2; /* Takes up two parts of the layout */
     padding-right: 10px;
     overflow: hidden;
     height: 100%;

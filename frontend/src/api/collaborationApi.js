@@ -34,6 +34,16 @@ export const initializeSocket = (userId, roomId) => {
     })
 }
 
+export const initializeCodeReader = (setCode) => {
+    socket.on("read-code", (code) => {
+        setCode(code);
+    })
+}
+
+export const writeCode = (roomId, code) => {
+    socket.emit("write-code", roomId, code);
+}
+
 export const sendMessage = (roomId, userId, message) => {
     if (!socket || !socket.connected) {
         throw new Error('Socket not connected. Please initialize first.');
