@@ -49,7 +49,7 @@ export const sendMessage = (roomId, userId, message) => {
         throw new Error('Socket not connected. Please initialize first.');
     }
 
-    socket.emit('message', {userId, roomId, message});
+    socket.emit('message', userId, roomId, message);
 }
 
 export const listenForMessages = (onMessageReceived) => {

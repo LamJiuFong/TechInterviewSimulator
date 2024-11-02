@@ -9,7 +9,7 @@ const ChatController = {
             timestamp: new Date().toISOString()
         }
     
-        io.to(roomId).emit('message', messageData);
+        io.to(roomId).emit('receive-message', messageData);
         console.log(`${userId} sent message: ${message} to room ${roomId}`);
     
         return messageData;

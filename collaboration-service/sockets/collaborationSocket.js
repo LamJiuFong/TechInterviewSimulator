@@ -23,7 +23,7 @@ const collaborationSocket = (io) => {
         })
 
         //Handling the sending of messages
-        socket.on("message", (roomId, message) => {
+        socket.on("message", (userId, roomId, message) => {
             ChatController.broadcastMessage(userId, roomId, message, io);
         });
 

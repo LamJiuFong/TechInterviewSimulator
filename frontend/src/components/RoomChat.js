@@ -1,40 +1,35 @@
 import './component-styles/RoomChat.css'
 import React, { useEffect, useState } from 'react'
 import SendIcon from '@mui/icons-material/Send';
-import { initializeSocket, sendMessage, listenForMessages, leaveCollaborationRoom } from '../api/collaborationApi';
+import { sendMessage, listenForMessages, leaveCollaborationRoom } from '../api/collaborationApi';
 import VideoChat from './VideoChat';
 
 export default function RoomChat({userId, roomId}) {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]);
 
+    // Since we are using React.StrictMode, useEffect will be called twice upon mounted, so each message will be listened more than once TODO: look into it 
     useEffect(() => {
-        initializeSocket(userId, roomId)
-            .then((socket) => {
-                console.log('Socket initialized:', socket);
-                listenForMessages((message) => {
-                    console.log('Received message:', message);
-                    setMessages((prevMessages) => [...prevMessages, message]);
-                });
-            })
-            .catch((error) => {
-                console.error('Error initializing socket:', error.message);
-            });
-
-        return () => {
-            console.log('Leaving room:', roomId);
-            leaveCollaborationRoom(roomId, userId);
-        }
+        listenForMessages((message) => {
+            console.log('Received message:', message);
+            setMessages((prevMessages) => [...prevMessages, message]);
+        });
+        
+        // Commented for now, think it causes some errors
+        // return () => {
+        //     //console.log('Leaving room:', roomId);
+        //     leaveCollaborationRoom(roomId, userId);
+        // }
     }, [userId, roomId]);
 
     const handleSendMessage = () => {
-        if (!input.trim()) return;
+        if (!input || !input.trim()) return;
         sendMessage(roomId, userId, input);
 
-        setMessages((prevMessages) => [
-            ...prevMessages, 
-            { sender: userId, content: input, timestamp: new Date().toISOString() }
-        ])
+        // setMessages((prevMessages) => [
+        //     ...prevMessages, 
+        //     { sender: userId, content: input, timestamp: new Date().toISOString() }
+        // ])
         setInput('');
     }
 
