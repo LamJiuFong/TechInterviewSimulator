@@ -16,7 +16,7 @@ authRouter.post("/login", async (req, res) => {
     } catch (error) {
         console.error(error.message);
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message || "Login failed",
         });
     }
 });
@@ -30,7 +30,7 @@ authRouter.get("/verify-token", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message,
         });
     }
 });

@@ -1,13 +1,16 @@
 import './component-styles/SignupForm.css';
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
+import { createUser } from '../api/userApi';
+import { useNavigate } from 'react-router-dom';
 
-const SignupForm = ({ onSignup }) => {
+const SignupForm = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,9 +22,10 @@ const SignupForm = ({ onSignup }) => {
     }
 
     try {
-      await onSignup({ username, email, password });
+      await createUser({ username, email, password });
+      navigate('/login'); // Redirect to login after successful signup
     } catch (err) {
-      setError(err.response?.data?.message || 'Signup failed. Please try again.');
+      setError(err.message);
     }
   };
 

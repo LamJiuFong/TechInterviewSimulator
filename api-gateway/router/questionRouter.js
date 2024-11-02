@@ -18,7 +18,7 @@ questionRouter.post("/", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message,
         });
     }
 });
@@ -33,7 +33,7 @@ questionRouter.get("/", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message,
         });
     }
 });
@@ -49,7 +49,7 @@ questionRouter.get("/filter", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message,
         });
     }
 });
@@ -64,7 +64,7 @@ questionRouter.get("/:id", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message,
         });
     }
 });
@@ -80,7 +80,7 @@ questionRouter.put("/:id", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message,
         });
     }
 });
@@ -95,7 +95,7 @@ questionRouter.delete("/:id", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message,
         });
     }
 });
@@ -109,7 +109,7 @@ questionRouter.get("/categories/all", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message,
         });
     }
 });

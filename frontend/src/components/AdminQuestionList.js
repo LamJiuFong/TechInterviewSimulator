@@ -58,7 +58,7 @@ export default function AdminQuestionList({
     <div className='admin-question-list'>
       {(!questions || questions.length === 0) 
       ? 
-        <div className='error'>No questions found, add a question now!</div> 
+        <div className='error'>No questions found</div> 
       : 
         (<></>) // not sure if it is good practice
       }
