@@ -9,10 +9,13 @@
 }
 
 .blue-link {
-    color: blue;
-    text-decoration: underline;
+    color: #9CDDDB;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 .blue-link:hover {
-    color: darkblue;
+    color: white;
+    text-decoration: none;
 }
+

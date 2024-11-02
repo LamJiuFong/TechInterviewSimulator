@@ -4,6 +4,7 @@ import AdminQuestionList from '../components/AdminQuestionList';
 import SearchBar from '../components/SearchBar';
 import useQuestions from '../hooks/useQuestions';
 import CircularProgress from '@mui/material/CircularProgress';
+import NavigationButton from '../components/NavigationButton';
 
 
 export default function AdminQuestionView() {
@@ -26,17 +27,20 @@ export default function AdminQuestionView() {
     );
   }
   return (
-    <div style={{display: 'flex', flexDirection: 'column', margin: '0 50px 50px 50px', gap: '20px'}}>
-      <h1 className='all-questions-title'>Question Bank</h1>
-      <SearchBar 
-        categories={categories} 
-        handleFilterQuestion={handleFilterQuestion} />
-      <AdminQuestionList  
-        questions={questions}
-        error={error}
-        handleAddQuestion={handleAddQuestion}
-        handleUpdateQuestion={handleUpdateQuestion}
-        handleDeleteQuestion={handleDeleteQuestion}/>
+    <div className='question-list-container'>
+      <NavigationButton path='Home' link='/home'/>
+      <div className='all-questions'>
+        <h1 className='all-questions-title'>Question Bank</h1>
+        <SearchBar 
+          categories={categories} 
+          handleFilterQuestion={handleFilterQuestion} />
+        <AdminQuestionList  
+          questions={questions}
+          error={error}
+          handleAddQuestion={handleAddQuestion}
+          handleUpdateQuestion={handleUpdateQuestion}
+          handleDeleteQuestion={handleDeleteQuestion}/>
+      </div>
     </div>
   );
 }

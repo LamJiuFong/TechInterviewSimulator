@@ -1,3 +1,4 @@
+import './page-styles/WaitingRoom.css';
 import React, { useEffect, useState } from "react";
 import CreateSessionForm from "../components/CreateSessionForm";
 import useQuestions from "../hooks/useQuestions";
@@ -9,6 +10,7 @@ import {
     cancelMatch,
 } from "../api/matchingApi";
 import ConfirmationDialog from "../components/ConfirmationDialog";
+import NavigationButton from '../components/NavigationButton';
 
 export default function WaitingRoom() {
     const [isTimeout, setTimeout] = useState("");
@@ -68,8 +70,9 @@ export default function WaitingRoom() {
     const matchMessage = buildMatchMessage(matchDetails); // Generate the match message
 
     return (
-        <div>
-            <h1>Start practicing now</h1>
+        <div className="waiting-room-container">
+            <NavigationButton path='Home' link='/home'/>
+            <h1 className='waiting-room-title'>Start practicing now</h1>
             <CreateSessionForm
                 categories={categories}
                 handleCreateSession={handleCreateSession}
