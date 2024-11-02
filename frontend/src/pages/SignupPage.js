@@ -1,4 +1,5 @@
 // src/pages/SignupPage.js
+import './page-styles/SignupPage.css';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createUser } from '../api/userApi'; // Your API function
@@ -13,8 +14,7 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="signup-page">
-      <h2>Sign Up</h2>
+    <div className="signup-container">
       <SignupForm onSignup={handleSignup} />
     </div>
   );
