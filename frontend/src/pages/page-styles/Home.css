@@ -20,6 +20,7 @@
         padding: 10px;
         background: black;
         border: 2px solid rgb(255, 198, 65);
+        margin: 20px 20px 20px 0px;
 
         h2, svg {
             font-size: 30px;
@@ -39,6 +40,7 @@
         padding: 10px;
         background: black;
         border: 2px solid #9CDDDB;
+        margin: 20px 0px 20px 20px;
 
         h2, svg {
             font-size: 30px;
