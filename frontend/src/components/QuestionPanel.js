@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, List, ListItem, ListItemButton, ListItemText, Typography, Button, Chip, Link } from '@mui/material';
 import CodeEditor from './CodeEditor';
+import { getFilteredQuestions } from '../api/questionApi';
 
 // Sample list of questions following your structure
 const questions = [
@@ -71,9 +72,21 @@ const questions = [
   }
 ];
 
-const QuestionPanel = () => {
+const QuestionPanel = ({ category, difficulty }) => {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [showHints, setShowHints] = useState(false); // State to manage hint visibility
+  const [questions, setQuestions] = useState([]);
+
+  useEffect(() => {
+    if (questions.length == 0) {
+      const fetchData = async () => {
+        const res = await getFilteredQuestions(`category=${category}&difficulty=${difficulty}`);
+        setQuestions([...res]);
+      }
+
+      fetchData();
+    }
+  }, []);
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
@@ -86,7 +99,7 @@ const QuestionPanel = () => {
               Choose a question
             </Typography>
             <List>
-              {questions.map((question) => (
+              {questions && questions.map((question) => (
                 <ListItem key={question._id} disablePadding>
                   <ListItemButton onClick={() => {
                     setSelectedQuestion(question);

@@ -8,20 +8,21 @@ export default function CollaborationRoom() {
     const location = useLocation();
     const { roomInfo } = location.state || {};
     const { user } = useAuth();
+    console.log(roomInfo);
 
     return (
         <div className='collaboration-room'>
+            {roomInfo && user.id &&
+            <>
             <div className='question-panel'>
-                <QuestionPanel/>
+                <QuestionPanel category={roomInfo.question.category} difficulty={roomInfo.question.difficulty} />
             </div>
             
             <div className='room-chat'>
-                {(roomInfo && user) ? (
-                    <RoomChat userId={user.id} roomId={roomInfo._id}/> 
-                ) : (
-                    <p>Loading Chatroom...</p>
-                )}
+                <RoomChat userId={user.id} roomId={roomInfo._id}/> 
             </div>
+            </>
+        }
         </div>
     );
 }
