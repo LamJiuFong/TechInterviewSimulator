@@ -6,7 +6,6 @@ import useQuestions from '../hooks/useQuestions';
 import CircularProgress from '@mui/material/CircularProgress';
 import NavigationButton from '../components/NavigationButton';
 
-
 export default function AdminQuestionView() {
   const {
     questions,
