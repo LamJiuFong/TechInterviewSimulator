@@ -1,6 +1,7 @@
 import Redis from 'ioredis';
 import {fetchCategories} from '../internal-services/question-service.js';
-
+import { createRoom } from '../internal-services/collaboration-service.js';
+import axios from "axios";
 
 const redis = new Redis({
     host: process.env.REDIS_HOST || "localhost",
@@ -11,8 +12,9 @@ const LOOSEN_DIFFICULTY_TIME = 10000; // number of checks by
 const TIMEOUT = 30000;
 const cancelMatchmakeUsers = new Map();
 const difficulties = ["Easy", "Medium", "Hard"];
-
-
+const ACCEPT_REQUEST_TIMEOUT = 15000; // 15 seconds
+const COLLABORATION_QUEUE = new Map(); // Singleton to store collaboration requests
+const COLLABORATION_SERVICE_URL = process.env.COLLABORATION_SERVICE_URL || "http://localhost:3004";
 
 const difficultyMap = {
     "Easy": 1,
@@ -37,13 +39,13 @@ Matching Logic :
 
 */
 
-export async function getMatchInUserQueue(category, difficulty, socket, io) 
+export async function getMatchInUserQueue(category, difficulty, socket) 
 {   
     // * User in queue is of userId:socketId:timestamp, placed in (category:difficulty) list
     let userId = socket.handshake.query.id;
     let userIdSocketIdTimestamp  = `${userId}:${socket.id}:${Date.now()}`;
     const queueName = `${category}:${difficulty}`;
-    redis.rpush(queueName, userIdSocketIdTimestamp);    
+    redis.rpush(queueName, userIdSocketIdTimestamp);   // push users into queue?
 }
 
 export async function removeUserFromQueue(socket)
@@ -55,11 +57,9 @@ export async function removeUserFromQueue(socket)
     cancelMatchmakeUsers.set(userId, Date.now());
 }
 
-
 // TODO: Handle race condition when horizontal scaling matchmaking service 
 export async function matchUserInQueue(io)
 {
-
     const categories = await fetchCategories();
     printAllQueues(categories, difficulties);
 
@@ -78,6 +78,7 @@ export async function matchUserInQueue(io)
             firstOpponent = firstOpponent.split(":");
             queueSize--;
 
+            // [userId, socketId, date]
             // * If the current entry has already been cancelled, find the next available one
             while (queueSize > 0 && cancelMatchmakeUsers.has(firstOpponent[0]) && cancelMatchmakeUsers.get(firstOpponent[0]) > firstOpponent[2])
             {
@@ -121,7 +122,7 @@ export async function matchUserInQueue(io)
             // * if successfully find 2 user, match them 
             const difficulty = difficultyMap[Math.floor((difficultyMap[firstOpponent[3]] + difficultyMap[secondOpponent[3]]) / 2)];
 
-            emitMatchFound(io, firstOpponent, secondOpponent, category, difficulty)
+            emitMatchFound(io, firstOpponent, secondOpponent, category, difficulty) //
             
 
         }
@@ -236,39 +237,122 @@ export async function matchUserInQueue(io)
 
 // helper function
 function emitMatchFound(io, player1, player2, category, difficulty) {
+    player1 = {
+        userId: player1[0],
+        socketId: player1[1],
+        hasAccepted: false
+    }
+
+    player2 = {
+        userId: player2[0],
+        socketId: player2[1],
+        hasAccepted: false
+    }
+
     const matchInfo = {
-      category: category,
-      difficulty: difficulty
+        category: category,
+        difficulty: difficulty,
+        acceptanceId: `${player1.userId}-${player2.userId}`,  // change to matchId in the future, check with frontend
+        players: [player1, player2]
     };
   
-    io.to(player1[1]).emit("match-found", {
-      userId: player1[0],
-      opponentId: player2[0],
+    io.to(player1.socketId).emit("match-found", {
+      userId: player1.userId,
+      opponentId: player2.userId,
       ...matchInfo
     });
-    io.to(player2[1]).emit("match-found", {
-      userId: player2[0],
-      opponentId: player1[0],
-      ...matchInfo
-    });
-  }
 
-  // Helper function to print a Redis list's state
+    io.to(player2.socketId).emit("match-found", {
+      userId: player2.userId,
+      opponentId: player1.userId,
+      ...matchInfo
+    });
+
+    // Start collaboration request process
+    startCollaborationRequest(matchInfo, io);
+}
+
+// New code
+async function startCollaborationRequest(matchInfo, io) {
+    const matchId = matchInfo.acceptanceId;
+    // Store the initial state in Redis
+    COLLABORATION_QUEUE.set(matchId, {
+        ...matchInfo,
+        timeout: setTimeout(() => {
+            handleCollaborationTimeout(matchId, io);
+        }, ACCEPT_REQUEST_TIMEOUT),
+    });
+}
+
+export async function acceptCollaboration(matchId, userId, io) {
+    const collaboration = COLLABORATION_QUEUE.get(matchId);
+    
+    if (collaboration) {
+        // Set acceptance status
+        const targetPlayer = collaboration.players.find(player => player.userId === userId)
+        if (targetPlayer) {
+            targetPlayer.hasAccepted = true;
+            
+        }
+
+        // Check if both players accepted
+        if (collaboration.players.every(player => player.hasAccepted)) {
+            clearTimeout(collaboration.timeout); // Clear the timeout
+            collaboration.players.forEach(player => {
+                io.to(player.socketId).emit("collaboration-accepted", matchId);
+            })
+            COLLABORATION_QUEUE.delete(matchId); // Remove from queue after successful collaboration
+            
+            const roomInfo = await createRoom(collaboration.category, collaboration.difficulty);
+            
+            collaboration.players.forEach(player => {
+                io.to(player.socketId).emit("created-room", roomInfo);
+            });
+        }
+    }
+}
+
+export async function rejectCollaboration(matchId, userId, io) {
+    const collaboration = COLLABORATION_QUEUE.get(matchId);
+    
+    if (collaboration && collaboration.players.find(player => player.userId === userId)) {
+        // Notify both players of rejection
+        collaboration.players.forEach(player => {
+            io.to(player.socketId).emit("collaboration-rejected", matchId);
+        })
+        
+        // Clean up the collaboration queue
+        COLLABORATION_QUEUE.delete(matchId);
+    }
+}
+
+async function handleCollaborationTimeout(matchId, io) {
+    const collaboration = COLLABORATION_QUEUE.get(matchId);
+    
+    if (collaboration) {
+        // Notify players of timeout
+        collaboration.players.forEach(player => {
+            io.to(player.socketId).emit("collaboration-timeout", matchId);
+        })
+        COLLABORATION_QUEUE.delete(matchId); // Clean up
+    }
+}
+
+// Helper function to print a Redis list's state
 async function printRedisList(queueName) {
     const list = await redis.lrange(queueName, 0, -1); // Fetch entire list
     if (list.length === 0) {
-        console.log(`List "${queueName}" is empty`);
-    } else {
-        console.log(`List "${queueName}" contains ${list.length} items:`);
-        list.forEach((item, index) => {
-            console.log(`Index ${index}: ${item}`);
-        });
+        return; // Return early if the list is empty
     }
+
+    console.log(`List "${queueName}" contains ${list.length} items:`);
+    list.forEach((item, index) => {
+        console.log(`Index ${index}: ${item}`);
+    });
 }
 
 // Call this after running matchUserInQueue to print all queue states
 async function printAllQueues(categories, difficulties) {
-    console.log("Current redis state: =================================================================");
     for (const category of categories) {
         await printRedisList(category); // Print (category) queue
         for (const difficulty of difficulties) {

@@ -18,14 +18,13 @@ export default function WaitingRoom() {
     const { user } = useAuth();
 
     useEffect(() => {
-        initializeSocket(user.id);
+        initializeSocket(user.id)
         return () => {
             closeSocket();
         };
     }, [user.id]);
 
-    // TODO: write a hook to handle create session
-    const handleCreateSession = (category, difficulty) => {
+    const handleCreateSession = async (category, difficulty) => {
         enterMatch(category, difficulty, setMatchFound, setTimeout)
             .then((match) => {
                 console.log("Match details:", match);
@@ -42,31 +41,6 @@ export default function WaitingRoom() {
         console.log("Match cancelled!");
     };
 
-    const onAccept = () => {
-        console.log("match accepted");
-        setMatchFound(false);
-    };
-
-    const onReject = () => {
-        console.log("match rejected");
-        setMatchFound(false);
-    };
-
-    const buildMatchMessage = (matchDetails) => {
-        if (!matchDetails) return "";
-
-        const { category, difficulty } = matchDetails;
-
-        return (
-            <>
-                You have been matched for a <strong>{difficulty}</strong> level{" "}
-                <strong>{category}</strong> question. Do you accept the match?
-            </>
-        );
-    };
-
-    const matchMessage = buildMatchMessage(matchDetails); // Generate the match message
-
     return (
         <div>
             <h1>Start practicing now</h1>
@@ -78,10 +52,9 @@ export default function WaitingRoom() {
                 isTimeout={isTimeout}
             />
             <ConfirmationDialog
-                open={isMatchFound}
-                onAccept={onAccept}
-                onReject={onReject}
-                message={matchMessage}
+                isMatchFound={isMatchFound}
+                setMatchFound={setMatchFound}
+                matchDetails={matchDetails}
             />
         </div>
     );

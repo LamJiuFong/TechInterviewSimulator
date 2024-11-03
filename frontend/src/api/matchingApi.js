@@ -49,7 +49,6 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
       resolve(match);
     };
 
-
     const handleTimeout = () => {
         setTimeout(true);
         console.log("Timeout!!!!!!!");
@@ -57,12 +56,46 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
 
     socket.on('match-found', handleMatchFound);
     socket.on('timeout', handleTimeout);
+
   });
 };
 
 export const cancelMatch = () => {
   if (socket && socket.connected) {
     socket.emit('cancel-match');    
+  }
+};
+
+export const acceptMatch = (acceptanceId, setHasToWait, setIsCreatingRoom, setCreatedRoom) => {
+  if (!socket || !socket.connected) {
+    return;
+  }
+  socket.emit('accept-match', acceptanceId);
+  setHasToWait(true);
+
+  const handleAccept = () => {
+    setHasToWait(false);
+    setIsCreatingRoom(true);
+  }
+
+  //TODO1
+  const handleReject = () => {
+    console.log("rejected!!! :(")
+  }
+
+  const handleDoneCreatingRoom = (roomId) => {
+    setCreatedRoom(roomId);
+  }
+
+  socket.on('collaboration-accepted', handleAccept);
+  socket.on('collaboration-rejected', handleReject);
+  socket.on('created-room', handleDoneCreatingRoom);
+
+};
+
+export const rejectMatch = (acceptanceId) => {
+  if (socket && socket.connected) {
+    socket.emit('reject-match', acceptanceId);    
   }
 };
 
