@@ -1,5 +1,6 @@
 import Redis from 'ioredis';
 import {fetchCategories} from '../internal-services/question-service.js';
+import { createRoom } from '../internal-services/collaboration-service.js';
 import axios from "axios";
 
 const redis = new Redis({
@@ -13,7 +14,7 @@ const cancelMatchmakeUsers = new Map();
 const difficulties = ["Easy", "Medium", "Hard"];
 const ACCEPT_REQUEST_TIMEOUT = 15000; // 15 seconds
 const COLLABORATION_QUEUE = new Map(); // Singleton to store collaboration requests
-const COLLABORATION_SERVICE_URL = "http://localhost:3004"
+const COLLABORATION_SERVICE_URL = process.env.COLLABORATION_SERVICE_URL || "http://localhost:3004";
 
 const difficultyMap = {
     "Easy": 1,
@@ -301,16 +302,12 @@ export async function acceptCollaboration(matchId, userId, io) {
                 io.to(player.socketId).emit("collaboration-accepted", matchId);
             })
             COLLABORATION_QUEUE.delete(matchId); // Remove from queue after successful collaboration
-
-            try {
-                const res = await axios.post(`${COLLABORATION_SERVICE_URL}/rooms`, {category: collaboration.category, difficulty: collaboration.difficulty});
-                const roomInfo = res.data.room;
-                collaboration.players.forEach(player => {
-                    io.to(player.socketId).emit("created-room", roomInfo);
-                })
-            } catch (e) {
-                console.log("Error creating room");
-            }
+            
+            const roomInfo = await createRoom(collaboration.category, collaboration.difficulty);
+            
+            collaboration.players.forEach(player => {
+                io.to(player.socketId).emit("created-room", roomInfo);
+            });
         }
     }
 }

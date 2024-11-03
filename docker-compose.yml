@@ -35,10 +35,12 @@ services:
         depends_on:
             - redis
             - question-service
+            - collaboration-service
         environment:
             REDIS_HOST: redis
             REDIS_PORT: 6379
             QUESTION_SERVICE_URL: http://question-service:3002/
+            COLLABORATION_SERVICE_URL: http://collaboration-service:3004/
         restart: on-failure
 
     collaboration-service:

@@ -2,7 +2,7 @@ import { acceptCollaboration, getMatchInUserQueue, rejectCollaboration, removeUs
 
 const matchSocket = (io) => {
     io.on('connection', (socket) => {
-        console.log('A user connected:', socket.id);
+        console.log(`User ${socket.handshake.query.id} connect with socket id ${socket.id}`);
         
         // User enters match
         socket.on('enter-match', (criteria) => {
@@ -34,7 +34,7 @@ const matchSocket = (io) => {
         // User disconnects
         socket.on('disconnect', () => {
             removeUserFromQueue(socket);
-            console.log(`User ${socket.handshake.query.id} disconnected:`, socket.id);
+            console.log(`User ${socket.handshake.query.id} disconnected with socket id`, socket.id);
         });
     });
 };
