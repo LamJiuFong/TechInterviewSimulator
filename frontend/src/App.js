@@ -36,11 +36,8 @@ const App = () => {
               <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
               <Route path="/admin/questions" element={<ProtectedRoute><AdminQuestionView /></ProtectedRoute>} />
               <Route path="/waiting-room" element={<ProtectedRoute><WaitingRoom /></ProtectedRoute>} />
-<<<<<<< HEAD
               <Route path="/collaboration" element={<CollaborationRoom/>} />
-=======
               <Route path="*" element={<PageNotFound/>} />
->>>>>>> dev
             </Routes>
           </Router>
         </AuthProvider>
