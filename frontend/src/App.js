@@ -9,11 +9,8 @@ import WaitingRoom from './pages/WaitingRoom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider } from './context/AuthContext';
-<<<<<<< HEAD
 import CollaborationRoom from './pages/CollaborationRoom';
-=======
 import PageNotFound from './pages/PageNotFound';
->>>>>>> dev
 
 const darkTheme = createTheme({
   palette: {
