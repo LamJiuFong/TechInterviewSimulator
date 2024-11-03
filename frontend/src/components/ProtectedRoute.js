@@ -1,32 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext.js";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 
 const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        setLoading(false);
-      } catch {
-        navigate("/login");
-      }
-    };
+    if (!loading && !user) {
+      navigate("/login");
+    }
+  }, [user, loading, navigate]);
 
-    checkAuth();
-  }, [user, navigate]);
-
-  if (loading) return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <CircularProgress />
-    </div>
-  );;
-
-  return user ? children : null;
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <CircularProgress />
+      </div>
+    );
+  }
+  return children;
 };
 
 export default ProtectedRoute;

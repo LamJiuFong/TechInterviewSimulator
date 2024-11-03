@@ -9,7 +9,11 @@ import WaitingRoom from './pages/WaitingRoom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider } from './context/AuthContext';
+<<<<<<< HEAD
 import CollaborationRoom from './pages/CollaborationRoom';
+=======
+import PageNotFound from './pages/PageNotFound';
+>>>>>>> dev
 
 const darkTheme = createTheme({
   palette: {
@@ -32,7 +36,11 @@ const App = () => {
               <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
               <Route path="/admin/questions" element={<ProtectedRoute><AdminQuestionView /></ProtectedRoute>} />
               <Route path="/waiting-room" element={<ProtectedRoute><WaitingRoom /></ProtectedRoute>} />
+<<<<<<< HEAD
               <Route path="/collaboration" element={<CollaborationRoom/>} />
+=======
+              <Route path="*" element={<PageNotFound/>} />
+>>>>>>> dev
             </Routes>
           </Router>
         </AuthProvider>
