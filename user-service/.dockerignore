@@ -1,1 +1,5 @@
+# Ignore modules to prevent duplicate dependency
 node_modules
+
+# Ignore environment variables for privacy & security over images
+.env
