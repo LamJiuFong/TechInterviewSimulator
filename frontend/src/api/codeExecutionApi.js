@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getToken } from "../utils/token";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3003"
+  baseURL: process.env.API_GATEWAY_URL
 });
 
 axiosInstance.interceptors.request.use((req) => {

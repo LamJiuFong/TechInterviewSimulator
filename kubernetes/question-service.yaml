@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: question-service
-        image: tehopanas/question-service:latest
+        image: tehopanas/cs3219/question-service:latest
         resources:
           limits:
             memory: "128Mi"

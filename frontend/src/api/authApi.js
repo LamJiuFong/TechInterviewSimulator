@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:3003',  // Change this to api gateway url
+  baseURL: process.env.API_GATEWAY_URL,  // Change this to api gateway url
 });
 
 // Login API function

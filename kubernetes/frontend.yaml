@@ -14,13 +14,20 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: tehopanas/frontend
+        image: tehopanas/cs3219/frontend:latest
+        env:
+          - name: API_GATEWAY_URL
+            value: http://api-gateway:3003/
+          - name: COLLABORATION_SERVICE_URL
+            value: http://collaboration-service:3004
+          - name: MATCHING_SERVICE_URL
+            value: http://matching-service:3006
         resources:
           limits:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 3000
+        - containerPort: 80
 
 ---
 
@@ -29,12 +36,11 @@ kind: Service
 metadata:
   name: frontend
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: frontend
   ports:
   - port: 3000
-    targetPort: 3000
-    nodePort: 30000
+    targetPort: 80
 
 

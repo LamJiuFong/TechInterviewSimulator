@@ -16,7 +16,18 @@ spec:
     spec:
       containers:
       - name: matching-service
-        image: tehopanas/matching-service
+        image: tehopanas/cs3219/matching-service:latest
+        env:
+          - name: REDIS_HOST
+            value: redis
+          - name: REDIS_PORT
+            value: "6379"
+          - name: QUESTION_SERVICE_URL
+            value: http://question-service:3002/
+          - name: COLLABORATION_SERVICE_URL
+            value: http://collaboration-service:3004/
+          - name: FRONTEND_URL
+            value: http://frontend:3000/
         resources:
           limits:
             memory: "128Mi"

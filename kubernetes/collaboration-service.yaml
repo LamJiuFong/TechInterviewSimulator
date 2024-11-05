@@ -15,7 +15,16 @@ spec:
     spec:
       containers:
       - name: collaboration-service
-        image: tehopanas/collaboration-service:latest
+        image: tehopanas/cs3219/collaboration-service:latest
+        env:
+          - name: REDIS_HOST
+            value: redis
+          - name: REDIS_PORT
+            value: "6379"
+          - name: QUESTION_SERVICE_URL
+            value: http://question-service:3002/
+          - name: FRONTEND_URL
+            value: http://frontend:3000/
         resources:
           limits:
             memory: "128Mi"
