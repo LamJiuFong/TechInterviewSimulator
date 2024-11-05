@@ -5,13 +5,13 @@ import { initializeCodeReader, writeCode } from '../api/collaborationApi';
 import { Editor } from "@monaco-editor/react";
 
 const languageOptions = [
-  { "language_id": 50, "label": "C (GCC 9.2.0)" },
-  { "language_id": 54, "label": "C++ (GCC 9.2.0)" },
-  { "language_id": 51, "label": "C# (Mono 6.6.0.161)" },
-  { "language_id": 60, "label": "Go (1.13.5)" },
-  { "language_id": 62, "label": "Java (OpenJDK 13.0.1)" },
-  { "language_id": 63, "label": "JavaScript (Node.js 12.14.0)" },
-  { "language_id": 71, "label": "Python (3.8.1)" }
+  { "language_id": 50, "label": "C" },
+  { "language_id": 54, "label": "C++" },
+  { "language_id": 51, "label": "C#" },
+  { "language_id": 60, "label": "Go" },
+  { "language_id": 62, "label": "Java" },
+  { "language_id": 63, "label": "JavaScript" },
+  { "language_id": 71, "label": "Python" }
 ];
 
 const languageMap = {
@@ -109,10 +109,9 @@ const CodeEditor = ({ roomId }) => {
     >
       <Toolbar 
         sx={{ 
-          bgcolor: '#2d2d2d', 
           display: 'flex', 
           justifyContent: 'space-between', 
-          padding: '0 16px',
+          padding: "0 !important"
         }}
       >
         <Select
@@ -144,70 +143,64 @@ const CodeEditor = ({ roomId }) => {
         )}
       </Toolbar>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', my: 2 }}>
-        {/* <TextField
-          multiline
-          rows={15}
+      <Box sx={{ display: 'flex', my: 2 }}>
+        <Editor 
+          height={"60vh"}
+          language={languageName}
           value={code}
           onChange={handleCodeChange}
-          variant="filled"
-          placeholder="Enter your code here"
-          sx={{
-            fontSize: '14px',
-            bgcolor: '#2d2d2d',
-            color: '#fff',
-            '& .MuiInputBase-root': {
-              height: '100%',
-              color: '#fff'
+          options={{
+            fontSize: 14,
+            overviewRulerLanes: 0,
+            minimap: { enabled: false },
+            wordWrap: "on",
+            scrollbar: {
+              vertical: "hidden",
+              horizontal: "hidden",
             },
-            '& .MuiFilledInput-input': {
-              color: '#fff'
-            }
           }}
-        /> */}
-        <Editor 
-        height={"50vh"}
-        language={languageName}
-        value={code}
-        onChange={handleCodeChange}
         />
       </Box>
 
       <Box sx={{ flexGrow: 1, display: 'flex', gap: 2 }}>
-        <Box 
-          sx={{  
-            width: '50%',
-            bgcolor: '#000000', 
-            padding: '16px', 
-            fontSize: '14px',
-            borderRadius: 1,
-            minHeight: '100px'
-          }}
-        >
-          {error && <span style={{ color: '#ff6b6b' }}>Error: {error}</span>}
-          {stdout && (
-            <>
-              <div>Status: {status.description}</div>
-              <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{stdout}</pre>
-            </>
-          )}
-        </Box>
-        <Box 
-          sx={{ 
-            width: '50%',
-            bgcolor: '#000000', 
-            padding: '16px', 
-            fontSize: '14px',
-            borderRadius: 1,
-            minHeight: '100px'
-          }}
-        >
-          {stderr && (
-            <pre style={{ margin: 0, whiteSpace: 'pre-wrap', color: '#ff6b6b' }}>
-              {stderr}
-            </pre>
-          )}
-        </Box>
+        {(error || stdout) &&
+          <Box 
+            sx={{  
+              width: '100%',
+              bgcolor: '#000000', 
+              padding: '16px', 
+              fontSize: '14px',
+              borderRadius: 1,
+              minHeight: '100px'
+            }}
+          >
+            {error && <span style={{ color: '#ff6b6b' }}>Error: {error}</span>}
+            {stdout && (
+              <>
+                <div>Status: {status.description}</div>
+                <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{stdout}</pre>
+              </>
+            )}
+          </Box>
+        }
+        {stderr &&
+          <Box 
+            sx={{ 
+              width: '100%',
+              bgcolor: '#000000', 
+              padding: '16px', 
+              fontSize: '14px',
+              borderRadius: 1,
+              minHeight: '100px'
+            }}
+          >
+          
+              <pre style={{ margin: 0, whiteSpace: 'pre-wrap', color: '#ff6b6b' }}>
+                {stderr}
+              </pre>
+            
+          </Box>
+        }
       </Box>
     </Box>
   );
