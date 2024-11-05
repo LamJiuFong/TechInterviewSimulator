@@ -1,7 +1,7 @@
 import './component-styles/RoomChat.css'
-import React, { useEffect, useState } from 'react'
+import React, { useState} from 'react'
 import SendIcon from '@mui/icons-material/Send';
-import { sendMessage, listenForMessages, leaveCollaborationRoom } from '../api/collaborationApi';
+import { sendMessage} from '../api/collaborationApi';
 import VideoChat from './VideoChat';
 
 export default function RoomChat({userId, roomId, messages, setMessages}) {
@@ -41,7 +41,7 @@ export default function RoomChat({userId, roomId, messages, setMessages}) {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder='Type a message...'
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 />
                 <button onClick={handleSendMessage}>
                     <SendIcon />
