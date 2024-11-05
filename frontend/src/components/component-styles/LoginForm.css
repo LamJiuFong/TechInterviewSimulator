@@ -3,3 +3,13 @@
     font-size: 20px;
     font-weight: 700;
 }
+
+.password-container {
+    position: relative;
+}
+
+.eye-icon {
+    position: absolute;
+    top: 45%;
+    right: 15px;
+}
