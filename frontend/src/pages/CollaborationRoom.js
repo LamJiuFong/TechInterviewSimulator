@@ -5,7 +5,7 @@ import CodeEditor from '../components/CodeEditor';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from "react";
-import { initializeSocket, leaveCollaborationRoom } from '../api/collaborationApi';
+import { closeSocket, initializeSocket, leaveCollaborationRoom } from '../api/collaborationApi';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material';
 
 export default function CollaborationRoom() {
@@ -16,6 +16,9 @@ export default function CollaborationRoom() {
     const [open, setOpen] = useState(false);
     const [partnerHasLeft, setPartnerHasLeft] = useState(false);
     const [showPartnerHasLeftDialog, setShowPartnerHasLeftDialog] = useState(false);
+    const [code, setCode] = useState("");
+    const [messages, setMessages] = useState([]);
+
     const navigate = useNavigate();
 
     function handleQuit() {
@@ -26,12 +29,14 @@ export default function CollaborationRoom() {
 
     useEffect(() => {
         if (roomInfo && user) {
-            initializeSocket(user.id, roomInfo._id, setPartnerHasLeft)
+            initializeSocket(user.id, roomInfo._id, setPartnerHasLeft, setCode, setMessages)
             .then(() => setIsSocketConnected(true))
             .catch((error) => {
                 console.error('Error initializing socket:', error.message);
             });
         }
+        
+        return () =>  { if (roomInfo && user) leaveCollaborationRoom(roomInfo._id, user.id)};
     }, [roomInfo, user]);
 
     useEffect(() => {
@@ -48,10 +53,10 @@ export default function CollaborationRoom() {
                 <QuestionPanel category={roomInfo.question.category} difficulty={roomInfo.question.difficulty} />
             </div>
             <div className='code-editor'>
-                <CodeEditor roomId={roomInfo._id}/>
+                <CodeEditor roomId={roomInfo._id} code={code} setCode={setCode} />
             </div>
             <div className='room-chat'>
-                <RoomChat userId={user.id} roomId={roomInfo._id}/> 
+                <RoomChat userId={user.id} roomId={roomInfo._id} messages={messages} setMessages={setMessages}/> 
             </div>
             <Button className='quit-btn' onClick={() => setOpen(true)}>
                 Quit

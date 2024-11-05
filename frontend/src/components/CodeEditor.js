@@ -24,9 +24,8 @@ const languageMap = {
   71: "python"
 }
 
-const CodeEditor = ({ roomId }) => {
+const CodeEditor = ({ roomId, code, setCode }) => {
   const [language, setLanguage] = useState(71); // Default to Python
-  const [code, setCode] = useState('');
   const [languageName, setLanguageName] = useState("python");
   
   const {
@@ -39,10 +38,6 @@ const CodeEditor = ({ roomId }) => {
     handleCreateSubmission,
     handleGetSubmissionResult,
   } = useCodeExecution();
-
-  useEffect(() => {
-    initializeCodeReader(setCode);
-  }, []);
 
   useEffect(() => {
     // Poll for results when submission token exists

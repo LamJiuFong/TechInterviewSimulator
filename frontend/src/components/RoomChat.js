@@ -4,23 +4,8 @@ import SendIcon from '@mui/icons-material/Send';
 import { sendMessage, listenForMessages, leaveCollaborationRoom } from '../api/collaborationApi';
 import VideoChat from './VideoChat';
 
-export default function RoomChat({userId, roomId}) {
+export default function RoomChat({userId, roomId, messages, setMessages}) {
     const [input, setInput] = useState('');
-    const [messages, setMessages] = useState([]);
-
-    // Since we are using React.StrictMode, useEffect will be called twice upon mounted, so each message will be listened more than once TODO: look into it 
-    useEffect(() => {
-        listenForMessages((message) => {
-            console.log('Received message:', message);
-            setMessages((prevMessages) => [...prevMessages, message]);
-        });
-        
-        // Commented for now, think it causes some errors
-        // return () => {
-        //     //console.log('Leaving room:', roomId);
-        //     leaveCollaborationRoom(roomId, userId);
-        // }
-    }, [userId, roomId]);
 
     const handleSendMessage = () => {
         if (!input || !input.trim()) return;
@@ -39,9 +24,14 @@ export default function RoomChat({userId, roomId}) {
             <div className='messages'>
                 {messages.map((msg, index) => {
                     return (
-                        <div key={index} className={msg.sender === userId ? 'You' : 'Partner'}>
+                        <div
+                        key={index}
+                        className={`message ${msg.sender === userId ? 'message-you' : 'message-partner'}`}
+                    >
+                        <div className="message-content">
                             <strong>{msg.sender === userId ? 'You' : 'Partner'}:</strong> {msg.content}
                         </div>
+                    </div>
                     )
                 })}
             </div>

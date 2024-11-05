@@ -4,7 +4,7 @@ let socket;
 
 const COLLABORATION_SERVICE_URL = 'http://localhost:3004';
 
-export const initializeSocket = (userId, roomId, setPartnerHasLeft) => {
+export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, setMessages) => {
     if (!userId) {
         throw new Error('User ID is required to initialize the socket connection');
     }
@@ -34,15 +34,17 @@ export const initializeSocket = (userId, roomId, setPartnerHasLeft) => {
         }
     })
 
+    socket.on("read-code", (code) => {
+        setCode(code);
+    })
+
+    socket.on('receive-message', (message) => {
+        setMessages(prev => [...prev, message]);
+    });
+
     return new Promise((resolve, reject) => {
         socket.on('connect', () => resolve(socket));
         socket.on('connect_error', (error) => reject(error));
-    })
-}
-
-export const initializeCodeReader = (setCode) => {
-    socket.on("read-code", (code) => {
-        setCode(code);
     })
 }
 
@@ -57,14 +59,6 @@ export const sendMessage = (roomId, userId, message) => {
 
     socket.emit('message', userId, roomId, message);
 }
-
-export const listenForMessages = (onMessageReceived) => {
-    if (!socket || !socket.connected) {
-      throw new Error('Socket not connected. Please initialize first.');
-    }
-  
-    socket.on('receive-message', onMessageReceived);
-};
 
 // Video chat-related functions
 
@@ -123,3 +117,7 @@ export const leaveCollaborationRoom = (roomId, userId) => {
         socket.disconnect();
     }
 };
+
+export const closeSocket = () => {
+    if (socket) socket.disconnect();
+  };
