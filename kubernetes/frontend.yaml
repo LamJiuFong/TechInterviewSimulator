@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: tehopanas/cs3219/frontend:latest
+        image: tehopanas/cs3219-frontend:latest
         env:
           - name: API_GATEWAY_URL
             value: http://api-gateway:3003/

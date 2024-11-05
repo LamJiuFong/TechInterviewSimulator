@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: code-execution-service
-        image: tehopanas/cs3219/code-execution-service:latest
+        image: tehopanas/cs3219-code-execution-service:latest
         resources:
           limits:
             memory: "128Mi"

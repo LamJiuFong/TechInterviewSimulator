@@ -8,6 +8,8 @@ const API = axios.create({
 // Login API function
 export async function login(email, password) {
   try {
+    console.log("User logging in from frontend");
+    console.log(process.env);
     const response = await API.post(`/auth/login`,{ email, password });
     return response.data; // Contains accessToken and user data
   } catch (error) {

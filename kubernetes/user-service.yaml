@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: tehopanas/cs3219/user-service:latest
+        image: tehopanas/cs3219-user-service:latest
         resources:
           limits:
             memory: "128Mi"

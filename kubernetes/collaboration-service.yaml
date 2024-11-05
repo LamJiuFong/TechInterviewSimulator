@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: collaboration-service
-        image: tehopanas/cs3219/collaboration-service:latest
+        image: tehopanas/cs3219-collaboration-service:latest
         env:
           - name: REDIS_HOST
             value: redis

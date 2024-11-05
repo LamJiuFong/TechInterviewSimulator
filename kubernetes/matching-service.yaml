@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: matching-service
-        image: tehopanas/cs3219/matching-service:latest
+        image: tehopanas/cs3219-matching-service:latest
         env:
           - name: REDIS_HOST
             value: redis
