@@ -4,7 +4,7 @@ import { getToken } from "../utils/token";
 
 // Base configuration for the API
 const API = axios.create({
-  baseURL: 'http://localhost:3003',  // Change this to api gateway url
+  baseURL: process.env.API_GATEWAY_URL,  // Change this to api gateway url
 });
 
 // Attach token if needed (authentication)

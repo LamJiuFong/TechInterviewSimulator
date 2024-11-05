@@ -1,0 +1,40 @@
+#deployment 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: question-service-deployment
+  labels:
+    app: question-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: question-service
+  template:
+    metadata:
+      labels:
+        app: question-service
+    spec:
+      containers:
+      - name: question-service
+        image: tehopanas/cs3219-question-service:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3002
+
+
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: question-service
+spec:
+  selector:
+    app: question-service
+  ports:
+  - port: 3002
+    targetPort: 3002
+  type: ClusterIP

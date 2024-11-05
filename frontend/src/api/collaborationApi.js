@@ -2,7 +2,7 @@ import io from 'socket.io-client';
 
 let socket;
 
-const COLLABORATION_SERVICE_URL = 'http://localhost:3004';
+const COLLABORATION_SERVICE_URL = process.env.COLLABORATION_SERVICE_URL;
 
 export const initializeSocket = (userId, roomId) => {
     if (!userId) {

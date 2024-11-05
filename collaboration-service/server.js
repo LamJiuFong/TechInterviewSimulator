@@ -17,7 +17,7 @@ connectToDB()
     console.log("MongoDB Connected!");
 
     httpServer.listen(port, () => {
-      console.log("Collaboration service server listening on http://localhost:" + port);
+      console.log("Collaboration service server listening on http://collaboration-service:" + port);
     });
   })
   .catch((err) => {
