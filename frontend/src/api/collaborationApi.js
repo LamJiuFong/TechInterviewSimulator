@@ -36,10 +36,15 @@ export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, set
 
     socket.on("read-code", (code) => {
         setCode(code);
+        localStorage.setItem("latestCode", code);
     })
 
     socket.on('receive-message', (message) => {
-        setMessages(prev => [...prev, message]);
+        setMessages(prev => {
+            const messages = [...prev, message];
+            localStorage.setItem("latestChat", JSON.stringify(messages));
+            return messages;
+        });
     });
 
     return new Promise((resolve, reject) => {
@@ -50,6 +55,7 @@ export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, set
 
 export const writeCode = (roomId, code) => {
     socket.emit("write-code", roomId, code);
+    localStorage.setItem("latestCode", code);
 }
 
 export const sendMessage = (roomId, userId, message) => {
@@ -112,6 +118,8 @@ export const listenForIceCandidate = (onCandidateReceived) => {
 };
 
 export const leaveCollaborationRoom = (roomId, userId) => {
+    localStorage.removeItem("latestCode");
+    localStorage.removeItem("latestChat");
     if (socket && socket.connected) {
         socket.emit('leave-room', roomId, userId); // Notify the server that the user is leaving the room
         socket.disconnect();

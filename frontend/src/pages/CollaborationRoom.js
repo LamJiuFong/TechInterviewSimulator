@@ -5,7 +5,7 @@ import CodeEditor from '../components/CodeEditor';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from "react";
-import { closeSocket, initializeSocket, leaveCollaborationRoom } from '../api/collaborationApi';
+import { initializeSocket, leaveCollaborationRoom } from '../api/collaborationApi';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material';
 
 export default function CollaborationRoom() {
@@ -16,8 +16,8 @@ export default function CollaborationRoom() {
     const [open, setOpen] = useState(false);
     const [partnerHasLeft, setPartnerHasLeft] = useState(false);
     const [showPartnerHasLeftDialog, setShowPartnerHasLeftDialog] = useState(false);
-    const [code, setCode] = useState("");
-    const [messages, setMessages] = useState([]);
+    const [code, setCode] = useState(localStorage.getItem("latestCode") || "");
+    const [messages, setMessages] = useState(localStorage.getItem("latestChat") ? JSON.parse(localStorage.getItem("latestChat")) : []);
 
     const navigate = useNavigate();
 

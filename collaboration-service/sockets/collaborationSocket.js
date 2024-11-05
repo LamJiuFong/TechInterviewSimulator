@@ -18,9 +18,10 @@ const collaborationSocket = (io) => {
             socket.to(roomId).emit("user-left", userId);
         });
 
-        socket.on("write-code", (roomId, code) => {
+        socket.on("write-code", async (roomId, code) => {
+            RoomController.writeCode(roomId, code);
             socket.to(roomId).emit("read-code", code);
-        })
+        });
 
         //Handling the sending of messages
         socket.on("message", (userId, roomId, message) => {
