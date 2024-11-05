@@ -5,6 +5,7 @@
     height: 100vh; /* Take up the full viewport height */
     padding: 20px;
     box-sizing: border-box;
+    position: relative;
 }
 
 /* Styling for QuestionPanel to take up 1/4 of the space */
@@ -141,4 +142,10 @@
     border: 2px solid #333;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.quit-btn {
+    position: absolute !important;
+    bottom: 20px;
+    margin-left: 20px;
 }

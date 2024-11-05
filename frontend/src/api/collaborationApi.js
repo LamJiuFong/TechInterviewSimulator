@@ -4,7 +4,7 @@ let socket;
 
 const COLLABORATION_SERVICE_URL = 'http://localhost:3004';
 
-export const initializeSocket = (userId, roomId) => {
+export const initializeSocket = (userId, roomId, setPartnerHasLeft) => {
     if (!userId) {
         throw new Error('User ID is required to initialize the socket connection');
     }
@@ -27,6 +27,12 @@ export const initializeSocket = (userId, roomId) => {
     socket.on('disconnect', () => {
         console.log(`Disconnected from matching service for user ${userId}`);
     });
+
+    socket.on("user-left", (leftId) => {
+        if (leftId != userId) {
+            setPartnerHasLeft(true);
+        }
+    })
 
     return new Promise((resolve, reject) => {
         socket.on('connect', () => resolve(socket));
