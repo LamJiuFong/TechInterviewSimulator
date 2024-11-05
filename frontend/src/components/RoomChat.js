@@ -40,7 +40,7 @@ export default function RoomChat({userId, roomId}) {
                 {messages.map((msg, index) => {
                     return (
                         <div key={index} className={msg.sender === userId ? 'You' : 'Partner'}>
-                            <strong>{msg.sender === userId ? 'You' : 'Partner'}:</strong> {msg.content}{msg.content}
+                            <strong>{msg.sender === userId ? 'You' : 'Partner'}:</strong> {msg.content}
                         </div>
                     )
                 })}
