@@ -73,7 +73,6 @@ export const deleteQuestion = async (questionId) => {
 export const getQuestionCategories = async () => {
     try {
         const response = await API.get('/api/questions/categories/all');
-        console.log(response);
         return response.data;
     } catch (error) {
         console.error('Error fetching categories:', error.response?.data?.message || error.message);
@@ -84,7 +83,6 @@ export const getQuestionCategories = async () => {
 export const getFilteredQuestions = async (queryString) => {
   try {
       const response = await API.get(`/api/questions/filter?${queryString}`);
-      console.log(response);
       return response.data;
   } catch (error) {
       console.error('Error fetching categories:', error.response?.data?.message || error.message);

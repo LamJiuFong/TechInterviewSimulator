@@ -46,10 +46,6 @@ const useQuestions = () => {
     fetchQuestions();
   }, []);
 
-  useEffect(() => {
-    console.log("Questions state updated:", questions);
-  }, [questions]);
-
   const handleGetQuestionById = async (questionId) => {
     try {
       const wantedQuestion = await getQuestionById(questionId);

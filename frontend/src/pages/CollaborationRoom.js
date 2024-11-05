@@ -44,7 +44,6 @@ export default function CollaborationRoom() {
         <div className='collaboration-room'>
         {roomInfo && user && isSocketConnected &&
             <>
-            {console.log(isSocketConnected)}
             <div className='question-panel'>
                 <QuestionPanel category={roomInfo.question.category} difficulty={roomInfo.question.difficulty} />
             </div>
