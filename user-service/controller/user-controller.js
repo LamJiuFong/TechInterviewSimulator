@@ -22,7 +22,7 @@ export async function createUser(req, res) {
 
       const existingUser = await _findUserByUsernameOrEmail(username, email);
       if (existingUser) {
-        return res.status(409).json({ message: "username or email already exists" });
+        return res.status(409).json({ message: "Username or Email already exists" });
       }
 
       const salt = bcrypt.genSaltSync(10);
@@ -33,7 +33,7 @@ export async function createUser(req, res) {
         data: formatUserResponse(createdUser),
       });
     } else {
-      return res.status(400).json({ message: "username and/or email and/or password are missing" });
+      return res.status(400).json({ message: "Username and/or Email and/or Password are missing" });
     }
   } catch (err) {
     console.error(err);

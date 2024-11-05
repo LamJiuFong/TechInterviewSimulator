@@ -1,11 +1,16 @@
+import './component-styles/SignupForm.css';
 import React, { useState } from 'react';
+import TextField from '@mui/material/TextField';
+import { createUser } from '../api/userApi';
+import { useNavigate } from 'react-router-dom';
 
-const SignupForm = ({ onSignup }) => {
+const SignupForm = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,48 +22,58 @@ const SignupForm = ({ onSignup }) => {
     }
 
     try {
-      await onSignup({ username, email, password });
+      await createUser({ username, email, password });
+      navigate('/login'); // Redirect to login after successful signup
     } catch (err) {
-      setError(err.response?.data?.message || 'Signup failed. Please try again.');
+      setError(err.message);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className='signup-form'>
+      <h2 className='signup-form-header'>Signup</h2>
       <div>
-        <label>Username</label>
-        <input
-          type="text"
+        <TextField 
+          required
+          id='username'
+          label='Username'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          required
+          fullWidth
+          margin='normal'
         />
       </div>
       <div>
-        <label>Email</label>
-        <input
-          type="email"
+        <TextField 
+          required
+          id='email'
+          label='Email'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
+          fullWidth
+          margin='normal'
         />
       </div>
       <div>
-        <label>Password</label>
-        <input
-          type="password"
+        <TextField 
+          required
+          id='password'
+          label='Password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
+          fullWidth
+          margin='normal'
         />
       </div>
       <div>
-        <label>Confirm Password</label>
-        <input
-          type="password"
+        <TextField 
+          required
+          id='confirmPassword'
+          label='Confirm Password'
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          required
+          fullWidth
+          margin='normal'
         />
       </div>
       {error && <p style={{ color: 'red' }}>{error}</p>}

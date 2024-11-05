@@ -32,7 +32,11 @@ export async function createQuestion(req, res) {
 
     } catch(err) {
         console.error("Error creating question", err);
-        res.status(500).json({message: "Internal Server Error"});
+        if (err.message === "Question Title exists") {
+            res.status(409).json({ message: err.message });
+        } else {
+            res.status(500).json({ message: "Internal Server Error" });
+        }
     }
 }
 
