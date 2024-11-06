@@ -14,7 +14,7 @@ import NavigationButton from '../components/NavigationButton';
 
 export default function WaitingRoom() {
     const [isTimeout, setTimeout] = useState("");
-    const [isMatchFound, setMatchFound] = useState("");
+    const [isMatchFound, setMatchFound] = useState(false);
     const [matchDetails, setMatchDetails] = useState();
     const { categories } = useQuestions();
     const { user } = useAuth();

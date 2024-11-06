@@ -128,7 +128,7 @@ export default function CreateSessionForm({
                     onClick={handleSubmit}
                     variant="contained"
                     color="primary"
-                    fullWidth
+                    fullwidth="true"
                 >
                     Create Session
                 </button>
@@ -141,7 +141,7 @@ export default function CreateSessionForm({
                     onClick={handleCancel}
                     variant="contained"
                     color="primary"
-                    fullWidth
+                    fullwidth="true"
                 >
                     Cancel
                 </button>

@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.js";
 import TextField from '@mui/material/TextField';
 import { login } from '../api/authApi.js';
+import { Eye, EyeOff } from "lucide-react"
 
 const LoginForm = () => {
   const { loginUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -43,7 +45,7 @@ const LoginForm = () => {
           margin='normal'
           />
       </div>
-      <div>
+      <div className='flex password-container'>
         <TextField
           required
           id='password'
@@ -52,8 +54,13 @@ const LoginForm = () => {
           onChange={(e) => setPassword(e.target.value)}
           fullWidth
           margin='normal'
-          />
-      </div>
+          type={`${showPassword ? '' : 'password'}`}
+        />
+        {showPassword 
+        ? <Eye className="eye-icon" onClick={() => setShowPassword(false)} size={20} /> 
+        : <EyeOff className="eye-icon" onClick={() => setShowPassword(true)} size={20} /> 
+        }    
+      </div> 
       <button type="submit">Login</button>
       <button onClick={handleSignupRedirect}>Don't have an account? Sign up</button>
     </form>
