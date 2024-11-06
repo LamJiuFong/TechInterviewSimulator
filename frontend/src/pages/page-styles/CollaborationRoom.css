@@ -121,20 +121,23 @@
     background-color: #357abd;
 }
 
+.text-chat-container {
+    height: 70%;
+}
+
 /* Video chat container styling */
 .video-chat-container {
-    flex: 1; /* Takes up half of the communications section */
     background-color: #1e1e1e; /* Dark background for consistency */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    height: 30%;
 }
 
 .video-container {
-    display: flex;
     justify-content: space-around;
-    width: 100%;
+    height: max-content;
 }
 
 .local-video, .remote-video {
@@ -142,6 +145,16 @@
     border: 2px solid #333;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.videos-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.video {
+    width:50%;
+    height: 100%;
 }
 
 .quit-btn {

@@ -2,9 +2,8 @@ import './component-styles/RoomChat.css'
 import React, { useState} from 'react'
 import SendIcon from '@mui/icons-material/Send';
 import { sendMessage} from '../api/collaborationApi';
-import VideoChat from './VideoChat';
 
-export default function RoomChat({userId, roomId, messages, setMessages}) {
+export default function RoomChat({userId, roomId, messages}) {
     const [input, setInput] = useState('');
 
     const handleSendMessage = () => {
@@ -48,7 +47,6 @@ export default function RoomChat({userId, roomId, messages, setMessages}) {
                 </button>
             </div>
         </div>
-        {/* <VideoChat userId={userId} roomId={roomId} /> Commented out first due to some bugs - listens to socket before socket is connected */} 
     </div>
   )
 }

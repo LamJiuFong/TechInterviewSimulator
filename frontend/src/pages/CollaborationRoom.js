@@ -4,8 +4,8 @@ import QuestionPanel from '../components/QuestionPanel';
 import CodeEditor from '../components/CodeEditor';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useState, useEffect } from "react";
-import { initializeSocket, leaveCollaborationRoom } from '../api/collaborationApi';
+import { useState, useEffect, useRef } from "react";
+import { initializeSocket, leaveCollaborationRoom, sendOffer, sendAnswer, sendIceCandidate, listenForOffer, listenForAnswer, listenForIceCandidate } from '../api/collaborationApi';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material';
 
 export default function CollaborationRoom() {
@@ -18,6 +18,10 @@ export default function CollaborationRoom() {
     const [showPartnerHasLeftDialog, setShowPartnerHasLeftDialog] = useState(false);
     const [code, setCode] = useState(localStorage.getItem("latestCode") || "");
     const [messages, setMessages] = useState(localStorage.getItem("latestChat") ? JSON.parse(localStorage.getItem("latestChat")) : []);
+    const [peerConnection, setPeerConnection] = useState(null);
+    const [isCalling, setIsCalling] = useState(false);
+    const localVideoRef = useRef(null);
+    const remoteVideoRef = useRef(null);
 
     const navigate = useNavigate();
 
@@ -30,13 +34,21 @@ export default function CollaborationRoom() {
     useEffect(() => {
         if (roomInfo && user) {
             initializeSocket(user.id, roomInfo._id, setPartnerHasLeft, setCode, setMessages)
-            .then(() => setIsSocketConnected(true))
+            .then(() => 
+                {
+                    setIsSocketConnected(true);
+                    setupWebRTC();
+                    setupSignalingListeners();
+                })
             .catch((error) => {
                 console.error('Error initializing socket:', error.message);
             });
         }
         
-        return () =>  { if (roomInfo && user) leaveCollaborationRoom(roomInfo._id, user.id)};
+        return () =>  { 
+            if (peerConnection) peerConnection.close();
+            if (roomInfo && user) leaveCollaborationRoom(roomInfo._id, user.id);
+        };
     }, [roomInfo, user]);
 
     useEffect(() => {
@@ -44,6 +56,58 @@ export default function CollaborationRoom() {
             setShowPartnerHasLeftDialog(true);
         }
     }, [partnerHasLeft]);
+
+    const setupWebRTC = async () => {
+        const pc = new RTCPeerConnection({
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'turn:numb.viagenie.ca', credential: 'muazkh', username: 'webrtc@live.com' }
+            ]
+        });
+        setPeerConnection(pc);
+
+        const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        localVideoRef.current.srcObject = localStream;
+        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+        pc.ontrack = (event) => {
+            remoteVideoRef.current.srcObject = event.streams[0];
+        };
+
+        pc.onicecandidate = (event) => {
+            if (event.candidate) {
+                sendIceCandidate(roomInfo._id, event.candidate);
+            }
+        };
+    };
+
+    const setupSignalingListeners = () => {
+        listenForOffer(async (data) => {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            sendAnswer(roomInfo._id, answer);
+        });
+
+        listenForAnswer(async (data) => {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+        });
+
+        listenForIceCandidate(async (data) => {
+            try {
+                await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+            } catch (error) {
+                console.error("Error adding ICE candidate", error);
+            }
+        });
+    };
+
+    const handleStartCall = async () => {
+        setIsCalling(true);
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+        sendOffer(roomInfo._id, offer);
+    };
 
     return (
         <div className='collaboration-room'>
@@ -56,7 +120,18 @@ export default function CollaborationRoom() {
                 <CodeEditor roomId={roomInfo._id} code={code} setCode={setCode} />
             </div>
             <div className='room-chat'>
-                <RoomChat userId={user.id} roomId={roomInfo._id} messages={messages} setMessages={setMessages}/> 
+                <div className='video-chat-container'>
+                    <div className='videos-container'>
+                        <video ref={localVideoRef} autoPlay muted className='video'/>
+                        <video ref={remoteVideoRef} autoPlay className='video' />
+                    </div>
+                    <button onClick={handleStartCall} disabled={isCalling}>
+                        {isCalling ? 'Calling...' : 'Start Call'}
+                    </button>
+                </div>
+                <div className='text-chat-container'>
+                    <RoomChat userId={user.id} roomId={roomInfo._id} messages={messages} peerConnection={peerConnection} /> 
+                </div>
             </div>
             <Button className='quit-btn' onClick={() => setOpen(true)}>
                 Quit

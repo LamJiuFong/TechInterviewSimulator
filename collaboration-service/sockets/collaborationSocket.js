@@ -31,7 +31,7 @@ const collaborationSocket = (io) => {
         //Handling video calling
         socket.on("offer", (roomId, data) => {
             socket.to(roomId).emit("offer", { 
-                answer: data.answer, 
+                answer: data?.answer, 
                 senderId: userId
             });
         })
