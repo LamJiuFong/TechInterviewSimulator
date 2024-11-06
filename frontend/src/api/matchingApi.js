@@ -7,7 +7,7 @@ export const initializeSocket = (userId) => {
     throw new Error('User ID is required to initialize the socket connection');
   }
 
-  socket = io(process.env.MATCHING_SERVICE_URL, {
+  socket = io("ab67a7be348cb49fcb2c45d618ed7bfb-1566069717.ap-southeast-1.elb.amazonaws.com:3006", {
     query: { id: userId },
     transports: ['websocket', 'polling'],
     withCredentials: true,

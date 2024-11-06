@@ -14,6 +14,8 @@ const corsOptions = {
     credentials: true
 };
 
+console.log(process.env.FRONTEND_URL);
+
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -25,6 +27,8 @@ const io = new Server(httpServer, {
     cors: corsOptions,
     transports: ['websocket', 'polling'] // Explicitly state the transports
 });
+
+console.log(io);
 
 matchSocket(io);
 
