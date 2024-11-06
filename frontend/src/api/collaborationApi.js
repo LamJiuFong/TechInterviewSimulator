@@ -2,7 +2,7 @@ import io from 'socket.io-client';
 
 let socket;
 
-const COLLABORATION_SERVICE_URL = "a88b7f285d9464e40b69013ab3103ec9-805531271.ap-southeast-1.elb.amazonaws.com:3004";
+const COLLABORATION_SERVICE_URL = "http://a88b7f285d9464e40b69013ab3103ec9-805531271.ap-southeast-1.elb.amazonaws.com:3004";
 
 export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, setMessages) => {
     if (!userId) {
