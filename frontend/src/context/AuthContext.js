@@ -10,7 +10,8 @@ export const AuthProvider = ({children}) => {
     const loginUser = (res) => {
         const user = {
             id: res.data.id,
-            isAdmin: res.data.isAdmin
+            isAdmin: res.data.isAdmin,
+            username: res.data.username,
         }
         const token = res.data.accessToken;
         setUser(user);

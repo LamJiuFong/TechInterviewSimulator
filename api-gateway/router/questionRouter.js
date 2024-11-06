@@ -18,7 +18,7 @@ questionRouter.post("/", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message || "Error creating question",
         });
     }
 });
@@ -33,7 +33,7 @@ questionRouter.get("/", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message || "Error fetching all questions",
         });
     }
 });
@@ -49,7 +49,7 @@ questionRouter.get("/filter", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message || "Error fetching filtered questions",
         });
     }
 });
@@ -64,7 +64,7 @@ questionRouter.get("/:id", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message || "Error fetching question by id",
         });
     }
 });
@@ -80,7 +80,7 @@ questionRouter.put("/:id", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message || "Error updating question",
         });
     }
 });
@@ -95,7 +95,7 @@ questionRouter.delete("/:id", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message || "Error deleting question",
         });
     }
 });
@@ -109,7 +109,7 @@ questionRouter.get("/categories/all", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message || "Error fetching question categories",
         });
     }
 });

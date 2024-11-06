@@ -14,7 +14,7 @@ export async function login(email, password) {
     return response.data; // Contains accessToken and user data
   } catch (error) {
     console.error('Login error:', error);
-    throw error.response.data || { message: 'Login failed' };
+    throw error.response?.data || { message: 'Login failed' };
   }
 }
 
@@ -29,6 +29,6 @@ export async function verifyToken(token) {
     return response.data;
   } catch (error) {
     console.error('Token verification error:', error);
-    throw error.response.data || { message: 'Token verification failed' };
+    throw error.response?.data || { message: 'Token verification failed' };
   }
 }
