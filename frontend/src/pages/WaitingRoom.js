@@ -17,14 +17,21 @@ export default function WaitingRoom() {
     const [isMatchFound, setMatchFound] = useState(false);
     const [matchDetails, setMatchDetails] = useState();
     const { categories } = useQuestions();
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
 
     useEffect(() => {
-        initializeSocket(user.id)
+        if (!loading && user) {
+            initializeSocket(user.id)
+                .then(() => console.log("Socket initialized!"))
+                .catch((error) => {
+                    console.error("Error initializing socket:", error.message);
+                });
+        }
         return () => {
             closeSocket();
         };
-    }, [user.id]);
+    }
+    , [user, loading]);
 
     const handleCreateSession = async (category, difficulty) => {
         enterMatch(category, difficulty, setMatchFound, setTimeout)

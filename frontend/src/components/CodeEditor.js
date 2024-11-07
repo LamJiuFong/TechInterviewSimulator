@@ -41,14 +41,15 @@ const CodeEditor = ({ roomId, code, setCode }) => {
 
   useEffect(() => {
     // Poll for results when submission token exists
-    if (submissionToken) {
+    
+    if (loading && submissionToken) {
       const interval = setInterval(() => {
         handleGetSubmissionResult(submissionToken);
       }, 2000);
 
       return () => clearInterval(interval);
     }
-  }, [submissionToken, handleGetSubmissionResult]);
+  }, [submissionToken, handleGetSubmissionResult, loading]);
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);
@@ -172,8 +173,15 @@ const CodeEditor = ({ roomId, code, setCode }) => {
             {error && <span style={{ color: '#ff6b6b' }}>Error: {error}</span>}
             {stdout && (
               <>
-                <div>Status: {status.description}</div>
-                <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{stdout}</pre>
+                {status.description === "Accepted" && (
+                  <div>Status: Executed Successfully</div>
+                )}
+                {status.description !== "Accepted" && (
+                  <div>Status: {status.description}</div>
+                )}
+                <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+                  {stdout}
+                </pre>
               </>
             )}
           </Box>
