@@ -2,75 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Box, List, ListItem, ListItemButton, ListItemText, Typography, Button, Chip, Link } from '@mui/material';
 import { getFilteredQuestions } from '../api/questionApi';
 
-// Sample list of questions following your structure
-const questions = [
-  {
-    _id: "66f95f936583103818ea51cc",
-    title: "Add Binary",
-    description: "Given two binary strings a and b, return their sum as a binary string.",
-    difficulty: "Easy",
-    categories: ["Bit Manipulation", "Algorithms"],
-    examples: [
-      { input: "a = '11', b = '1'", output: "'100'" },
-      { input: "a = '1010', b = '1011'", output: "'10101'" }
-    ],
-    hints: ["Simulate the binary addition, managing carries."],
-    link: "https://leetcode.com/problems/add-binary/"
-  },
-  {
-    _id: "66f95f936583103818ea51cd",
-    title: "Two Sum",
-    description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
-    difficulty: "Easy",
-    categories: ["Arrays", "Hash Map"],
-    examples: [
-      { input: "nums = [2, 7, 11, 15], target = 9", output: "[0, 1]" },
-      { input: "nums = [3, 2, 4], target = 6", output: "[1, 2]" }
-    ],
-    hints: ["Use a hash map to find the complement."],
-    link: "https://leetcode.com/problems/two-sum/"
-  },
-  {
-    _id: "66f95f936583103818ea51ce",
-    title: "Reverse Linked List",
-    description: "Reverse a singly linked list.",
-    difficulty: "Easy",
-    categories: ["Linked List"],
-    examples: [
-      { input: "head = [1,2,3,4,5]", output: "[5,4,3,2,1]" }
-    ],
-    hints: ["Iterate through the list and reverse pointers."],
-    link: "https://leetcode.com/problems/reverse-linked-list/"
-  },
-  {
-    _id: "66f95f936583103818ea51cf",
-    title: "Merge Intervals",
-    description: "Given an array of intervals, merge all overlapping intervals.",
-    difficulty: "Medium",
-    categories: ["Sorting", "Intervals"],
-    examples: [
-      { input: "intervals = [[1,3],[2,6],[8,10],[15,18]]", output: "[[1,6],[8,10],[15,18]]" },
-      { input: "intervals = [[1,4],[4,5]]", output: "[[1,5]]" }
-    ],
-    hints: ["Sort intervals and merge if they overlap."],
-    link: "https://leetcode.com/problems/merge-intervals/"
-  },
-  {
-    _id: "66f95f936583103818ea51d0",
-    title: "Valid Parentheses",
-    description: "Given a string containing only parentheses, check if it is valid.",
-    difficulty: "Easy",
-    categories: ["Stack"],
-    examples: [
-      { input: "s = '()'", output: "true" },
-      { input: "s = '()[]{}'", output: "true" },
-      { input: "s = '(]' ", output: "false" }
-    ],
-    hints: ["Use a stack to manage open parentheses."],
-    link: "https://leetcode.com/problems/valid-parentheses/"
-  }
-];
-
 const QuestionPanel = ({ category, difficulty }) => {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [showHints, setShowHints] = useState(false); // State to manage hint visibility
@@ -88,9 +19,8 @@ const QuestionPanel = ({ category, difficulty }) => {
   }, []);
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
-      {/* Container for the question list and selected question (1/3 width) */}
-      <Box sx={{ width: '33.33%', p: 2 }}>
+    <Box sx={{ display: 'flex', height: '100vh', width: "100%" }}>
+      <Box sx={{ p: 2 , width: "100%"}}>
         {/* Show question list only if no question is selected */}
         {!selectedQuestion ? (
           <>

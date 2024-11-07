@@ -22,9 +22,9 @@ spec:
           - name: REDIS_PORT
             value: "6379"
           - name: QUESTION_SERVICE_URL
-            value: http://question-service:3002/
+            value: http://question-service.default.svc.cluster.local:3002/
           - name: FRONTEND_URL
-            value: http://frontend:3000/
+            value: http://frontend.default.svc.cluster.local:3000/
         resources:
           limits:
             memory: "128Mi"
@@ -44,4 +44,4 @@ spec:
   ports:
   - port: 3004
     targetPort: 3004
-  type: ClusterIP
+  type: LoadBalancer

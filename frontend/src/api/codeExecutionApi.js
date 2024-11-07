@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getToken } from "../utils/token";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.API_GATEWAY_URL
+  baseURL: "http://afded85ef6ffc4642b1745c5836c3a93-1402287292.ap-southeast-1.elb.amazonaws.com:3003"
 });
 
 axiosInstance.interceptors.request.use((req) => {

@@ -73,7 +73,15 @@ const RoomController = {
         return room;
     },
 
+    async getCode(roomId) {
+        const code = await roomRedis.rpop(`room:${roomId}-code`);
+        return code;
+    },
 
+    async writeCode(roomId, code) {
+        await roomRedis.lpop(`room:${roomId}-code`)
+        await roomRedis.rpush(`room:${roomId}-code`, code);
+    }
 };
 
 export { RoomController, roomRedis };

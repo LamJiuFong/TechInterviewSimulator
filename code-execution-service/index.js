@@ -16,8 +16,8 @@ app.get('/', (req, res) => {
 }
 );
 
-httpServer.listen(3007, () => {
-    console.log('Code execution service listening on port 3007');
+httpServer.listen(3005, () => {
+    console.log('Code execution service listening on port 3005');
 }
 );
 

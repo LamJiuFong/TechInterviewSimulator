@@ -15,7 +15,7 @@ userRouter.post("/", async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message,
         });
     }
 });
@@ -30,7 +30,7 @@ userRouter.get("/:userId", verifyAccessToken, async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message,
         });
     }
 });
@@ -44,7 +44,7 @@ userRouter.get("/", verifyAccessToken, verifyIsAdmin, async (req, res) => {
         res.status(response.status).json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
-            message: error.message,
+            message: error.response?.data?.message,
         });
     }
 });
@@ -67,7 +67,7 @@ userRouter.patch(
             res.status(response.status).json(response.data);
         } catch (error) {
             res.status(error.response?.status || 500).json({
-                message: error.message,
+                message: error.response?.data?.message,
             });
         }
     }
@@ -91,7 +91,7 @@ userRouter.patch(
             res.status(response.status).json(response.data);
         } catch (error) {
             res.status(error.response?.status || 500).json({
-                message: error.message,
+                message: error.response?.data?.message,
             });
         }
     }
@@ -115,7 +115,7 @@ userRouter.delete(
             res.status(response.status).json(response.data);
         } catch (error) {
             res.status(error.response?.status || 500).json({
-                message: error.message,
+                message: error.response?.data?.message,
             });
         }
     }

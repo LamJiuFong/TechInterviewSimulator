@@ -17,11 +17,11 @@ spec:
         image: tehopanas/cs3219-frontend:latest
         env:
           - name: API_GATEWAY_URL
-            value: http://api-gateway:3003/
+            value: http://api-gateway.default.svc.cluster.local:3003
           - name: COLLABORATION_SERVICE_URL
-            value: http://collaboration-service:3004
+            value: http://collaboration-service.default.svc.cluster.local:3004
           - name: MATCHING_SERVICE_URL
-            value: http://matching-service:3006
+            value: http://matching-service.default.svc.cluster.local:3006
         resources:
           limits:
             memory: "128Mi"
