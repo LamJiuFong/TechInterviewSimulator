@@ -92,6 +92,7 @@ const SignupForm = () => {
       </div>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <button type="submit">Sign Up</button>
+      <button onClick={() => navigate("/login")}>Already have an account? Sign In</button>
     </form>
   );
 };
