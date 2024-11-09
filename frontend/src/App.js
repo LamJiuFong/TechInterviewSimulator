@@ -33,7 +33,7 @@ const App = () => {
               <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
               <Route path="/admin/questions" element={<ProtectedRoute><AdminQuestionView /></ProtectedRoute>} />
               <Route path="/waiting-room" element={<ProtectedRoute><WaitingRoom /></ProtectedRoute>} />
-              <Route path="/collaboration" element={<CollaborationRoom/>} />
+              <Route path="/collaboration" element={<ProtectedRoute><CollaborationRoom/></ProtectedRoute>} />
               <Route path="*" element={<PageNotFound/>} />
             </Routes>
           </Router>
