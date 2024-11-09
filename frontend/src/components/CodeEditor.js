@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Toolbar, Button, MenuItem, Select, TextField, CircularProgress } from '@mui/material';
 import useCodeExecution from '../hooks/useCodeExecution';
-import { initializeCodeReader, writeCode } from '../api/collaborationApi';
+import { writeCode } from '../api/collaborationApi';
 import { Editor } from "@monaco-editor/react";
 
 const languageOptions = [
