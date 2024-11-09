@@ -15,6 +15,7 @@ const axiosInstance = axios.create({
 });
 
 export async function createSubmission(req, res) {
+  console.log(`Create submission: ${JSON.stringify(req.body)}`);
   try {
     const { languageId, code } = req.body;
     if (!code || !languageId) {

@@ -3,15 +3,12 @@ import "dotenv/config";
 import { userProxy } from "./proxy/userProxy.js";
 import { questionProxy } from "./proxy/questionProxy.js";
 import { verifyAccessToken } from "./middleware/authentication.js";
-import {
-    verifyIsAdmin,
-    verifyIsOwnerOrAdmin,
-} from "./middleware/authorization.js";
 import cors from "cors";
 import { authRouter } from "./router/authRouter.js";
 import { userRouter } from "./router/userRouter.js";
 import { questionRouter } from "./router/questionRouter.js";
 import { codeExecutionRouter } from "./router/codeExecutionRouter.js";
+import { codeExecutionProxy } from "./proxy/codeExecutionProxy.js";
 
 export const QUESTION_SERVICE =
     process.env.QUESTION_SERVICE_URL || "http://localhost:3002";
@@ -46,6 +43,9 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/api/questions", questionRouter);
 app.use("/api/code-execution", codeExecutionRouter);
+app.use("/question", verifyAccessToken, questionProxy);
+app.use("/user", userProxy)
+app.use("/code-execution", verifyAccessToken, codeExecutionProxy)
 
 app.listen(3210, () => {
     console.log("Backend listening on port 3003");
