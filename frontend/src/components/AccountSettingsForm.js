@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
@@ -12,28 +12,47 @@ const AccountSettingsForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { user } = useAuth();
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Clear previous messages
+    setError(null);
+    setSuccess(null);
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
 
+    // Prepare data, omitting empty fields
+    const updateData = {};
+    if (username) updateData.username = username;
+    if (email) updateData.email = email;
+    if (password) updateData.password = password;
+
     try {
       const userId = user.id; // Get userId from user object
-      await updateUser(userId, { username, email, password });
-      setError(null);
+      await updateUser(userId, updateData);
+      setSuccess("Profile updated successfully!");
     } catch (err) {
       setError(err.message);
     }
   };
+
+  useEffect(() => {
+    // Prefill fields with current user data if available
+    if (user) {
+      setUsername(user.username || '');
+      setEmail(user.email || '');
+    }
+  }, [user]);
+
   return (
     <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '500px', margin: 'auto' }}>
       <h2>Update Account Settings</h2>
@@ -88,6 +107,7 @@ const AccountSettingsForm = () => {
         }
       </div>
       {error && <p style={{ color: 'red' }}>{error}</p>}
+      {success && <p style={{ color: 'green' }}>{success}</p>}
       <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '16px' }}>
         Update Settings
       </Button>
