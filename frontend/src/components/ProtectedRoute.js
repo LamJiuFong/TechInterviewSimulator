@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children }) => {
       navigate("/login");
       setLoading(false);
     })
-  }, [user, navigate]);
+  }, [setUser, navigate]);
 
   if (loading) {
     return (
