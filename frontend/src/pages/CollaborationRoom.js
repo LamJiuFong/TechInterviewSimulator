@@ -5,7 +5,7 @@ import CodeEditor from '../components/CodeEditor';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect, useRef } from "react";
-import { initializeSocket, leaveCollaborationRoom, sendOffer, sendAnswer, sendIceCandidate, listenForOffer, listenForAnswer, listenForIceCandidate } from '../api/collaborationApi';
+import { initializeSocket, leaveCollaborationRoom, sendAnswer, sendIceCandidate, listenForOffer, listenForAnswer, listenForIceCandidate } from '../api/collaborationApi';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material';
 
 export default function CollaborationRoom() {
@@ -17,9 +17,6 @@ export default function CollaborationRoom() {
     const [partnerHasLeft, setPartnerHasLeft] = useState(false);
     const [showPartnerHasLeftDialog, setShowPartnerHasLeftDialog] = useState(false);
     const [peerConnection, setPeerConnection] = useState(null);
-    const [isCalling, setIsCalling] = useState(false);
-    const localVideoRef = useRef(null);
-    const remoteVideoRef = useRef(null);
     const [code, setCode] = useState("");
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -38,7 +35,6 @@ export default function CollaborationRoom() {
             .then(() => 
                 {
                     setIsSocketConnected(true);
-                    setupWebRTC();
                     setupSignalingListeners();
                 })
             .catch((error) => {
@@ -58,29 +54,6 @@ export default function CollaborationRoom() {
         }
     }, [partnerHasLeft]);
 
-    const setupWebRTC = async () => {
-        const pc = new RTCPeerConnection({
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'turn:numb.viagenie.ca', credential: 'muazkh', username: 'webrtc@live.com' }
-            ]
-        });
-        setPeerConnection(pc);
-
-        const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        localVideoRef.current.srcObject = localStream;
-        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-
-        pc.ontrack = (event) => {
-            remoteVideoRef.current.srcObject = event.streams[0];
-        };
-
-        pc.onicecandidate = (event) => {
-            if (event.candidate) {
-                sendIceCandidate(roomInfo._id, event.candidate);
-            }
-        };
-    };
 
     const setupSignalingListeners = () => {
         listenForOffer(async (data) => {
@@ -103,13 +76,6 @@ export default function CollaborationRoom() {
         });
     };
 
-    const handleStartCall = async () => {
-        setIsCalling(true);
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-        sendOffer(roomInfo._id, offer);
-    };
-
     return (
         <div className='collaboration-room'>
         {loading && 
@@ -126,15 +92,6 @@ export default function CollaborationRoom() {
                 <CodeEditor roomId={roomInfo._id} code={code} setCode={setCode} />
             </div>
             <div className='room-chat'>
-                <div className='video-chat-container'>
-                    <div className='videos-container'>
-                        <video ref={localVideoRef} autoPlay muted className='video'/>
-                        <video ref={remoteVideoRef} autoPlay className='video' />
-                    </div>
-                    <button onClick={handleStartCall} disabled={isCalling}>
-                        {isCalling ? 'Calling...' : 'Start Call'}
-                    </button>
-                </div>
                 <div className='text-chat-container'>
                     <RoomChat userId={user.id} roomId={roomInfo._id} messages={messages} peerConnection={peerConnection} /> 
                 </div>
