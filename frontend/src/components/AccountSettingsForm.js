@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { updateUser } from '../api/userApi'; // Modify this function for update logic
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from "lucide-react";
+import { updateUser } from '../api/userApi';
+import { useAuth } from '../context/AuthContext';
 
 const AccountSettingsForm = () => {
   const [username, setUsername] = useState('');
@@ -14,24 +15,25 @@ const AccountSettingsForm = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { user } = useAuth();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Password confirmation check
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
 
     try {
-      await updateUser({ username, email, password }); // Use update function here
-      navigate('/profile'); // Redirect to profile or another page after successful update
+      const userId = user.id; // Get userId from user object
+      await updateUser(userId, { username, email, password });
+      setError(null);
     } catch (err) {
       setError(err.message);
     }
   };
-
   return (
     <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '500px', margin: 'auto' }}>
       <h2>Update Account Settings</h2>
@@ -89,7 +91,7 @@ const AccountSettingsForm = () => {
       <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '16px' }}>
         Update Settings
       </Button>
-      <Button onClick={() => navigate("/profile")} color="secondary" fullWidth style={{ marginTop: '8px' }}>
+      <Button onClick={() => navigate("/home")} color="secondary" fullWidth style={{ marginTop: '8px' }}>
         Cancel
       </Button>
     </form>
