@@ -53,11 +53,13 @@ const useCodeExecution = () => {
       setStatus(status);
       setStdout(stdout);
       setStderr(stderr);
-      setSubmissionToken(null);
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      if (status?.id >= 2) {
+        setLoading(false);
+        setSubmissionToken(null);
+      }
     }
   };
 

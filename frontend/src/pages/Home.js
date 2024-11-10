@@ -1,17 +1,25 @@
 // src/pages/Home.js
 import './page-styles/Home.css';
-import React from 'react';
 import LogoutButton from '../components/LogoutButton';
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { useAuth } from '../context/AuthContext';
 import CreateIcon from '@mui/icons-material/Create';
 import QuizIcon from '@mui/icons-material/Quiz';
+import { useState, useEffect } from "react";
+import { SettingsIcon } from 'lucide-react';
 
 const Home = () => {
   const nav = useNavigate();
-  const { user } = useAuth();
-  const username = user.username;
+  const { user, loading } = useAuth();
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    if (!loading && user) {
+      setUsername(user.username);
+    }
+  }
+  , [user, loading]);
 
   return (
     <div className='home-page'>
@@ -29,6 +37,10 @@ const Home = () => {
           <h2>View all questions</h2>
         </Button>
       </div>
+      <Button class="setting-button" onClick={() => nav('/setting')}>
+        <SettingsIcon  sx={{ fontSize: 30 }}/>
+        <h2>Settings</h2>
+      </Button>
     </div>
   );
 };

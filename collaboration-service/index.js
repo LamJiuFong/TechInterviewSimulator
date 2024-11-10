@@ -32,8 +32,4 @@ const io = new Server(httpServer, {
 
 collaborationSocket(io);
 
-// httpServer.listen(3004, () => {
-//     console.log('Collaboration service listening on port 3004');
-// });
-
 export {app, httpServer};

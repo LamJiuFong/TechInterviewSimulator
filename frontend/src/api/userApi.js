@@ -4,7 +4,7 @@ import { getToken } from "../utils/token";
 
 // Base configuration for the API
 const API = axios.create({
-  baseURL: `http://afded85ef6ffc4642b1745c5836c3a93-1052407262.ap-southeast-1.elb.amazonaws.com:3003`,  // Change this to api gateway url
+  baseURL: `http://afded85ef6ffc4642b1745c5836c3a93-1052407262.ap-southeast-1.elb.amazonaws.com:3003/user`,  // Change this to api gateway url
 });
 
 // Attach token if needed (authentication)
@@ -52,7 +52,7 @@ export const createUser = async (userData) => {
   // Update user by ID
   export const updateUser = async (userId, userData) => {
     try {
-      const response = await API.put(`/users/${userId}`, userData);
+      const response = await API.patch(`/users/${userId}`, userData);
       return response.data;
     } catch (error) {
       console.error('Error updating user:', error.response?.data?.message || error.message);

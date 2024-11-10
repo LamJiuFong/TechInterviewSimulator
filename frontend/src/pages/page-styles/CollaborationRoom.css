@@ -2,7 +2,8 @@
 .collaboration-room {
     display: flex;
     flex-direction: row;
-    height: 100vh; /* Take up the full viewport height */
+    height: 100vh;
+    /* Take up the full viewport height */
     padding: 20px;
     box-sizing: border-box;
     position: relative;
@@ -10,7 +11,8 @@
 
 /* Styling for QuestionPanel to take up 1/4 of the space */
 .question-panel {
-    flex: 1; /* Takes up one part of the layout */
+    flex: 1;
+    /* Takes up one part of the layout */
     padding-right: 10px;
     overflow: hidden;
     height: 100%;
@@ -18,7 +20,8 @@
 
 /* Styling for QuestionPanel to take up 2/4 of the space */
 .code-editor {
-    flex: 2; /* Takes up two parts of the layout */
+    flex: 2;
+    /* Takes up two parts of the layout */
     padding-right: 10px;
     overflow: hidden;
     height: 100%;
@@ -26,7 +29,8 @@
 
 /* Styling for RoomChat to take up 1/4 of the space */
 .room-chat {
-    flex: 1; /* Takes up one part of the layout */
+    flex: 1;
+    /* Takes up one part of the layout */
     border: 3px solid #9CDDDB;
     border-radius: 10px;
     overflow: hidden;
@@ -44,8 +48,10 @@
 
 /* Main container for the chat component */
 .chat-container {
-    flex: 1; /* Takes up half of the communications section */
-    background-color: #1e1e1e; /* Dark background for chat */
+    flex: 1;
+    /* Takes up half of the communications section */
+    background-color: #1e1e1e;
+    /* Dark background for chat */
     color: #f1f1f1;
     display: flex;
     flex-direction: column;
@@ -54,8 +60,10 @@
 
 /* Message display area */
 .messages {
-    flex: 1;               /* Takes up remaining space above the input */
-    overflow-y: auto;      /* Scrollable */
+    flex: 1;
+    /* Takes up remaining space above the input */
+    overflow-y: auto;
+    /* Scrollable */
     display: flex;
     flex-direction: column;
     padding: 10px;
@@ -64,10 +72,12 @@
 
 /* Each individual message */
 .msg {
-    background-color: #2a2a2a; /* Slightly lighter background for each message */
+    background-color: #2a2a2a;
+    /* Slightly lighter background for each message */
     padding: 8px 12px;
     border-radius: 8px;
-    max-width: 70%;       /* Limit message width */
+    max-width: 70%;
+    /* Limit message width */
     word-wrap: break-word;
     margin-bottom: 8px;
 }
@@ -75,13 +85,15 @@
 /* Different color for user messages and others */
 .msg.user {
     align-self: flex-end;
-    background-color: #4a90e2; /* User messages in a different color */
+    background-color: #4a90e2;
+    /* User messages in a different color */
     color: #fff;
 }
 
 .msg.other {
     align-self: flex-start;
-    background-color: #3a3a3a; /* Other messages in a different color */
+    background-color: #3a3a3a;
+    /* Other messages in a different color */
 }
 
 /* Input area for typing and sending messages */
@@ -127,7 +139,8 @@
 
 /* Video chat container styling */
 .video-chat-container {
-    background-color: #1e1e1e; /* Dark background for consistency */
+    background-color: #1e1e1e;
+    /* Dark background for consistency */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -140,12 +153,14 @@
     height: max-content;
 }
 
-.local-video, .remote-video {
+.local-video,
+.remote-video {
     width: 45%;
     border: 2px solid #333;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .videos-container {
     display: flex;
     flex-direction: row;
@@ -153,7 +168,7 @@
 }
 
 .video {
-    width:50%;
+    width: 50%;
     height: 100%;
 }
 

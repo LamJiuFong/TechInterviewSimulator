@@ -27,20 +27,6 @@ export const AuthProvider = ({children}) => {
         setLoading(false);
     };
 
-    // To be called upon page refresh
-    useEffect(() => {
-        try {
-            const storedUser = localStorage.getItem('user');
-            if (storedUser) {
-                setUser(JSON.parse(storedUser));
-            }
-        } catch (error) {
-            console.error('Error reading from localStorage:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
     return (
         <AuthContext.Provider value={{
             user,
