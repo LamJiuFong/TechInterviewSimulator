@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import CreateIcon from '@mui/icons-material/Create';
 import QuizIcon from '@mui/icons-material/Quiz';
 import { useState, useEffect } from "react";
+import { SettingsIcon } from 'lucide-react';
 
 const Home = () => {
   const nav = useNavigate();
@@ -36,6 +37,10 @@ const Home = () => {
           <h2>View all questions</h2>
         </Button>
       </div>
+      <Button class="setting-button" onClick={() => nav('/setting')}>
+        <SettingsIcon  sx={{ fontSize: 30 }}/>
+        <h2>Settings</h2>
+      </Button>
     </div>
   );
 };
