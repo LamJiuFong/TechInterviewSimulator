@@ -120,7 +120,7 @@ export async function matchUserInQueue(io)
             }
 
             // * if successfully find 2 user, match them 
-            const difficulty = difficultyMap[Math.floor((difficultyMap[firstOpponent[3]] + difficultyMap[secondOpponent[3]]) / 2)];
+            const difficulty = difficultyMap[Math.min(difficultyMap[firstOpponent[3]], difficultyMap[secondOpponent[3]])];
 
             emitMatchFound(io, firstOpponent, secondOpponent, category, difficulty) //
             
@@ -211,11 +211,8 @@ export async function matchUserInQueue(io)
                 {
                     let opponent = await redis.lpop(category);
                     opponent = opponent.split(":");
-                    opponentDifficulty = opponent[3]
 
-                    chosenDifficulty = difficultyMap[difficulty] < difficultyMap[opponentDifficulty] ? difficulty : opponentDifficulty;
-
-                    emitMatchFound(io, opponent, remainingUser, category, chosenDifficulty);
+                    emitMatchFound(io, opponent, remainingUser, category, difficulty);
                     continue;
                 }
 
@@ -323,13 +320,13 @@ export async function rejectCollaboration(matchId, userId, io) {
         
         // Put accepted party back into queue
         for (const player of collaboration.players) {
-            if (player.hasAccepted) {
+            if (player.userId != userId) {
                 const queueName = `${collaboration.category}:${collaboration.difficulty}`;
                 const playerReq = `${player.userId}:${player.socketId}:${Date.now()}`;
 
                 redis.rpush(queueName, playerReq);
 
-                io.to(player.socketId).emit("partner-rejected-requeue");
+                io.to(player.socketId).emit("collaboration-rejected-requeue");
 
             } else { // notify rejected party 
                 io.to(player.socketId).emit("collaboration-rejected", matchId);

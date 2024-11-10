@@ -57,6 +57,19 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
     socket.on('match-found', handleMatchFound);
     socket.on('timeout', handleTimeout);
 
+    const handleReject = () => {
+      console.log("Collaboration has been rejected ");
+    };
+  
+    const handleRequeue = () => {
+      console.log("Requeueing user back to matchmaking");
+    };
+  
+    socket.on('collaboration-rejected', handleReject);
+
+    socket.on('collaboration-rejected-requeue', handleRequeue);
+    socket.on('collaboration-timeout-requeue', handleRequeue);
+
   });
 };
 
@@ -66,6 +79,7 @@ export const cancelMatch = () => {
   }
 };
 
+// accept match only handles collaboration accepted message given to met condition, both party have to accept first.
 export const acceptMatch = (acceptanceId, setHasToWait, setIsCreatingRoom, setCreatedRoom) => {
   if (!socket || !socket.connected) {
     return;
@@ -76,19 +90,15 @@ export const acceptMatch = (acceptanceId, setHasToWait, setIsCreatingRoom, setCr
   const handleAccept = () => {
     setHasToWait(false);
     setIsCreatingRoom(true);
-  }
+  };
 
-  //TODO1
-  const handleReject = () => {
-    console.log("rejected!!! :(")
-  }
-
+  
   const handleDoneCreatingRoom = (roomId) => {
     setCreatedRoom(roomId);
-  }
+  };
 
   socket.on('collaboration-accepted', handleAccept);
-  socket.on('collaboration-rejected', handleReject);
+  
   socket.on('created-room', handleDoneCreatingRoom);
 
 };
