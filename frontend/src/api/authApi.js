@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: "http://afded85ef6ffc4642b1745c5836c3a93-1402287292.ap-southeast-1.elb.amazonaws.com:3003",  // Change this to api gateway url
+  baseURL: "http://afded85ef6ffc4642b1745c5836c3a93-1052407262.ap-southeast-1.elb.amazonaws.com:3003",  // Change this to api gateway url
 });
 
 // Login API function

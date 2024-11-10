@@ -7,6 +7,8 @@ const CODE_EXECUTION_SERVICE_URL =
 
 export const codeExecutionRouter = express.Router();
 
+console.log(CODE_EXECUTION_SERVICE_URL);
+
 codeExecutionRouter.post("/submissions", async (req, res) => {
     try {
         const response = await axios.post(
