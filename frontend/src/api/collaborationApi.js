@@ -4,7 +4,7 @@ let socket;
 
 const COLLABORATION_SERVICE_URL = "http://a88b7f285d9464e40b69013ab3103ec9-805531271.ap-southeast-1.elb.amazonaws.com:3004";
 
-export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, setMessages) => {
+export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, setMessages, setLoading) => {
     if (!userId) {
         throw new Error('User ID is required to initialize the socket connection');
     }
@@ -25,7 +25,7 @@ export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, set
     });
     
     socket.on('disconnect', () => {
-        console.log(`Disconnected from matching service for user ${userId}`);
+        console.log(`Disconnected from collaboration service for user ${userId}`);
     });
 
     socket.on("user-left", (leftId) => {
@@ -36,16 +36,24 @@ export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, set
 
     socket.on("read-code", (code) => {
         setCode(code);
-        localStorage.setItem("latestCode", code);
     })
 
     socket.on('receive-message', (message) => {
         setMessages(prev => {
             const messages = [...prev, message];
-            localStorage.setItem("latestChat", JSON.stringify(messages));
             return messages;
         });
     });
+
+    socket.on('init-room', (code, messages, returnedUserId) => {
+        console.log("initroom called", returnedUserId);
+        if (userId == returnedUserId ) {
+            setCode(code || "");
+            setMessages(messages || []);
+            console.log("received init room event from backend", code, messages);
+        }
+        setLoading(false);
+    })
 
     return new Promise((resolve, reject) => {
         socket.on('connect', () => resolve(socket));
@@ -55,7 +63,6 @@ export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, set
 
 export const writeCode = (roomId, code) => {
     socket.emit("write-code", roomId, code);
-    localStorage.setItem("latestCode", code);
 }
 
 export const sendMessage = (roomId, userId, message) => {
@@ -118,8 +125,6 @@ export const listenForIceCandidate = (onCandidateReceived) => {
 };
 
 export const leaveCollaborationRoom = (roomId, userId) => {
-    localStorage.removeItem("latestCode");
-    localStorage.removeItem("latestChat");
     if (socket && socket.connected) {
         socket.emit('leave-room', roomId, userId); // Notify the server that the user is leaving the room
         socket.disconnect();

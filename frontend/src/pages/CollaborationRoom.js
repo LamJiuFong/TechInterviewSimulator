@@ -16,12 +16,13 @@ export default function CollaborationRoom() {
     const [open, setOpen] = useState(false);
     const [partnerHasLeft, setPartnerHasLeft] = useState(false);
     const [showPartnerHasLeftDialog, setShowPartnerHasLeftDialog] = useState(false);
-    const [code, setCode] = useState(localStorage.getItem("latestCode") || "");
-    const [messages, setMessages] = useState(localStorage.getItem("latestChat") ? JSON.parse(localStorage.getItem("latestChat")) : []);
     const [peerConnection, setPeerConnection] = useState(null);
     const [isCalling, setIsCalling] = useState(false);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
+    const [code, setCode] = useState("");
+    const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const navigate = useNavigate();
 
@@ -33,7 +34,7 @@ export default function CollaborationRoom() {
 
     useEffect(() => {
         if (roomInfo && user) {
-            initializeSocket(user.id, roomInfo._id, setPartnerHasLeft, setCode, setMessages)
+            initializeSocket(user.id, roomInfo._id, setPartnerHasLeft, setCode, setMessages, setLoading)
             .then(() => 
                 {
                     setIsSocketConnected(true);
@@ -111,7 +112,12 @@ export default function CollaborationRoom() {
 
     return (
         <div className='collaboration-room'>
-        {roomInfo && user && isSocketConnected &&
+        {loading && 
+        <Dialog open={true}>
+            <DialogTitle>Loading....</DialogTitle>
+        </Dialog>
+        }
+        {roomInfo && user && isSocketConnected && !loading &&
             <>
             <div className='question-panel'>
                 <QuestionPanel category={roomInfo.question.category} difficulty={roomInfo.question.difficulty} />

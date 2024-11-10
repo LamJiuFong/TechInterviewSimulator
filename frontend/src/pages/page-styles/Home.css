@@ -6,7 +6,7 @@
     flex: 1;
 
     h1 {
-        margin-bottom: 5px;
+        margin-bottom: 10px;
     }
 }
 
@@ -54,4 +54,10 @@
             color: white;
         }
     }
+}
+
+.welcome-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
