@@ -71,9 +71,9 @@ export default function ConfirmationDialog({isMatchFound, setMatchFound, matchDe
       </DialogContent>
       {!hasToWait && !isCreatingRoom &&
       <DialogActions>
-        <Button onClick={onReject} color="secondary" variant="outlined">
+        {/* <Button onClick={onReject} color="secondary" variant="outlined">
           Reject
-        </Button>
+        </Button> */}
         <Button onClick={onAccept} color="primary" variant="contained">
           Accept
         </Button>
