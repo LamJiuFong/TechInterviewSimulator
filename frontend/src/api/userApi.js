@@ -52,7 +52,7 @@ export const createUser = async (userData) => {
   // Update user by ID
   export const updateUser = async (userId, userData) => {
     try {
-      const response = await API.put(`/users/${userId}`, userData);
+      const response = await API.patch(`/users/${userId}`, userData);
       return response.data;
     } catch (error) {
       console.error('Error updating user:', error.response?.data?.message || error.message);
