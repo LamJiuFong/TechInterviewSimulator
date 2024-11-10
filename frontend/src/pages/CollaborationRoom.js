@@ -92,18 +92,6 @@ export default function CollaborationRoom() {
                 <CodeEditor roomId={roomInfo._id} code={code} setCode={setCode} />
             </div>
             <div className='room-chat'>
-<<<<<<< HEAD
-                {/* <div className='video-chat-container'>
-                    <div className='videos-container'>
-                        <video ref={localVideoRef} autoPlay muted className='video'/>
-                        <video ref={remoteVideoRef} autoPlay className='video' />
-                    </div>
-                    <button onClick={handleStartCall} disabled={isCalling}>
-                        {isCalling ? 'Calling...' : 'Start Call'}
-                    </button>
-                </div> */}
-=======
->>>>>>> 6a1b5049b7823c8be4bd0c308361cf1722c80dd3
                 <div className='text-chat-container'>
                     <RoomChat userId={user.id} roomId={roomInfo._id} messages={messages} peerConnection={peerConnection} /> 
                 </div>
