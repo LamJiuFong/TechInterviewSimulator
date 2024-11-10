@@ -8,8 +8,8 @@ const redis = new Redis({
     port: process.env.REDIS_PORT || 6379
   });
 
-const LOOSEN_DIFFICULTY_TIME = 10000; // number of checks by 
-const TIMEOUT = 30000;
+const LOOSEN_DIFFICULTY_TIME = 120000; 
+const TIMEOUT = 300000;
 const cancelMatchmakeUsers = new Map();
 const difficulties = ["Easy", "Medium", "Hard"];
 const ACCEPT_REQUEST_TIMEOUT = 15000; // 15 seconds
@@ -320,11 +320,22 @@ export async function rejectCollaboration(matchId, userId, io) {
     const collaboration = COLLABORATION_QUEUE.get(matchId);
     
     if (collaboration && collaboration.players.find(player => player.userId === userId)) {
-        // Notify both players of rejection
-        collaboration.players.forEach(player => {
-            io.to(player.socketId).emit("collaboration-rejected", matchId);
-        })
         
+        // Put accepted party back into queue
+        for (const player of collaboration.players) {
+            if (player.hasAccepted) {
+                const queueName = `${collaboration.category}:${collaboration.difficulty}`;
+                const playerReq = `${player.userId}:${player.socketId}:${Date.now()}`;
+
+                redis.rpush(queueName, playerReq);
+
+                io.to(player.socketId).emit("partner-rejected-requeue");
+
+            } else { // notify rejected party 
+                io.to(player.socketId).emit("collaboration-rejected", matchId);
+            }
+        }
+  
         // Clean up the collaboration queue
         COLLABORATION_QUEUE.delete(matchId);
     }
@@ -335,9 +346,21 @@ async function handleCollaborationTimeout(matchId, io) {
     
     if (collaboration) {
         // Notify players of timeout
-        collaboration.players.forEach(player => {
-            io.to(player.socketId).emit("collaboration-timeout", matchId);
-        })
+        for (const player of collaboration.players) {
+
+            if (player.hasAccepted) {
+                const queueName = `${collaboration.category}:${collaboration.difficulty}`;
+                const playerReq = `${player.userId}:${player.socketId}:${Date.now()}`;
+
+                redis.rpush(queueName, playerReq);
+
+                io.to(player.socketId).emit("collaboration-timeout-requeue");
+            } else {
+                io.to(player.socketId).emit("collaboration-timeout", matchId);
+            }
+            
+        }
+                
         COLLABORATION_QUEUE.delete(matchId); // Clean up
     }
 }
