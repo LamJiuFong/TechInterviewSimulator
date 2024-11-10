@@ -211,7 +211,11 @@ export async function matchUserInQueue(io)
                 {
                     let opponent = await redis.lpop(category);
                     opponent = opponent.split(":");
-                    emitMatchFound(io, opponent, remainingUser, category, difficulty);
+                    opponentDifficulty = opponent[3]
+
+                    chosenDifficulty = difficultyMap[difficulty] < difficultyMap[opponentDifficulty] ? difficulty : opponentDifficulty;
+
+                    emitMatchFound(io, opponent, remainingUser, category, chosenDifficulty);
                     continue;
                 }
 
