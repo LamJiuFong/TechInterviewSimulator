@@ -14,6 +14,7 @@ const SignupForm = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
   const handleSubmit = async (e) => {
@@ -22,6 +23,12 @@ const SignupForm = () => {
     // Check if passwords match
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
+      return;
+    }
+
+    //Check if email follows email format
+    if (!emailRegex.test(email)) {
+      setError("Invalid email format. The email should be in the format: user@email.com");
       return;
     }
 
