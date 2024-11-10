@@ -22,6 +22,7 @@ const RoomRepository = {
             }
         });
         await room.save();
+        console.log("Room created, roomId: ", room._id);
         return room;
     },
 
@@ -39,7 +40,9 @@ const RoomRepository = {
     async addUserToRoom(roomId, userId) {
         const room = await Room.findById(roomId);
         if (room) {
-            room.participants.push(userId);  // Add participant as a simple string
+            if (!room.participants.includes(userId)) {
+                room.participants.push(userId); // Only add if userId is not already in participants
+            }
             await room.save();
             return room;
         } else {
@@ -48,11 +51,12 @@ const RoomRepository = {
     },
 
     // Remove a user from the room
-    async removeUserFromRoom(roomId, userName) {
+    async removeUserFromRoom(roomId, userId) {
         const room = await Room.findById(roomId);
         if (room) {
-            room.participants = room.participants.filter(participant => participant !== userName);
+            room.participants = room.participants.filter(participant => participant !== userId);
             await room.save();
+            console.log("Removed user from room :", roomId, "user: ", userId);
             return room;
         } else {
             throw new Error('Room does not exist');
@@ -62,6 +66,7 @@ const RoomRepository = {
     // Archive a room (deactivate it)
     async archiveRoom(roomId) {
         const room = await Room.findByIdAndUpdate(roomId, { is_active: false }, { new: true });
+        console.log("Deactivated room :", roomId);
         return room;
     }
 };

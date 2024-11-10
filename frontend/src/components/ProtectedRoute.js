@@ -1,17 +1,34 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext.js";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
+import { getToken } from "../utils/token";
+import { verifyToken } from "../api/authApi";
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user) {
+    const storedToken = getToken();
+
+    verifyToken(storedToken)
+    .then((res) => {
+        const user = {
+            id: res.data.id,
+            isAdmin: res.data.isAdmin,
+            username: res.data.username,
+        }
+        setUser(user);
+        localStorage.setItem('user', JSON.stringify(user));
+        setLoading(false);
+    })
+    .catch((err) => {
       navigate("/login");
-    }
-  }, [user, loading, navigate]);
+      setLoading(false);
+    })
+  }, [user, navigate]);
 
   if (loading) {
     return (
@@ -20,6 +37,7 @@ const ProtectedRoute = ({ children }) => {
       </div>
     );
   }
+  
   return children;
 };
 
