@@ -4,8 +4,8 @@ import QuestionPanel from '../components/QuestionPanel';
 import CodeEditor from '../components/CodeEditor';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useState, useEffect, useCallback } from "react";
-import { initializeSocket, leaveCollaborationRoom, sendAnswer, sendIceCandidate, listenForOffer, listenForAnswer, listenForIceCandidate } from '../api/collaborationApi';
+import { useState, useEffect } from "react";
+import { initializeSocket, leaveCollaborationRoom, sendAnswer, listenForOffer, listenForAnswer, listenForIceCandidate } from '../api/collaborationApi';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material';
 
 export default function CollaborationRoom() {
