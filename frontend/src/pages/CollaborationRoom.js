@@ -4,7 +4,7 @@ import QuestionPanel from '../components/QuestionPanel';
 import CodeEditor from '../components/CodeEditor';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { initializeSocket, leaveCollaborationRoom, sendAnswer, sendIceCandidate, listenForOffer, listenForAnswer, listenForIceCandidate } from '../api/collaborationApi';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material';
 
@@ -20,6 +20,7 @@ export default function CollaborationRoom() {
     const [code, setCode] = useState("");
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
+        
 
     const navigate = useNavigate();
 
@@ -43,11 +44,12 @@ export default function CollaborationRoom() {
         }
 
         const handleBeforeUnload = (event) => {
-            if (roomInfo && user) leaveCollaborationRoom(roomInfo._id, user.id);
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave? Your partner will be notified.';
+
           };
       
         window.addEventListener('beforeunload', handleBeforeUnload);
-      
         return () => {
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
