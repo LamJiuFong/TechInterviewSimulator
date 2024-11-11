@@ -45,7 +45,7 @@ export default function CollaborationRoom() {
 
         const handleBeforeUnload = (event) => {
             event.preventDefault();
-            event.returnValue = 'Are you sure you want to leave? Your partner will be notified.';
+            event.returnValue = 'Are you sure you want to leave?';
 
           };
       
