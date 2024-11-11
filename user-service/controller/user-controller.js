@@ -73,7 +73,7 @@ export async function getAllUsers(req, res) {
 
 export async function updateUser(req, res) {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, oldPassword, password } = req.body;
     if (username || email || password) {
       const userId = req.params.id;
       if (!isValidObjectId(userId)) {
@@ -91,6 +91,13 @@ export async function updateUser(req, res) {
         existingUser = await _findUserByEmail(email);
         if (existingUser && existingUser.id !== userId) {
           return res.status(409).json({ message: "email already exists" });
+        }
+      }
+
+      if (oldPassword) {
+        const isOldPasswordValid = bcrypt.compareSync(oldPassword, user.password);
+        if (!isOldPasswordValid) {
+          return res.status(409).json({ message: "origianl password is wrong" });
         }
       }
 
