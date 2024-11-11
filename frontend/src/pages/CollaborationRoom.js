@@ -11,7 +11,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogConten
 export default function CollaborationRoom() {
     const location = useLocation();
     const { roomInfo } = location.state || {};
-    const { user } = useAuth();
+    const { user, loading: userLoading } = useAuth();
     const [isSocketConnected, setIsSocketConnected] = useState(false);
     const [open, setOpen] = useState(false);
     const [partnerHasLeft, setPartnerHasLeft] = useState(false);
@@ -30,7 +30,7 @@ export default function CollaborationRoom() {
     }
 
     useEffect(() => {
-        if (roomInfo && user) {
+        if (roomInfo && !userLoading && user) {
             initializeSocket(user.id, roomInfo._id, setPartnerHasLeft, setCode, setMessages, setLoading)
             .then(() => 
                 {
@@ -41,12 +41,18 @@ export default function CollaborationRoom() {
                 console.error('Error initializing socket:', error.message);
             });
         }
-        
-        return () =>  { 
-            if (peerConnection) peerConnection.close();
+
+        const handleBeforeUnload = (event) => {
             if (roomInfo && user) leaveCollaborationRoom(roomInfo._id, user.id);
+          };
+      
+        window.addEventListener('beforeunload', handleBeforeUnload);
+      
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
         };
-    }, [roomInfo, user]);
+        
+    }, [roomInfo, user, userLoading]);
 
     useEffect(() => {
         if (partnerHasLeft) {
