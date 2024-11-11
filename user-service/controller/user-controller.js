@@ -97,7 +97,7 @@ export async function updateUser(req, res) {
       if (oldPassword) {
         const isOldPasswordValid = bcrypt.compareSync(oldPassword, user.password);
         if (!isOldPasswordValid) {
-          return res.status(409).json({ message: "origianl password is wrong" });
+          return res.status(409).json({ message: "old password is wrong" });
         }
       }
 
