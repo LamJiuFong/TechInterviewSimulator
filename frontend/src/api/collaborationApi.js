@@ -4,7 +4,19 @@ let socket;
 
 const COLLABORATION_SERVICE_URL = 'http://localhost:3004';
 
-export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, setMessages, setLoading) => {
+export const initializeSocket = (
+    userId, 
+    roomId, 
+    setPartnerHasLeft, 
+    setCode, 
+    setMessages, 
+    setLoading, 
+    setLanguage, 
+    setCodeRunning, 
+    setStatus, 
+    setStdout, 
+    setStderr
+) => {
     if (!userId) {
         throw new Error('User ID is required to initialize the socket connection');
     }
@@ -43,6 +55,20 @@ export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, set
             const messages = [...prev, message];
             return messages;
         });
+    });
+
+    socket.on('receive-change-language', (language) => {
+        setLanguage(language);
+    });
+
+    socket.on('receive-code-running', (running) => {
+        setCodeRunning(running);
+    });
+
+    socket.on('receive-code-output', (status, stdout, stderr) => {
+        setStatus(status);
+        setStdout(stdout);
+        setStderr(stderr);
     });
 
     socket.on('init-room', (code, messages, returnedUserId) => {
@@ -130,6 +156,18 @@ export const leaveCollaborationRoom = (roomId, userId) => {
         socket.disconnect();
     }
 };
+
+export const changeLanguage = (roomId, language) => {
+    socket.emit("change-language", roomId, language);
+}
+
+export const codeRunning = (roomId, running) => {
+    socket.emit("code-running", roomId, running);
+}
+
+export const changeCodeOutput = (roomId, status, stdout, stderr) => {
+    socket.emit("change-code-output", roomId, status, stdout, stderr);
+}
 
 export const closeSocket = () => {
     if (socket) socket.disconnect();

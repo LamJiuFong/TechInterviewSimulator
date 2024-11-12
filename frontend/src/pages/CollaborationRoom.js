@@ -20,7 +20,11 @@ export default function CollaborationRoom() {
     const [code, setCode] = useState("");
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
-        
+    const [language, setLanguage] = useState(71); // Default to Python
+    const [codeRunning, setCodeRunning] = useState(false);
+    const [status, setStatus] = useState(null);
+    const [stdout, setStdout] = useState(null);
+    const [stderr, setStderr] = useState(null);
 
     const navigate = useNavigate();
 
@@ -32,15 +36,26 @@ export default function CollaborationRoom() {
 
     useEffect(() => {
         if (roomInfo && !userLoading && user) {
-            initializeSocket(user.id, roomInfo._id, setPartnerHasLeft, setCode, setMessages, setLoading)
-            .then(() => 
-                {
-                    setIsSocketConnected(true);
-                    setupSignalingListeners();
-                })
-            .catch((error) => {
-                console.error('Error initializing socket:', error.message);
-            });
+            initializeSocket(
+              user.id,
+              roomInfo._id,
+              setPartnerHasLeft,
+              setCode,
+              setMessages,
+              setLoading,
+              setLanguage,
+              setCodeRunning,
+              setStatus,
+              setStdout,
+              setStderr
+            )
+              .then(() => {
+                setIsSocketConnected(true);
+                setupSignalingListeners();
+              })
+              .catch((error) => {
+                console.error("Error initializing socket:", error.message);
+              });
         }
 
         const handleBeforeUnload = (event) => {
@@ -97,7 +112,20 @@ export default function CollaborationRoom() {
                 <QuestionPanel category={roomInfo.question.category} difficulty={roomInfo.question.difficulty} />
             </div>
             <div className='code-editor'>
-                <CodeEditor roomId={roomInfo._id} code={code} setCode={setCode} />
+                <CodeEditor 
+                    roomId={roomInfo._id} 
+                    code={code} 
+                    setCode={setCode} 
+                    language={language} 
+                    setLanguage={setLanguage} 
+                    codeRunning={codeRunning} 
+                    status={status}
+                    setStatus={setStatus}
+                    stdout={stdout}
+                    setStdout={setStdout}
+                    stderr={stderr}
+                    setStderr={setStderr}
+                />
             </div>
             <div className='room-chat'>
                 <div className='text-chat-container'>

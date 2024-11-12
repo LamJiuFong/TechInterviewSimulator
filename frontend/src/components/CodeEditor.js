@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Toolbar, Button, MenuItem, Select, TextField, CircularProgress } from '@mui/material';
 import useCodeExecution from '../hooks/useCodeExecution';
-import { writeCode } from '../api/collaborationApi';
+import { changeLanguage, writeCode } from '../api/collaborationApi';
 import { Editor } from "@monaco-editor/react";
 
 const languageOptions = [
@@ -24,20 +24,29 @@ const languageMap = {
   71: "python"
 }
 
-const CodeEditor = ({ roomId, code, setCode }) => {
-  const [language, setLanguage] = useState(71); // Default to Python
-  const [languageName, setLanguageName] = useState("python");
+const CodeEditor = ({ 
+  roomId, 
+  code, 
+  setCode,
+  language, 
+  setLanguage, 
+  codeRunning,  
+  status,
+  setStatus,
+  stdout,
+  setStdout,
+  stderr,
+  setStderr
+}) => {
+  const [languageName, setLanguageName] = useState(languageMap[language]);
   
   const {
     loading,
     error,
     submissionToken,
-    status,
-    stdout,
-    stderr,
     handleCreateSubmission,
     handleGetSubmissionResult,
-  } = useCodeExecution();
+  } = useCodeExecution(roomId, setStatus, setStdout, setStderr);
 
   useEffect(() => {
     // Poll for results when submission token exists
@@ -54,6 +63,7 @@ const CodeEditor = ({ roomId, code, setCode }) => {
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);
     setLanguageName(languageMap[event.target.value]);
+    changeLanguage(roomId, event.target.value);
   };
 
   const handleCodeChange = (value) => {
@@ -128,7 +138,7 @@ const CodeEditor = ({ roomId, code, setCode }) => {
           ))}
         </Select>
         
-        {loading ? <LoadingButton /> : (
+        {loading || codeRunning ? <LoadingButton /> : (
           <Button 
             variant="contained" 
             onClick={handleRun} 
