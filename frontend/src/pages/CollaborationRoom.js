@@ -5,7 +5,7 @@ import CodeEditor from '../components/CodeEditor';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from "react";
-import { initializeSocket, leaveCollaborationRoom, sendAnswer, listenForOffer, listenForAnswer, listenForIceCandidate } from '../api/collaborationApi';
+import { initializeSocket, leaveCollaborationRoom, sendAnswer, sendIceCandidate, listenForOffer, listenForAnswer, listenForIceCandidate } from '../api/collaborationApi';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material';
 
 export default function CollaborationRoom() {
@@ -101,7 +101,7 @@ export default function CollaborationRoom() {
             </div>
             <div className='room-chat'>
                 <div className='text-chat-container'>
-                    <RoomChat userId={user.id} roomId={roomInfo._id} messages={messages} peerConnection={peerConnection} /> 
+                    <RoomChat userId={user.id} roomId={roomInfo._id} messages={messages} peerConnection={peerConnection}/> 
                 </div>
             </div>
             <Button className='quit-btn' onClick={() => setOpen(true)}>
