@@ -50,7 +50,6 @@ const CodeEditor = ({
 
   useEffect(() => {
     // Poll for results when submission token exists
-    
     if (loading && submissionToken) {
       const interval = setInterval(() => {
         handleGetSubmissionResult(submissionToken);
@@ -169,7 +168,7 @@ const CodeEditor = ({
       </Box>
 
       <Box sx={{ flexGrow: 1, display: 'flex', gap: 2 }}>
-        {(error || stdout) &&
+        {(error || stdout || status) &&
           <Box 
             sx={{  
               width: '100%',
@@ -181,7 +180,7 @@ const CodeEditor = ({
             }}
           >
             {error && <span style={{ color: '#ff6b6b' }}>Error: {error}</span>}
-            {stdout && (
+            {status && (
               <>
                 {status.description === "Accepted" && (
                   <div>Status: Executed Successfully</div>
@@ -189,9 +188,9 @@ const CodeEditor = ({
                 {status.description !== "Accepted" && (
                   <div>Status: {status.description}</div>
                 )}
-                <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+                { stdout && <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
                   {stdout}
-                </pre>
+                </pre> }
               </>
             )}
           </Box>
