@@ -71,6 +71,19 @@ const collaborationSocket = (io) => {
         socket.on("disconnect", () => {
             console.log(`User ${socket.handshake.query.id} socket disconnected:`, socket.id);
         });
+
+        socket.on("change-language", async (roomId, code) => {
+            socket.to(roomId).emit("receive-change-language", code);
+        });
+
+        socket.on("code-running", async (roomId, running) => {
+            socket.to(roomId).emit("receive-code-running", running);
+        });
+
+        socket.on("change-code-output", async (roomId, status, stdout, stderr) => {
+            socket.to(roomId).emit("receive-code-output", status, stdout, stderr);
+        });
+
     });
 }
 
