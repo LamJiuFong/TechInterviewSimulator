@@ -4,7 +4,7 @@ let socket;
 
 const COLLABORATION_SERVICE_URL = 'http://localhost:3004';
 
-export const initializeSocket = (userId, roomId) => {
+export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, setMessages, setLoading) => {
     if (!userId) {
         throw new Error('User ID is required to initialize the socket connection');
     }
@@ -25,18 +25,39 @@ export const initializeSocket = (userId, roomId) => {
     });
     
     socket.on('disconnect', () => {
-        console.log(`Disconnected from matching service for user ${userId}`);
+        console.log(`Disconnected from collaboration service for user ${userId}`);
     });
+
+    socket.on("user-left", (leftId) => {
+        if (leftId != userId) {
+            setPartnerHasLeft(true);
+        }
+    })
+
+    socket.on("read-code", (code) => {
+        setCode(code);
+    })
+
+    socket.on('receive-message', (message) => {
+        setMessages(prev => {
+            const messages = [...prev, message];
+            return messages;
+        });
+    });
+
+    socket.on('init-room', (code, messages, returnedUserId) => {
+        console.log("initroom called", returnedUserId);
+        if (userId == returnedUserId ) {
+            setCode(code || "");
+            setMessages(messages || []);
+            console.log("received init room event from backend", code, messages);
+        }
+        setLoading(false);
+    })
 
     return new Promise((resolve, reject) => {
         socket.on('connect', () => resolve(socket));
         socket.on('connect_error', (error) => reject(error));
-    })
-}
-
-export const initializeCodeReader = (setCode) => {
-    socket.on("read-code", (code) => {
-        setCode(code);
     })
 }
 
@@ -51,14 +72,6 @@ export const sendMessage = (roomId, userId, message) => {
 
     socket.emit('message', userId, roomId, message);
 }
-
-export const listenForMessages = (onMessageReceived) => {
-    if (!socket || !socket.connected) {
-      throw new Error('Socket not connected. Please initialize first.');
-    }
-  
-    socket.on('receive-message', onMessageReceived);
-};
 
 // Video chat-related functions
 
@@ -117,3 +130,7 @@ export const leaveCollaborationRoom = (roomId, userId) => {
         socket.disconnect();
     }
 };
+
+export const closeSocket = () => {
+    if (socket) socket.disconnect();
+  };

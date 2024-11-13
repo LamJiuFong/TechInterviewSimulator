@@ -1,26 +1,11 @@
 import './component-styles/RoomChat.css'
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import SendIcon from '@mui/icons-material/Send';
-import { sendMessage, listenForMessages, leaveCollaborationRoom } from '../api/collaborationApi';
-import VideoChat from './VideoChat';
+import { sendMessage} from '../api/collaborationApi';
 
-export default function RoomChat({userId, roomId}) {
+export default function RoomChat({userId, roomId, messages}) {
     const [input, setInput] = useState('');
-    const [messages, setMessages] = useState([]);
-
-    // Since we are using React.StrictMode, useEffect will be called twice upon mounted, so each message will be listened more than once TODO: look into it 
-    useEffect(() => {
-        listenForMessages((message) => {
-            console.log('Received message:', message);
-            setMessages((prevMessages) => [...prevMessages, message]);
-        });
-        
-        // Commented for now, think it causes some errors
-        // return () => {
-        //     //console.log('Leaving room:', roomId);
-        //     leaveCollaborationRoom(roomId, userId);
-        // }
-    }, [userId, roomId]);
+    const messagesEndRef = useRef(null);
 
     const handleSendMessage = () => {
         if (!input || !input.trim()) return;
@@ -33,17 +18,32 @@ export default function RoomChat({userId, roomId}) {
         setInput('');
     }
 
+    // Scroll to the bottom of the messages container when new messages are added
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages]);
+
   return (
     <div className='communications'>
         <div className='chat-container'>
             <div className='messages'>
                 {messages.map((msg, index) => {
                     return (
-                        <div key={index} className={msg.sender === userId ? 'You' : 'Partner'}>
-                            <strong>{msg.sender === userId ? 'You' : 'Partner'}:</strong> {msg.content}{msg.content}
+                        <div
+                        key={index}
+                        className={`message ${msg.sender === userId ? 'message-you' : 'message-partner'}`}
+                    >
+                        <div className="message-content">
+                            <strong>{msg.sender === userId ? 'You' : 'Partner'}:</strong>
+                            <br/>
+                            {msg.content}
                         </div>
+                    </div>
                     )
                 })}
+                <div ref={messagesEndRef} />
             </div>
             <div className='input'>
                 <input
@@ -51,14 +51,13 @@ export default function RoomChat({userId, roomId}) {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder='Type a message...'
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 />
                 <button onClick={handleSendMessage}>
                     <SendIcon />
                 </button>
             </div>
         </div>
-        {/* <VideoChat userId={userId} roomId={roomId} /> Commented out first due to some bugs - listens to socket before socket is connected */} 
     </div>
   )
 }

@@ -37,7 +37,6 @@ export default function CreateSessionForm({
             if (isMatchFound) {
                 clearInterval(interval);
                 setLoading(false);
-                setErrorMessage("Match Found!");
             }
             // Need to handle case where match is found, then show sucess message
         }
@@ -128,7 +127,7 @@ export default function CreateSessionForm({
                     onClick={handleSubmit}
                     variant="contained"
                     color="primary"
-                    fullWidth
+                    fullwidth="true"
                 >
                     Create Session
                 </button>
@@ -141,7 +140,7 @@ export default function CreateSessionForm({
                     onClick={handleCancel}
                     variant="contained"
                     color="primary"
-                    fullWidth
+                    fullwidth="true"
                 >
                     Cancel
                 </button>
@@ -158,6 +157,10 @@ export default function CreateSessionForm({
             {/* Error/Success Message */}
             {errorMessage && (
                 <span className="error-message">{errorMessage}</span>
+            )}
+
+            {isMatchFound && (
+                <span className="error-message">Match Found!</span>
             )}
         </div>
     );

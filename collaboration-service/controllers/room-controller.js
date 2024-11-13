@@ -59,7 +59,7 @@ const RoomController = {
     },
 
     async removeUserFromRoom(roomId, userId) {
-        const room = await RoomRepository.removeUserFromRoom(roomId, userId);
+        // const room = await RoomRepository.removeUserFromRoom(roomId, userId); commented out first cos got some errors
         await roomRedis.srem(`room:${roomId}`, userId);
 
         const members = await roomRedis.smembers(`room:${roomId}`);
@@ -70,10 +70,29 @@ const RoomController = {
             // If no users are left in Redis, archive the room in the database
             await RoomRepository.archiveRoom(roomId);
         }
-        return room;
+        // return room;
     },
 
+    async readCode(roomId) {
+        const code = await roomRedis.lrange(`room:${roomId}-code`, -1, -1);
+        return code[0]; // the only element
+    },
 
+    async writeCode(roomId, code) {
+        await roomRedis.rpop(`room:${roomId}-code`);
+        await roomRedis.rpush(`room:${roomId}-code`, code);
+    },
+
+    async readMessages(roomId) {
+        let messages = await roomRedis.lrange(`room:${roomId}-messages`, 0, -1);
+        messages = messages.map(JSON.parse);
+
+        return messages;
+    },
+
+    async writeMessage(roomId, message) {
+        await roomRedis.rpush(`room:${roomId}-messages`, JSON.stringify(message));
+    }
 };
 
 export { RoomController, roomRedis };

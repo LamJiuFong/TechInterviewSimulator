@@ -1,0 +1,92 @@
+.home-page {
+    padding: 50px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    h1 {
+        margin-bottom: 10px;
+    }
+}
+
+.home-actions {
+    flex: 4;
+    display: flex;
+    flex-direction: row;
+
+    .session-button {
+        flex: 1;
+        padding: 10px;
+        background: black;
+        border: 2px solid rgb(255, 198, 65);
+        margin: 20px 20px 20px 0px;
+
+        h2,
+        svg {
+            font-size: 30px;
+            color: rgb(255, 198, 65);
+        }
+    }
+
+    .session-button:hover {
+        background: rgb(255, 198, 65);
+
+        h2,
+        svg {
+            color: black;
+        }
+    }
+
+    .question-button {
+        flex: 1;
+        padding: 10px;
+        background: black;
+        border: 2px solid #9CDDDB;
+        margin: 20px 0px 20px 20px;
+
+        h2,
+        svg {
+            font-size: 30px;
+            color: #9CDDDB;
+        }
+    }
+
+    .question-button:hover {
+        background: #82bab8;
+
+        h2,
+        svg {
+            color: white;
+        }
+    }
+}
+
+.welcome-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.setting-button {
+    flex: 1;
+    padding: 10px;
+    background: black;
+    border: 2px solid #9edd9c;
+    margin: 20px 0px 20px 20px;
+
+    h2,
+    svg {
+        font-size: 30px;
+        color: #9edd9c;
+    }
+}
+
+.setting-button:hover {
+    background: #9edd9c;
+
+    h2,
+    svg {
+        color: rgb(0, 0, 0);
+    }
+}

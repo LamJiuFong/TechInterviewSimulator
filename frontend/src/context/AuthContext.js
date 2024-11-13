@@ -10,7 +10,8 @@ export const AuthProvider = ({children}) => {
     const loginUser = (res) => {
         const user = {
             id: res.data.id,
-            isAdmin: res.data.isAdmin
+            isAdmin: res.data.isAdmin,
+            username: res.data.username,
         }
         const token = res.data.accessToken;
         setUser(user);
@@ -25,20 +26,6 @@ export const AuthProvider = ({children}) => {
         removeToken();
         setLoading(false);
     };
-
-    // To be called upon page refresh
-    useEffect(() => {
-        try {
-            const storedUser = localStorage.getItem('user');
-            if (storedUser) {
-                setUser(JSON.parse(storedUser));
-            }
-        } catch (error) {
-            console.error('Error reading from localStorage:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
 
     return (
         <AuthContext.Provider value={{

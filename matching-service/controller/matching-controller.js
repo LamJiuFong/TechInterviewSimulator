@@ -1,12 +1,11 @@
 import Redis from 'ioredis';
 import {fetchCategories} from '../internal-services/question-service.js';
 import { createRoom } from '../internal-services/collaboration-service.js';
-import axios from "axios";
 
 const redis = new Redis({
     host: process.env.REDIS_HOST || "localhost",
     port: process.env.REDIS_PORT || 6379
-  });
+});
 
 const LOOSEN_DIFFICULTY_TIME = 120000; 
 const TIMEOUT = 300000;
@@ -14,7 +13,6 @@ const cancelMatchmakeUsers = new Map();
 const difficulties = ["Easy", "Medium", "Hard"];
 const ACCEPT_REQUEST_TIMEOUT = 15000; // 15 seconds
 const COLLABORATION_QUEUE = new Map(); // Singleton to store collaboration requests
-const COLLABORATION_SERVICE_URL = process.env.COLLABORATION_SERVICE_URL || "http://localhost:3004";
 
 const difficultyMap = {
     "Easy": 1,

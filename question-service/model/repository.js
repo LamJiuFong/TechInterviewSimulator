@@ -18,7 +18,7 @@ export async function createQuestion(title, description, difficulty, categories,
 
   if (question.length != 0) {
     console.log("Question Title exists.");
-    return ;
+    throw new Error("Question Title exists");
   }
 
   const newQuestion = new Question({title, description, hints, difficulty, categories, link, examples})

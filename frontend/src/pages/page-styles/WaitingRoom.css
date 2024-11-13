@@ -1,0 +1,10 @@
+.waiting-room-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 20px 50px 50px 50px;
+}
+
+.waiting-room-title {
+  margin-top: 10px;
+}
