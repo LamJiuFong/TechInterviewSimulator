@@ -2,12 +2,17 @@ import io from 'socket.io-client';
 
 let socket;
 
+const MATCHING_SERVICE_URL = 
+    process.env.ENV === "PROD"
+        ? process.env.REACT_APP_MATCHING_SERVICE_URL
+        : process.env.REACT_APP_MATCHING_SERVICE_LOCAL_URL;
+
 export const initializeSocket = (userId) => {
   if (!userId) {
     throw new Error('User ID is required to initialize the socket connection');
   }
 
-  socket = io("http://ab67a7be348cb49fcb2c45d618ed7bfb-1566069717.ap-southeast-1.elb.amazonaws.com:3006", {
+  socket = io(MATCHING_SERVICE_URL, {
     query: { id: userId },
     transports: ['websocket', 'polling'],
     withCredentials: true,

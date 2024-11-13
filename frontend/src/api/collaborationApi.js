@@ -2,7 +2,10 @@ import io from 'socket.io-client';
 
 let socket;
 
-const COLLABORATION_SERVICE_URL = "http://a88b7f285d9464e40b69013ab3103ec9-805531271.ap-southeast-1.elb.amazonaws.com:3004";
+const COLLABORATION_SERVICE_URL = 
+    process.env.ENV === "PROD"
+        ? process.env.REACT_APP_COLLABORATION_SERVICE_URL
+        : process.env.REACT_APP_COLLABORATION_SERVICE_LOCAL_URL;
 
 export const initializeSocket = (
     userId, 

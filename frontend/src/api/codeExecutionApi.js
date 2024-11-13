@@ -1,8 +1,15 @@
 import axios from 'axios';
 import { getToken } from "../utils/token";
 
+
+const baseURL =
+    process.env.ENV === "PROD"
+        ? process.env.REACT_APP_CODE_EXECUTION_URL
+        : process.env.REACT_APP_CODE_EXECUTION_LOCAL_URL;
+
+
 const axiosInstance = axios.create({
-  baseURL: "http://afded85ef6ffc4642b1745c5836c3a93-1052407262.ap-southeast-1.elb.amazonaws.com:3003/code-execution"
+  baseURL: baseURL
 });
 
 axiosInstance.interceptors.request.use((req) => {
