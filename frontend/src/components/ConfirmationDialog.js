@@ -6,7 +6,7 @@ import {
 } from "../api/matchingApi";
 import { useNavigate } from "react-router-dom";
 
-export default function ConfirmationDialog({isMatchFound, setMatchFound, matchDetails}) { 
+export default function ConfirmationDialog({isMatchFound, setMatchFound, matchDetails, isReject, isRejected, isCollabTimeout}) { 
   const [hasToWait, setHasToWait] = useState(false);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const [createdRoom, setCreatedRoom] = useState(null);
@@ -17,6 +17,13 @@ export default function ConfirmationDialog({isMatchFound, setMatchFound, matchDe
       navigate(`/collaboration`, {state: {roomInfo: createdRoom}});
     }
   }, [createdRoom])
+
+  useEffect(() => {
+    console.log("reset dialog");
+    setHasToWait(false);
+    setIsCreatingRoom(false);
+    setCreatedRoom(null);
+  }, [isRejected, isReject, isCollabTimeout]);
 
   const onAccept = () => {
     acceptMatch(matchDetails.acceptanceId, setHasToWait, setIsCreatingRoom, setCreatedRoom);
@@ -71,9 +78,9 @@ export default function ConfirmationDialog({isMatchFound, setMatchFound, matchDe
       </DialogContent>
       {!hasToWait && !isCreatingRoom &&
       <DialogActions>
-        {/* <Button onClick={onReject} color="secondary" variant="outlined">
+        <Button onClick={onReject} color="secondary" variant="outlined">
           Reject
-        </Button> */}
+        </Button>
         <Button onClick={onAccept} color="primary" variant="contained">
           Accept
         </Button>

@@ -1,4 +1,3 @@
-// src/api/authApi.js
 import axios from 'axios';
 
 const baseURL =
@@ -15,6 +14,7 @@ const API = axios.create({
 export async function login(email, password) {
   try {
     console.log("User logging in from frontend");
+    console.log(process.env.REACT_APP_AUTH_SERVICE_LOCAL_URL);
     
     const response = await API.post(`/auth/login`,{ email, password });
     return response.data; // Contains accessToken and user data

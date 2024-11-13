@@ -36,7 +36,7 @@ export const initializeSocket = (userId) => {
   });
 };
 
-export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
+export const enterMatch = (category, difficulty, setMatchFound, setTimeout, setRejected, setReject, setCollabTimeout) => {
   return new Promise((resolve, reject) => {
     if (!socket || !socket.connected) {
       reject(new Error('Socket not connected. Please initialize first.'));
@@ -44,6 +44,9 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
     }
     setMatchFound(false);
     setTimeout(false);
+    setRejected(false);
+    setReject(false);
+    setCollabTimeout(false);
     
     const criteria = { category, difficulty };
     socket.emit('enter-match', criteria);
@@ -59,8 +62,31 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
         console.log("Timeout!!!!!!!");
     }
 
+    const handleRejected = () => {
+      setRejected(true);
+      setMatchFound(false);
+      console.log("Collaboration has been rejected ");
+    };
+
+    const handleReject = () => {
+      setReject(true);
+      setMatchFound(false);
+      console.log("You've rejected the match.")
+    };
+
+    const handleCollaborationTimeout = () => {
+      console.log("Did not accept match in time");
+      setCollabTimeout(true);
+      setMatchFound(false);
+    };
+
     socket.on('match-found', handleMatchFound);
     socket.on('timeout', handleTimeout);
+  
+    socket.on('collaboration-rejected', handleRejected);
+    socket.on('collaboration-reject', handleReject);
+    socket.on('collaboration-timeout', handleCollaborationTimeout)
+
 
   });
 };
@@ -71,6 +97,7 @@ export const cancelMatch = () => {
   }
 };
 
+// accept match only handles collaboration accepted message given to met condition, both party have to accept first.
 export const acceptMatch = (acceptanceId, setHasToWait, setIsCreatingRoom, setCreatedRoom) => {
   if (!socket || !socket.connected) {
     return;
@@ -81,19 +108,14 @@ export const acceptMatch = (acceptanceId, setHasToWait, setIsCreatingRoom, setCr
   const handleAccept = () => {
     setHasToWait(false);
     setIsCreatingRoom(true);
-  }
-
-  //TODO1
-  const handleReject = () => {
-    console.log("rejected!!! :(")
-  }
-
+  };
+  
   const handleDoneCreatingRoom = (roomId) => {
     setCreatedRoom(roomId);
-  }
+  };
 
   socket.on('collaboration-accepted', handleAccept);
-  socket.on('collaboration-rejected', handleReject);
+  
   socket.on('created-room', handleDoneCreatingRoom);
 
 };

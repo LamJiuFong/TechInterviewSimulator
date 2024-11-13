@@ -13,9 +13,12 @@ import ConfirmationDialog from "../components/ConfirmationDialog";
 import NavigationButton from '../components/NavigationButton';
 
 export default function WaitingRoom() {
-    const [isTimeout, setTimeout] = useState("");
+    const [isTimeout, setTimeout] = useState(false);
     const [isMatchFound, setMatchFound] = useState(false);
     const [matchDetails, setMatchDetails] = useState();
+    const [isRejected, setRejected] = useState(false);
+    const [isReject, setReject] = useState(false);
+    const [isCollabTimeout, setCollabTimeout] = useState(false);
     const { categories } = useQuestions();
     const { user, loading } = useAuth();
 
@@ -34,7 +37,7 @@ export default function WaitingRoom() {
     , [user, loading]);
 
     const handleCreateSession = async (category, difficulty) => {
-        enterMatch(category, difficulty, setMatchFound, setTimeout)
+        enterMatch(category, difficulty, setMatchFound, setTimeout, setRejected, setReject, setCollabTimeout)
             .then((match) => {
                 console.log("Match details:", match);
                 setMatchDetails(match); // Store match details in state
@@ -46,6 +49,11 @@ export default function WaitingRoom() {
     };
 
     const handleCancelMatch = () => {
+        setReject(false);
+        setRejected(false);
+        setMatchFound(false);
+        setTimeout(false);
+        setCollabTimeout(false);
         cancelMatch();
         console.log("Match cancelled!");
     };
@@ -58,13 +66,19 @@ export default function WaitingRoom() {
                 categories={categories}
                 handleCreateSession={handleCreateSession}
                 handleCancelMatch={handleCancelMatch}
-                isMatchFound={isMatchFound}
                 isTimeout={isTimeout}
+                isMatchFound={isMatchFound}
+                isReject={isReject}
+                isRejected={isRejected}
+                isCollabTimeout={isCollabTimeout}
             />
             <ConfirmationDialog
                 isMatchFound={isMatchFound}
                 setMatchFound={setMatchFound}
                 matchDetails={matchDetails}
+                isReject={isReject}
+                isRejected={isRejected}
+                isCollabTimeout={isCollabTimeout}
             />
         </div>
     );
