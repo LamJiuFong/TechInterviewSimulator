@@ -2,12 +2,14 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:3003',  // Change this to api gateway url
+  baseURL: "http://afded85ef6ffc4642b1745c5836c3a93-1052407262.ap-southeast-1.elb.amazonaws.com:3003",  // Change this to api gateway url
 });
 
 // Login API function
 export async function login(email, password) {
   try {
+    console.log("User logging in from frontend");
+    
     const response = await API.post(`/auth/login`,{ email, password });
     return response.data; // Contains accessToken and user data
   } catch (error) {

@@ -3,9 +3,11 @@ import axios from "axios";
 import { verifyAccessToken } from "../middleware/authentication.js";
 
 const CODE_EXECUTION_SERVICE_URL =
-    process.env.CODE_EXECUTION_SERVICE_URL || "http://localhost:3007";
+    process.env.CODE_EXECUTION_SERVICE_URL || "http://localhost:3005";
 
 export const codeExecutionRouter = express.Router();
+
+console.log(CODE_EXECUTION_SERVICE_URL);
 
 codeExecutionRouter.post("/submissions", async (req, res) => {
     try {

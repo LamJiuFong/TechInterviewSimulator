@@ -8,6 +8,7 @@ export const authRouter = express.Router();
 // Login
 authRouter.post("/login", async (req, res) => {
     try {
+        console.log("User attempting to log in through API Gateway");
         const response = await axios.post(
             `${USER_SERVICE}/auth/login`,
             req.body

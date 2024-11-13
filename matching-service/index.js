@@ -9,7 +9,7 @@ const app = express();
 const httpServer = http.createServer(app);
 
 const corsOptions = {
-    origin: "http://localhost:3000", // Replace with your frontend URL
+    origin: process.env.FRONTEND_URL, // Replace with your frontend URL
     methods: ["GET", "POST"],
     credentials: true
 };
@@ -25,6 +25,7 @@ const io = new Server(httpServer, {
     cors: corsOptions,
     transports: ['websocket', 'polling'] // Explicitly state the transports
 });
+
 
 matchSocket(io);
 
