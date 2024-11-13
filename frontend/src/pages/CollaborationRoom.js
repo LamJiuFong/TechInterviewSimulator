@@ -11,7 +11,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogConten
 export default function CollaborationRoom() {
     const location = useLocation();
     const { roomInfo } = location.state || {};
-    const { user } = useAuth();
+    const { user, loading: userLoading } = useAuth();
     const [isSocketConnected, setIsSocketConnected] = useState(false);
     const [open, setOpen] = useState(false);
     const [partnerHasLeft, setPartnerHasLeft] = useState(false);
@@ -20,6 +20,11 @@ export default function CollaborationRoom() {
     const [code, setCode] = useState("");
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [language, setLanguage] = useState(71); // Default to Python
+    const [codeRunning, setCodeRunning] = useState(false);
+    const [status, setStatus] = useState(null);
+    const [stdout, setStdout] = useState(null);
+    const [stderr, setStderr] = useState(null);
 
     const navigate = useNavigate();
 
@@ -30,23 +35,41 @@ export default function CollaborationRoom() {
     }
 
     useEffect(() => {
-        if (roomInfo && user) {
-            initializeSocket(user.id, roomInfo._id, setPartnerHasLeft, setCode, setMessages, setLoading)
-            .then(() => 
-                {
-                    setIsSocketConnected(true);
-                    setupSignalingListeners();
-                })
-            .catch((error) => {
-                console.error('Error initializing socket:', error.message);
-            });
+        if (roomInfo && !userLoading && user) {
+            initializeSocket(
+              user.id,
+              roomInfo._id,
+              setPartnerHasLeft,
+              setCode,
+              setMessages,
+              setLoading,
+              setLanguage,
+              setCodeRunning,
+              setStatus,
+              setStdout,
+              setStderr
+            )
+              .then(() => {
+                setIsSocketConnected(true);
+                setupSignalingListeners();
+              })
+              .catch((error) => {
+                console.error("Error initializing socket:", error.message);
+              });
         }
-        
-        return () =>  { 
-            if (peerConnection) peerConnection.close();
-            if (roomInfo && user) leaveCollaborationRoom(roomInfo._id, user.id);
+
+        const handleBeforeUnload = (event) => {
+            event.preventDefault();
+            event.returnValue = 'Are you sure you want to leave?';
+
+          };
+      
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
         };
-    }, [roomInfo, user]);
+        
+    }, [roomInfo, user, userLoading]);
 
     useEffect(() => {
         if (partnerHasLeft) {
@@ -89,7 +112,20 @@ export default function CollaborationRoom() {
                 <QuestionPanel category={roomInfo.question.category} difficulty={roomInfo.question.difficulty} />
             </div>
             <div className='code-editor'>
-                <CodeEditor roomId={roomInfo._id} code={code} setCode={setCode} />
+                <CodeEditor 
+                    roomId={roomInfo._id} 
+                    code={code} 
+                    setCode={setCode} 
+                    language={language} 
+                    setLanguage={setLanguage} 
+                    codeRunning={codeRunning} 
+                    status={status}
+                    setStatus={setStatus}
+                    stdout={stdout}
+                    setStdout={setStdout}
+                    stderr={stderr}
+                    setStderr={setStderr}
+                />
             </div>
             <div className='room-chat'>
                 <div className='text-chat-container'>

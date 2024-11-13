@@ -1,8 +1,15 @@
 import axios from 'axios';
 import { getToken } from "../utils/token";
 
+
+const baseURL =
+    process.env.ENV === "PROD"
+        ? process.env.REACT_APP_CODE_EXECUTION_URL
+        : process.env.REACT_APP_CODE_EXECUTION_LOCAL_URL;
+
+
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3003"
+  baseURL: baseURL
 });
 
 axiosInstance.interceptors.request.use((req) => {
