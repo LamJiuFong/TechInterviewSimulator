@@ -63,7 +63,7 @@ export default function CreateSessionForm({
 
         if (isCollabTimeout) {
             console.log("isCollabTimeout: ", isCollabTimeout);
-            setErrorMessage("You did not accept the match in time.");
+            setErrorMessage("Match not accepted in time.");
         }
      
 
