@@ -1,13 +1,21 @@
 // src/api/authApi.js
 import axios from 'axios';
 
+const baseURL =
+    process.env.ENV === "PROD"
+        ? process.env.REACT_APP_AUTH_SERVICE_URL
+        : process.env.REACT_APP_AUTH_SERVICE_LOCAL_URL;
+  
+
 const API = axios.create({
-  baseURL: 'http://localhost:3003',  // Change this to api gateway url
+  baseURL: baseURL
 });
 
 // Login API function
 export async function login(email, password) {
   try {
+    console.log("User logging in from frontend");
+    
     const response = await API.post(`/auth/login`,{ email, password });
     return response.data; // Contains accessToken and user data
   } catch (error) {

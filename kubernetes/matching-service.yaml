@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matching-service-deployment
+  labels:
+    app: matching-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: matching-service
+  template:
+    metadata:
+      labels:
+        app: matching-service
+    spec:
+      containers:
+      - name: matching-service
+        image: tehopanas/cs3219-matching-service:latest
+        env:
+          - name: REDIS_HOST
+            value: redis
+          - name: REDIS_PORT
+            value: "6379"
+          - name: QUESTION_SERVICE_URL
+            value: http://question-service.default.svc.cluster.local:3002
+          - name: COLLABORATION_SERVICE_URL
+            value: http://collaboration-service.default.svc.cluster.local:3004
+          - name: FRONTEND_URL
+            value: http://frontend.default.svc.cluster.local:3000
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3006
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: matching-service
+spec:
+  selector:
+    app: matching-service
+  ports:
+  - port: 3006
+    targetPort: 3006
+  type: LoadBalancer

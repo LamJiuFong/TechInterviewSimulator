@@ -5,6 +5,14 @@ services:
         build: ./frontend
         ports:
             - "3000:80" # Map host port 3000 to container port 80 (Nginx default)
+        environment: 
+            REACT_APP_AUTH_SERVICE_LOCAL_URL: http://apigateway:3003
+            REACT_APP_CODE_EXECUTION_LOCAL_URL: http://apigateway:3003/code-execution
+            REACT_APP_COLLABORATION_SERVICE_LOCAL_URL: http://collaboration-service:3004
+            REACT_APP_MATCHING_SERVICE_LOCAL_URL: http://matching-service:3006
+            REACT_APP_QUESTION_SERVICE_LOCAL_URL: http://apigateway:3003/question
+            REACT_APP_USER_SERVICE_LOCAL_URL: http://apigateway:3003/user
+
 
     apigateway:
         build: ./api-gateway
@@ -13,10 +21,11 @@ services:
         depends_on:
             - user-service
             - question-service
+            - code-execution-service
         environment:
             USER_SERVICE_URL: http://user-service:3001
             QUESTION_SERVICE_URL: http://question-service:3002
-            CODE_EXECUTION_SERVICE_URL: http://code-execution-service:3007
+            CODE_EXECUTION_SERVICE_URL: http://code-execution-service:3005
 
     question-service:
         build: ./question-service
@@ -59,7 +68,7 @@ services:
     code-execution-service:
         build: ./code-execution-service
         ports:
-            - "3007:3007"
+            - "3005:3005"
 
     redis:
         image: redis

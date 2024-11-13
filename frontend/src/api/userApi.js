@@ -2,9 +2,14 @@
 import axios from 'axios';
 import { getToken } from "../utils/token";
 
+const baseURL =
+    process.env.ENV === "PROD"
+        ? process.env.REACT_APP_USER_SERVICE_URL
+        : process.env.REACT_APP_USER_SERVICE_LOCAL_URL;
+
 // Base configuration for the API
 const API = axios.create({
-  baseURL: 'http://localhost:3003',  // Change this to api gateway url
+  baseURL: baseURL,  // Change this to api gateway url
 });
 
 // Attach token if needed (authentication)
