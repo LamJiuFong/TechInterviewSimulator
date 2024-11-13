@@ -60,6 +60,13 @@ const collaborationSocket = (io) => {
                 senderId: userId
             });
         });
+
+        socket.on("disconnecting", () => {
+            const rooms = socket.rooms;
+            for (const room of rooms) {
+                socket.to(room).emit("user-left", userId);
+            }
+        });
     
         socket.on("disconnect", () => {
             console.log(`User ${socket.handshake.query.id} socket disconnected:`, socket.id);

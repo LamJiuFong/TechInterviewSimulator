@@ -29,7 +29,7 @@ export const initializeSocket = (userId, roomId, setPartnerHasLeft, setCode, set
     });
 
     socket.on("user-left", (leftId) => {
-        if (leftId != userId) {
+        if (leftId !== userId) {
             setPartnerHasLeft(true);
         }
     })

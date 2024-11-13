@@ -7,6 +7,13 @@ export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        if (user) {
+            setLoading(false);
+        }
+    }
+    , [user]);
+
     const loginUser = (res) => {
         const user = {
             id: res.data.id,
