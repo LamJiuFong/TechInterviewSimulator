@@ -16,6 +16,8 @@ export default function WaitingRoom() {
     const [isTimeout, setTimeout] = useState("");
     const [isMatchFound, setMatchFound] = useState(false);
     const [matchDetails, setMatchDetails] = useState();
+    const [isRejected, setRejected] = useState(false);
+    const [isRequeue, setRequeue] = useState(false);
     const { categories } = useQuestions();
     const { user, loading } = useAuth();
 
@@ -34,7 +36,7 @@ export default function WaitingRoom() {
     , [user, loading]);
 
     const handleCreateSession = async (category, difficulty) => {
-        enterMatch(category, difficulty, setMatchFound, setTimeout)
+        enterMatch(category, difficulty, setMatchFound, setTimeout, setRejected, setRequeue)
             .then((match) => {
                 console.log("Match details:", match);
                 setMatchDetails(match); // Store match details in state
@@ -46,6 +48,7 @@ export default function WaitingRoom() {
     };
 
     const handleCancelMatch = () => {
+        setRequeue(false);
         cancelMatch();
         console.log("Match cancelled!");
     };
@@ -60,6 +63,8 @@ export default function WaitingRoom() {
                 handleCancelMatch={handleCancelMatch}
                 isMatchFound={isMatchFound}
                 isTimeout={isTimeout}
+                isRequeue={isRequeue}
+                isRejected={isRejected}
             />
             <ConfirmationDialog
                 isMatchFound={isMatchFound}

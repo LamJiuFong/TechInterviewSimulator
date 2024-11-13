@@ -6,7 +6,7 @@ import {
 } from "../api/matchingApi";
 import { useNavigate } from "react-router-dom";
 
-export default function ConfirmationDialog({isMatchFound, setMatchFound, matchDetails}) { 
+export default function ConfirmationDialog({isMatchFound, setMatchFound, matchDetails, isRequeue, isRejected}) { 
   const [hasToWait, setHasToWait] = useState(false);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const [createdRoom, setCreatedRoom] = useState(null);

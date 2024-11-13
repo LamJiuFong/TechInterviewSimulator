@@ -9,6 +9,8 @@ export default function CreateSessionForm({
     handleCancelMatch,
     isTimeout,
     isMatchFound,
+    isRequeue,
+    isRejected
 }) {
     const difficulties = ["Easy", "Medium", "Hard"];
     const [difficulty, setDifficulty] = useState("");
@@ -37,6 +39,7 @@ export default function CreateSessionForm({
             if (isMatchFound) {
                 clearInterval(interval);
                 setLoading(false);
+                setErrorMessage("");
             }
             // Need to handle case where match is found, then show sucess message
         }
@@ -44,6 +47,21 @@ export default function CreateSessionForm({
         // Clean up the interval when the component unmounts or the timer stops
         return () => clearInterval(interval);
     }, [loading, timer, isMatchFound, isTimeout]);
+
+    useEffect(() => {
+
+        if(isRequeue) {
+            console.log("Start requeue for user");
+            setTimer(0);
+            setLoading(true);
+            setErrorMessage("The other player did not accept the match. Requeueing now.");
+        }
+
+        if(isRejected) {
+            setErrorMessage("The other player did not accept the match.");
+        }
+
+    }, [isRequeue, isRejected]);
 
     // Handle Create Session
     const handleSubmit = () => {

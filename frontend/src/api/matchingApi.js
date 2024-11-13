@@ -31,7 +31,7 @@ export const initializeSocket = (userId) => {
   });
 };
 
-export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
+export const enterMatch = (category, difficulty, setMatchFound, setTimeout, setRejected, setRequeue) => {
   return new Promise((resolve, reject) => {
     if (!socket || !socket.connected) {
       reject(new Error('Socket not connected. Please initialize first.'));
@@ -39,6 +39,8 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
     }
     setMatchFound(false);
     setTimeout(false);
+    setRejected(false);
+    setRequeue(false);
     
     const criteria = { category, difficulty };
     socket.emit('enter-match', criteria);
@@ -46,6 +48,8 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
     const handleMatchFound = (match) => {
       socket.off('match-found', handleMatchFound);
       setMatchFound(true);
+      setRejected(false);
+      setRequeue(false);
       resolve(match);
     };
 
@@ -54,16 +58,22 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout) => {
         console.log("Timeout!!!!!!!");
     }
 
-    socket.on('match-found', handleMatchFound);
-    socket.on('timeout', handleTimeout);
-
     const handleReject = () => {
+      setRejected(true);
+      setMatchFound(false);
+      setTimeout(false);
       console.log("Collaboration has been rejected ");
     };
   
     const handleRequeue = () => {
+      setRequeue(true);
+      setMatchFound(false);
+      setTimeout(false);
       console.log("Requeueing user back to matchmaking");
     };
+
+    socket.on('match-found', handleMatchFound);
+    socket.on('timeout', handleTimeout);
   
     socket.on('collaboration-rejected', handleReject);
 
@@ -91,7 +101,6 @@ export const acceptMatch = (acceptanceId, setHasToWait, setIsCreatingRoom, setCr
     setHasToWait(false);
     setIsCreatingRoom(true);
   };
-
   
   const handleDoneCreatingRoom = (roomId) => {
     setCreatedRoom(roomId);

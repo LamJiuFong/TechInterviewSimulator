@@ -59,7 +59,7 @@ services:
     code-execution-service:
         build: ./code-execution-service
         ports:
-            - "3007:3007"
+            - "3007:3005"
 
     redis:
         image: redis
