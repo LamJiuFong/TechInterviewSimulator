@@ -323,20 +323,13 @@ export async function rejectCollaboration(matchId, userId, io) {
     
     if (collaboration && collaboration.players.find(player => player.userId === userId)) {
         
-        // Put accepted party back into queue
         for (const player of collaboration.players) {
             if (player.userId != userId) {
 
-                // TODO Need track user original difficulty 
-                const queueName = `${collaboration.category}:${player.difficulty}`;
-                const playerReq = `${player.userId}:${player.socketId}:${Date.now()}:${player.difficulty}`;
+                io.to(player.socketId).emit("collaboration-rejected");
 
-                redis.rpush(queueName, playerReq);
-
-                io.to(player.socketId).emit("collaboration-rejected-requeue");
-
-            } else { // notify rejected party 
-                io.to(player.socketId).emit("collaboration-rejected", matchId);
+            } else {  
+                io.to(player.socketId).emit("collaboration-reject");
             }
         }
   
@@ -351,20 +344,7 @@ async function handleCollaborationTimeout(matchId, io) {
     if (collaboration) {
         // Notify players of timeout
         for (const player of collaboration.players) {
-
-            if (player.hasAccepted) {
-
-                // TODO Need track user original difficulty
-                const queueName = `${collaboration.category}:${collaboration.difficulty}`;
-                const playerReq = `${player.userId}:${player.socketId}:${Date.now()}:${player.difficulty}`;
-
-                redis.rpush(queueName, playerReq);
-
-                io.to(player.socketId).emit("collaboration-timeout-requeue");
-            } else {
-                io.to(player.socketId).emit("collaboration-timeout", matchId);
-            }
-            
+            io.to(player.socketId).emit("collaboration-timeout");
         }
                 
         COLLABORATION_QUEUE.delete(matchId); // Clean up

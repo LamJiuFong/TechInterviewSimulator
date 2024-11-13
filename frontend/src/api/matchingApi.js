@@ -36,7 +36,7 @@ export const initializeSocket = (userId) => {
   });
 };
 
-export const enterMatch = (category, difficulty, setMatchFound, setTimeout, setRejected, setRequeue) => {
+export const enterMatch = (category, difficulty, setMatchFound, setTimeout, setRejected, setReject, setCollabTimeout) => {
   return new Promise((resolve, reject) => {
     if (!socket || !socket.connected) {
       reject(new Error('Socket not connected. Please initialize first.'));
@@ -45,7 +45,8 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout, setR
     setMatchFound(false);
     setTimeout(false);
     setRejected(false);
-    setRequeue(false);
+    setReject(false);
+    setCollabTimeout(false);
     
     const criteria = { category, difficulty };
     socket.emit('enter-match', criteria);
@@ -53,8 +54,6 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout, setR
     const handleMatchFound = (match) => {
       socket.off('match-found', handleMatchFound);
       setMatchFound(true);
-      setRejected(false);
-      setRequeue(false);
       resolve(match);
     };
 
@@ -63,27 +62,31 @@ export const enterMatch = (category, difficulty, setMatchFound, setTimeout, setR
         console.log("Timeout!!!!!!!");
     }
 
-    const handleReject = () => {
+    const handleRejected = () => {
       setRejected(true);
       setMatchFound(false);
-      setTimeout(false);
       console.log("Collaboration has been rejected ");
     };
-  
-    const handleRequeue = () => {
-      setRequeue(true);
+
+    const handleReject = () => {
+      setReject(true);
       setMatchFound(false);
-      setTimeout(false);
-      console.log("Requeueing user back to matchmaking");
+      console.log("You've rejected the match.")
+    };
+
+    const handleCollaborationTimeout = () => {
+      console.log("Did not accept match in time");
+      setCollabTimeout(true);
+      setMatchFound(false);
     };
 
     socket.on('match-found', handleMatchFound);
     socket.on('timeout', handleTimeout);
   
-    socket.on('collaboration-rejected', handleReject);
+    socket.on('collaboration-rejected', handleRejected);
+    socket.on('collaboration-reject', handleReject);
+    socket.on('collaboration-timeout', handleCollaborationTimeout)
 
-    socket.on('collaboration-rejected-requeue', handleRequeue);
-    socket.on('collaboration-timeout-requeue', handleRequeue);
 
   });
 };

@@ -9,8 +9,9 @@ export default function CreateSessionForm({
     handleCancelMatch,
     isTimeout,
     isMatchFound,
-    isRequeue,
-    isRejected
+    isReject,
+    isRejected,
+    isCollabTimeout
 }) {
     const difficulties = ["Easy", "Medium", "Hard"];
     const [difficulty, setDifficulty] = useState("");
@@ -50,18 +51,23 @@ export default function CreateSessionForm({
 
     useEffect(() => {
 
-        if(isRequeue) {
-            console.log("Start requeue for user");
-            setTimer(0);
-            setLoading(true);
-            setErrorMessage("The other player did not accept the match. Requeueing now.");
+        if(isReject) {
+            console.log("isReject: ", isReject);
+            setErrorMessage("You did not accept the match.");
         }
 
         if(isRejected) {
+            console.log("isRejected: ", isRejected);
             setErrorMessage("The other player did not accept the match.");
         }
 
-    }, [isRequeue, isRejected]);
+        if (isCollabTimeout) {
+            console.log("isCollabTimeout: ", isCollabTimeout);
+            setErrorMessage("You did not accept the match in time.");
+        }
+     
+
+    }, [isReject, isRejected, isCollabTimeout]);
 
     // Handle Create Session
     const handleSubmit = () => {

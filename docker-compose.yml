@@ -12,6 +12,8 @@ services:
             REACT_APP_MATCHING_SERVICE_LOCAL_URL: http://matching-service:3006
             REACT_APP_QUESTION_SERVICE_LOCAL_URL: http://apigateway:3003/question
             REACT_APP_USER_SERVICE_LOCAL_URL: http://apigateway:3003/user
+        depends_on:
+            - apigateway
 
 
     apigateway:
