@@ -19,6 +19,7 @@ const ProtectedRoute = ({ children }) => {
             id: res.data.id,
             isAdmin: res.data.isAdmin,
             username: res.data.username,
+            email: res.data.email
         }
         setUser(user);
         localStorage.setItem('user', JSON.stringify(user));
