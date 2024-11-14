@@ -3,7 +3,6 @@ import LoginForm from "../components/LoginForm";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
 
-
 const LoginPage = () => {
 
   return (

@@ -22,7 +22,7 @@ export async function createUser(req, res) {
 
       const existingUser = await _findUserByUsernameOrEmail(username, email);
       if (existingUser) {
-        return res.status(409).json({ message: "username or email already exists" });
+        return res.status(409).json({ message: "Username or Email already exists" });
       }
 
       const salt = bcrypt.genSaltSync(10);
@@ -33,7 +33,7 @@ export async function createUser(req, res) {
         data: formatUserResponse(createdUser),
       });
     } else {
-      return res.status(400).json({ message: "username and/or email and/or password are missing" });
+      return res.status(400).json({ message: "Username and/or Email and/or Password are missing" });
     }
   } catch (err) {
     console.error(err);
@@ -73,7 +73,7 @@ export async function getAllUsers(req, res) {
 
 export async function updateUser(req, res) {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, oldPassword, password } = req.body;
     if (username || email || password) {
       const userId = req.params.id;
       if (!isValidObjectId(userId)) {
@@ -91,6 +91,13 @@ export async function updateUser(req, res) {
         existingUser = await _findUserByEmail(email);
         if (existingUser && existingUser.id !== userId) {
           return res.status(409).json({ message: "email already exists" });
+        }
+      }
+
+      if (oldPassword) {
+        const isOldPasswordValid = bcrypt.compareSync(oldPassword, user.password);
+        if (!isOldPasswordValid) {
+          return res.status(409).json({ message: "old password is wrong" });
         }
       }
 

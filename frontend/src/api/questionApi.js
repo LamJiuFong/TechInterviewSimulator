@@ -1,9 +1,14 @@
 import axios from 'axios';
 import { getToken } from "../utils/token";
 
+const baseURL =
+    process.env.ENV === "PROD"
+        ? process.env.REACT_APP_QUESTION_SERVICE_URL
+        : process.env.REACT_APP_QUESTION_SERVICE_LOCAL_URL;
+
 // Base configuration for the API
 const API = axios.create({
-  baseURL: 'http://localhost:3003', // Change this to api gateway url
+  baseURL: baseURL
 });
 
 // Attach token if needed (authentication)
@@ -22,7 +27,7 @@ export const createQuestion = async (questionData) => {
     return response.data;
   } catch (error) {
     console.error('Error creating question:', error.response?.data?.message || error.message);
-    throw error;
+    throw error.response?.data || { message: 'Error creating question' };
   }
 };
 
@@ -33,7 +38,7 @@ export const getAllQuestions = async () => {
     return response.data;
   } catch (error) {
     console.error('Error fetching questions:', error.response?.data?.message || error.message);
-    throw error;
+    throw error.response?.data || { message: 'Error getting all questions' };
   }
 };
 
@@ -44,7 +49,7 @@ export const getQuestionById = async (questionId) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching question:', error.response?.data?.message || error.message);
-    throw error;
+    throw error.response?.data || { message: 'Error getting question' };
   }
 };
 
@@ -55,7 +60,7 @@ export const updateQuestion = async (questionId, questionData) => {
         return response.data;
     } catch (error) {
         console.error('Error updating question:', error.response?.data?.message || error.message);
-        throw error;
+        throw error.response?.data || { message: 'Error updating question' };
     }
 }
 
@@ -66,28 +71,26 @@ export const deleteQuestion = async (questionId) => {
         return response.data;
     } catch (error) {
         console.error('Error deleting question:', error.response?.data?.message || error.message);
-        throw error;
+        throw error.response?.data || { message: 'Error deleting question' };
     }
 }
 
 export const getQuestionCategories = async () => {
     try {
         const response = await API.get('/api/questions/categories/all');
-        console.log(response);
         return response.data;
     } catch (error) {
         console.error('Error fetching categories:', error.response?.data?.message || error.message);
-        throw error;
+        throw error.response?.data || { message: 'Error getting question categories' };
     }
 }
 
 export const getFilteredQuestions = async (queryString) => {
   try {
       const response = await API.get(`/api/questions/filter?${queryString}`);
-      console.log(response);
       return response.data;
   } catch (error) {
       console.error('Error fetching categories:', error.response?.data?.message || error.message);
-      throw error;
+      throw error.response?.data || { message: 'Error getting filtered questions' };
   }
 }

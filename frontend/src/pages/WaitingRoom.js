@@ -1,3 +1,4 @@
+import './page-styles/WaitingRoom.css';
 import React, { useEffect, useState } from "react";
 import CreateSessionForm from "../components/CreateSessionForm";
 import useQuestions from "../hooks/useQuestions";
@@ -9,24 +10,34 @@ import {
     cancelMatch,
 } from "../api/matchingApi";
 import ConfirmationDialog from "../components/ConfirmationDialog";
+import NavigationButton from '../components/NavigationButton';
 
 export default function WaitingRoom() {
-    const [isTimeout, setTimeout] = useState("");
-    const [isMatchFound, setMatchFound] = useState("");
+    const [isTimeout, setTimeout] = useState(false);
+    const [isMatchFound, setMatchFound] = useState(false);
     const [matchDetails, setMatchDetails] = useState();
+    const [isRejected, setRejected] = useState(false);
+    const [isReject, setReject] = useState(false);
+    const [isCollabTimeout, setCollabTimeout] = useState(false);
     const { categories } = useQuestions();
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
 
     useEffect(() => {
-        initializeSocket(user.id);
+        if (!loading && user) {
+            initializeSocket(user.id)
+                .then(() => console.log("Socket initialized!"))
+                .catch((error) => {
+                    console.error("Error initializing socket:", error.message);
+                });
+        }
         return () => {
             closeSocket();
         };
-    }, [user.id]);
+    }
+    , [user, loading]);
 
-    // TODO: write a hook to handle create session
-    const handleCreateSession = (category, difficulty) => {
-        enterMatch(category, difficulty, setMatchFound, setTimeout)
+    const handleCreateSession = async (category, difficulty) => {
+        enterMatch(category, difficulty, setMatchFound, setTimeout, setRejected, setReject, setCollabTimeout)
             .then((match) => {
                 console.log("Match details:", match);
                 setMatchDetails(match); // Store match details in state
@@ -38,50 +49,36 @@ export default function WaitingRoom() {
     };
 
     const handleCancelMatch = () => {
+        setReject(false);
+        setRejected(false);
+        setMatchFound(false);
+        setTimeout(false);
+        setCollabTimeout(false);
         cancelMatch();
         console.log("Match cancelled!");
     };
 
-    const onAccept = () => {
-        console.log("match accepted");
-        setMatchFound(false);
-    };
-
-    const onReject = () => {
-        console.log("match rejected");
-        setMatchFound(false);
-    };
-
-    const buildMatchMessage = (matchDetails) => {
-        if (!matchDetails) return "";
-
-        const { category, difficulty } = matchDetails;
-
-        return (
-            <>
-                You have been matched for a <strong>{difficulty}</strong> level{" "}
-                <strong>{category}</strong> question. Do you accept the match?
-            </>
-        );
-    };
-
-    const matchMessage = buildMatchMessage(matchDetails); // Generate the match message
-
     return (
-        <div>
-            <h1>Start practicing now</h1>
+        <div className="waiting-room-container">
+            <NavigationButton path='Home' link='/home'/>
+            <h1 className='waiting-room-title'>Start practicing now</h1>
             <CreateSessionForm
                 categories={categories}
                 handleCreateSession={handleCreateSession}
                 handleCancelMatch={handleCancelMatch}
-                isMatchFound={isMatchFound}
                 isTimeout={isTimeout}
+                isMatchFound={isMatchFound}
+                isReject={isReject}
+                isRejected={isRejected}
+                isCollabTimeout={isCollabTimeout}
             />
             <ConfirmationDialog
-                open={isMatchFound}
-                onAccept={onAccept}
-                onReject={onReject}
-                message={matchMessage}
+                isMatchFound={isMatchFound}
+                setMatchFound={setMatchFound}
+                matchDetails={matchDetails}
+                isReject={isReject}
+                isRejected={isRejected}
+                isCollabTimeout={isCollabTimeout}
             />
         </div>
     );

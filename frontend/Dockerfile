@@ -14,6 +14,12 @@ RUN npm run build
 FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 
+# Delete the default Nginx configuration file
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy the custom Nginx configuration file
+COPY --from=build /app/nginx.conf /etc/nginx/conf.d/default.conf
+
 # Expose port 80 for serving the app
 EXPOSE 80
 

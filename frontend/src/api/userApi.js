@@ -2,9 +2,14 @@
 import axios from 'axios';
 import { getToken } from "../utils/token";
 
+const baseURL =
+    process.env.ENV === "PROD"
+        ? process.env.REACT_APP_USER_SERVICE_URL
+        : process.env.REACT_APP_USER_SERVICE_LOCAL_URL;
+
 // Base configuration for the API
 const API = axios.create({
-  baseURL: 'http://localhost:3003',  // Change this to api gateway url
+  baseURL: baseURL,  // Change this to api gateway url
 });
 
 // Attach token if needed (authentication)
@@ -23,7 +28,7 @@ export const createUser = async (userData) => {
       return response.data;
     } catch (error) {
       console.error('Error creating user:', error.response?.data?.message || error.message);
-      throw error;
+      throw error.response?.data || { message: 'Error creating user' };
     }
   };
   
@@ -34,7 +39,7 @@ export const createUser = async (userData) => {
       return response.data;
     } catch (error) {
       console.error('Error fetching user:', error.response?.data?.message || error.message);
-      throw error;
+      throw error.response?.data || { message: 'Error fetching user' };
     }
   };
   
@@ -45,18 +50,18 @@ export const createUser = async (userData) => {
       return response.data;
     } catch (error) {
       console.error('Error fetching all users:', error.response?.data?.message || error.message);
-      throw error;
+      throw error.response?.data || { message: 'Error fetching all users' };
     }
   };
   
   // Update user by ID
   export const updateUser = async (userId, userData) => {
     try {
-      const response = await API.put(`/users/${userId}`, userData);
+      const response = await API.patch(`/users/${userId}`, userData);
       return response.data;
     } catch (error) {
       console.error('Error updating user:', error.response?.data?.message || error.message);
-      throw error;
+      throw error.response?.data || { message: 'Error updating user' };
     }
   };
   
@@ -67,7 +72,7 @@ export const createUser = async (userData) => {
       return response.data;
     } catch (error) {
       console.error('Error deleting user:', error.response?.data?.message || error.message);
-      throw error;
+      throw error.response?.data || { message: 'Error deleting user' };
     }
   };
   
@@ -78,6 +83,6 @@ export const createUser = async (userData) => {
       return response.data;
     } catch (error) {
       console.error('Error updating user privilege:', error.response?.data?.message || error.message);
-      throw error;
+      throw error.response?.data || { message: 'Error updating user privilege' };
     }
   };

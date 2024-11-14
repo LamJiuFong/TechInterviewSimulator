@@ -9,6 +9,9 @@ export default function CreateSessionForm({
     handleCancelMatch,
     isTimeout,
     isMatchFound,
+    isReject,
+    isRejected,
+    isCollabTimeout
 }) {
     const difficulties = ["Easy", "Medium", "Hard"];
     const [difficulty, setDifficulty] = useState("");
@@ -37,7 +40,7 @@ export default function CreateSessionForm({
             if (isMatchFound) {
                 clearInterval(interval);
                 setLoading(false);
-                setErrorMessage("Match Found!");
+                setErrorMessage("");
             }
             // Need to handle case where match is found, then show sucess message
         }
@@ -45,6 +48,26 @@ export default function CreateSessionForm({
         // Clean up the interval when the component unmounts or the timer stops
         return () => clearInterval(interval);
     }, [loading, timer, isMatchFound, isTimeout]);
+
+    useEffect(() => {
+
+        if(isReject) {
+            console.log("isReject: ", isReject);
+            setErrorMessage("You did not accept the match.");
+        }
+
+        if(isRejected) {
+            console.log("isRejected: ", isRejected);
+            setErrorMessage("The other player did not accept the match.");
+        }
+
+        if (isCollabTimeout) {
+            console.log("isCollabTimeout: ", isCollabTimeout);
+            setErrorMessage("Match not accepted in time.");
+        }
+     
+
+    }, [isReject, isRejected, isCollabTimeout]);
 
     // Handle Create Session
     const handleSubmit = () => {
@@ -128,7 +151,7 @@ export default function CreateSessionForm({
                     onClick={handleSubmit}
                     variant="contained"
                     color="primary"
-                    fullWidth
+                    fullwidth="true"
                 >
                     Create Session
                 </button>
@@ -141,7 +164,7 @@ export default function CreateSessionForm({
                     onClick={handleCancel}
                     variant="contained"
                     color="primary"
-                    fullWidth
+                    fullwidth="true"
                 >
                     Cancel
                 </button>
@@ -158,6 +181,10 @@ export default function CreateSessionForm({
             {/* Error/Success Message */}
             {errorMessage && (
                 <span className="error-message">{errorMessage}</span>
+            )}
+
+            {isMatchFound && (
+                <span className="error-message">Match Found!</span>
             )}
         </div>
     );

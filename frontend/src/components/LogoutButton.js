@@ -1,4 +1,5 @@
 import React from 'react';
+import './component-styles/LogoutButton.css';
 import { useAuth } from "../context/AuthContext.js";
 import { useNavigate } from 'react-router-dom';
 
